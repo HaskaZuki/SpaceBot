@@ -149,7 +149,7 @@ function fetchSyncedLyrics(title, artist) {
         const url = `https://lrclib.net/api/search?${params.toString()}`;
         
         const options = {
-            headers: { 'User-Agent': 'XylosBot/1.0.0' }
+            headers: { 'User-Agent': 'SpaceBot/1.0.0' }
         };
 
         https.get(url, options, (res) => {

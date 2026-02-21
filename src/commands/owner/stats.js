@@ -36,7 +36,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor('#6366f1')
-            .setTitle('📊 XylosBot Statistics')
+            .setTitle('📊 SpaceBot Statistics')
             .setThumbnail(client.user.displayAvatarURL())
             .addFields(
                 { name: '⏰ Uptime', value: uptimeStr, inline: true },

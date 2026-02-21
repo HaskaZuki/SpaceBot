@@ -33,7 +33,7 @@ const shoukaku = new Shoukaku(
         reconnectInterval: 5,
         restTimeout: 60000,
         moveOnDisconnect: false,
-        userAgent: 'XylosBot/1.0.0'
+        userAgent: 'SpaceBot/1.0.0'
     }
 );
 

@@ -18,7 +18,7 @@ module.exports = {
 
                 if (!commandName) {
                     await message.reply({
-                        content: '👋 Hey! Use `/help` to see all commands, or mention me with a command like `@XylosBot play <song>`.'
+                        content: '👋 Hey! Use `/help` to see all commands, or mention me with a command like `@SpaceBot play <song>`.'
                     });
                     return;
                 }

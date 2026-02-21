@@ -571,7 +571,7 @@ async function showOverview(interaction) {
 
     const mainEmbed = new EmbedBuilder()
         .setColor('#7C3AED')
-        .setTitle('📖 Xylos Music — Command Guide')
+        .setTitle('📖 Space Music — Command Guide')
         .setDescription(
             '**Use the menu below to browse commands by category.**\n' +
             'For detailed info on any command: `/help command:<name>`\n\n' +

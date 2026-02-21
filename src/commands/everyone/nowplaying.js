@@ -42,6 +42,19 @@ module.exports = {
         const loopDisplay = { off: '▶️ Normal', track: '🔂 Track', queue: '🔁 Queue' };
         const queueLength = playerState.queue?.length || 0;
 
+        let requestedByText = track.requestedByName || null;
+        let requestedByIcon = track.requestedByAvatar || null;
+        if (!requestedByText && track.requestedBy) {
+            try {
+                const user = interaction.client.users.cache.get(track.requestedBy) || await interaction.client.users.fetch(track.requestedBy);
+                if (user) {
+                    requestedByText = user.displayName || user.username;
+                    requestedByIcon = user.displayAvatarURL({ size: 32 });
+                }
+            } catch (_) { /* user left / uncached */ }
+        }
+        if (!requestedByText) requestedByText = 'Someone';
+
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
             .setAuthor({ name: '🎵 Now Playing' })
@@ -54,9 +67,9 @@ module.exports = {
                 `**Loop:** ${loopDisplay[loopMode] || '▶️ Normal'}\n` +
                 `**Queue:** ${queueLength} track${queueLength !== 1 ? 's' : ''} remaining`
             )
-            .setFooter({ 
-                text: `Requested by ${track.requestedByName || 'Unknown'}`,
-                iconURL: track.requestedByAvatar || null
+            .setFooter({
+                text: `Requested by ${requestedByText}`,
+                iconURL: requestedByIcon || undefined
             })
             .setTimestamp();
 

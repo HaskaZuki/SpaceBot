@@ -14,9 +14,9 @@ module.exports = {
         
         const embedData = {
             color: 0x6366f1,
-            title: '📢 Xylos Announcement',
+            title: '📢 SpaceBot Announcement',
             description: message,
-            footer: { text: 'From the Xylos Team' },
+            footer: { text: 'From the SpaceBot Team' },
             timestamp: new Date().toISOString()
         };
 

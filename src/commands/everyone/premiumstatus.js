@@ -38,7 +38,7 @@ module.exports = {
                     inline: false 
                 }
             )
-            .setFooter({ text: isUserPrem || isServerPrem ? 'Thanks for supporting XylosBot!' : 'Upgrade to unlock exclusive features!' });
+            .setFooter({ text: isUserPrem || isServerPrem ? 'Thanks for supporting SpaceBot!' : 'Upgrade to unlock exclusive features!' });
 
         await interaction.reply({ embeds: [embed], ephemeral: true });
     },

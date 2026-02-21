@@ -23,6 +23,15 @@ const io = new Server(server, {
     }
 });
 
+function minimalFallbackHtml() {
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>SpaceBot</title></head><body style="font-family:sans-serif;max-width:600px;margin:2rem auto;padding:1rem;background:#1a1a2e;color:#eee">
+<h1>SpaceBot Dashboard</h1>
+<p>Client build not deployed. On server run:</p>
+<pre style="background:#0f0f1a;padding:1rem;border-radius:8px">cd src/web/client && npm install && npm run build</pre>
+<p>Then restart the app. <a href="/health" style="color:#5865F2">/health</a></p>
+</body></html>`;
+}
+
 module.exports = (client) => {
     const fs = require('fs');
     const mongoose = require('mongoose');
@@ -119,21 +128,24 @@ module.exports = (client) => {
 
     const clientBuildPath = path.join(__dirname, 'client', 'build');
     const indexHtml = path.join(clientBuildPath, 'index.html');
-    if (!fs.existsSync(indexHtml)) {
+    const hasBuild = fs.existsSync(indexHtml);
+    if (!hasBuild) {
         console.warn('[Dashboard] No client build at', indexHtml, '- run: cd src/web/client && npm run build');
     }
     app.use(express.static(clientBuildPath));
-    // SPA fallback: path '/' only (Express 5/path-to-regexp v8 reject '/*')
+    // SPA fallback: serve index.html or minimal fallback if build missing
     app.use('/', (req, res, next) => {
-        if (!req.path.startsWith('/api') && !req.path.startsWith('/auth')) {
+        if (req.path.startsWith('/api') || req.path.startsWith('/auth')) return next();
+        if (hasBuild) {
             return res.sendFile(indexHtml, (err) => {
-                if (err) {
-                    console.error('[Dashboard] sendFile index.html failed:', err.message);
-                    res.status(503).send('Dashboard build not found. Run: cd src/web/client && npm run build');
+                if (err && !res.headersSent) {
+                    console.error('[Dashboard] sendFile failed:', err.message);
+                    res.status(503).send(minimalFallbackHtml());
                 }
             });
         }
-        next();
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.status(200).send(minimalFallbackHtml());
     });
 
     // Must be last: catch unhandled errors so we don't return 500 without logging

@@ -3,7 +3,7 @@ const path = require('path');
 require('dotenv').config();
 
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-console.log('🎵 XylosBot Sharding Manager v2.0');
+console.log('🎵 SpaceBot Sharding Manager v2.0');
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('');
 
