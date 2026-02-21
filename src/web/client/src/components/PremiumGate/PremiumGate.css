@@ -1,0 +1,76 @@
+.premium-gate {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.premium-gate-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 15, 30, 0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+}
+
+.premium-gate-content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.premium-gate-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 1.4rem;
+  color: #fff;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+.premium-gate-content h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
+}
+
+.premium-gate-content p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.premium-gate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  background: linear-gradient(135deg, #f59e0b, #f97316);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.premium-gate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.premium-gate-blurred {
+  filter: blur(3px);
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.5;
+}

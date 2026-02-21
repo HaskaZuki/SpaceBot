@@ -1,0 +1,7 @@
+{
+    "error": "❌ An error occurred!",
+    "no_voice": "❌ You must be in a voice channel!",
+    "success": "✅ Success!",
+    "premium_only": "❌ This feature is for Premium servers/users only.",
+    "admin_only": "❌ You need Administrator permission."
+}

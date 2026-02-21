@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ An error occurred!",
+        "no_voice": "❌ You must be in a voice channel!",
+        "success": "✅ Success!",
+        "premium_only": "❌ This feature is for Premium servers/users only.",
+        "admin_only": "❌ You need Administrator permission."
+    },
+    "play": {
+        "searching": "🔍 Searching for **{query}**...",
+        "added_to_queue": "✅ Added to queue: **{title}**",
+        "playlist_added": "✅ Added playlist: **{title}** ({count} tracks)",
+        "no_results": "❌ No results found.",
+        "join_error": "❌ Could not join your voice channel."
+    },
+    "queue": {
+        "empty": "📭 The queue is currently empty.",
+        "now_playing": "🎶 **Now Playing:** {title}",
+        "up_next": "🔜 **Up Next:**"
+    },
+    "errors": {
+        "no_player": "❌ I am not playing anything right now.",
+        "voice_mismatch": "❌ You must be in the same voice channel as me!"
+    }
+}

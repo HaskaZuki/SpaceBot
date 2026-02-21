@@ -1,0 +1,138 @@
+
+
+
+const FILTER_PRESETS = {
+    'bass-boost': {
+        name: 'Bass Boost',
+        emoji: '🔊',
+        equalizer: [
+            { band: 0, gain: 0.6 },
+            { band: 1, gain: 0.67 },
+            { band: 2, gain: 0.67 },
+            { band: 3, gain: 0.4 }
+        ]
+    },
+    'nightcore': {
+        name: 'Nightcore',
+        emoji: '🌙',
+        timescale: {
+            speed: 1.2,
+            pitch: 1.2,
+            rate: 1.0
+        }
+    },
+    'vaporwave': {
+        name: 'Vaporwave',
+        emoji: '🌊',
+        timescale: {
+            speed: 0.8,
+            pitch: 0.8,
+            rate: 1.0
+        }
+    },
+    '8d': {
+        name: '8D Audio',
+        emoji: '🎧',
+        rotation: {
+            rotationHz: 0.2
+        }
+    },
+    'karaoke': {
+        name: 'Karaoke',
+        emoji: '🎤',
+        karaoke: {
+            level: 1.0,
+            monoLevel: 1.0,
+            filterBand: 220.0,
+            filterWidth: 100.0
+        }
+    },
+    'tremolo': {
+        name: 'Tremolo',
+        emoji: '📳',
+        tremolo: {
+            frequency: 2.0,
+            depth: 0.5
+        }
+    },
+    'vibrato': {
+        name: 'Vibrato',
+        emoji: '🎵',
+        vibrato: {
+            frequency: 2.0,
+            depth: 0.5
+        }
+    }
+};
+
+
+async function applyFilter(player, filter) {
+    try {
+        if (!player) {
+            throw new Error('Player not found');
+        }
+
+        let filterConfig;
+
+        if (typeof filter === 'string') {            const preset = FILTER_PRESETS[filter.toLowerCase()];
+            if (!preset) {
+                throw new Error(`Unknown filter: ${filter}`);
+            }
+            filterConfig = { ...preset };
+            delete filterConfig.name;
+            delete filterConfig.emoji;
+        } else {            filterConfig = filter;
+        }        await player.setFilters(filterConfig);
+        
+        return true;
+    } catch (error) {
+        console.error('Error applying filter:', error);
+        return false;
+    }
+}
+
+
+async function resetFilters(player) {
+    try {
+        if (!player) {
+            throw new Error('Player not found');
+        }        await player.setFilters({});
+        
+        return true;
+    } catch (error) {
+        console.error('Error resetting filters:', error);
+        return false;
+    }
+}
+
+
+function getAvailableFilters() {
+    return Object.keys(FILTER_PRESETS);
+}
+
+
+function getFilterInfo(filterName) {
+    const preset = FILTER_PRESETS[filterName.toLowerCase()];
+    if (!preset) return null;
+    
+    return {
+        name: preset.name,
+        emoji: preset.emoji,
+        key: filterName.toLowerCase()
+    };
+}
+
+
+function isValidFilterConfig(config) {
+    if (!config || typeof config !== 'object') return false;    const validProps = ['equalizer', 'karaoke', 'timescale', 'tremolo', 'vibrato', 'rotation', 'distortion', 'channelMix', 'lowPass'];
+    return validProps.some(prop => config.hasOwnProperty(prop));
+}
+
+module.exports = {
+    FILTER_PRESETS,
+    applyFilter,
+    resetFilters,
+    getAvailableFilters,
+    getFilterInfo,
+    isValidFilterConfig
+};

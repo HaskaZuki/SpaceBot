@@ -1,0 +1,7 @@
+{
+    "error": "❌ Ein Fehler ist aufgetreten!",
+    "no_voice": "❌ Du musst in einem Sprachkanal sein!",
+    "success": "✅ Erfolg!",
+    "premium_only": "❌ Diese Funktion ist nur für Premium-Server/Benutzer.",
+    "admin_only": "❌ Du brauchst Administrator-Berechtigung."
+}

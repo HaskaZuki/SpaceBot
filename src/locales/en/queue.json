@@ -1,0 +1,5 @@
+{
+    "empty": "📭 The queue is currently empty.",
+    "now_playing": "🎶 **Now Playing:** {title}",
+    "up_next": "🔜 **Up Next:**"
+}

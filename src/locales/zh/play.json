@@ -1,0 +1,7 @@
+{
+    "searching": "🔍 正在搜索 **{query}**...",
+    "added_to_queue": "✅ 已添加到队列：**{title}**",
+    "playlist_added": "✅ 已添加播放列表：**{title}**（{count} 首曲目）",
+    "no_results": "❌ 未找到结果。",
+    "join_error": "❌ 无法加入你的语音频道。"
+}

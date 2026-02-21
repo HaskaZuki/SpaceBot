@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ Ocorreu um erro!",
+        "no_voice": "❌ Você precisa estar em um canal de voz!",
+        "success": "✅ Sucesso!",
+        "premium_only": "❌ Este recurso é apenas para servidores/usuários Premium.",
+        "admin_only": "❌ Você precisa de permissão de Administrador."
+    },
+    "play": {
+        "searching": "🔍 Procurando **{query}**...",
+        "added_to_queue": "✅ Adicionado à fila: **{title}**",
+        "playlist_added": "✅ Playlist adicionada: **{title}** ({count} faixas)",
+        "no_results": "❌ Nenhum resultado encontrado.",
+        "join_error": "❌ Não foi possível entrar no seu canal de voz."
+    },
+    "queue": {
+        "empty": "📭 A fila está vazia.",
+        "now_playing": "🎶 **Tocando agora:** {title}",
+        "up_next": "🔜 **Próxima:**"
+    },
+    "errors": {
+        "no_player": "❌ Não estou tocando nada no momento.",
+        "voice_mismatch": "❌ Você precisa estar no mesmo canal de voz que eu!"
+    }
+}

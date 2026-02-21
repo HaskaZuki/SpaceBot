@@ -1,0 +1,53 @@
+server: # REST and WS server
+  port: 2333
+  address: 0.0.0.0
+  
+lavalink:
+  server:
+    password: "youshallnotpass"
+    sources:
+      youtube: true
+      bandcamp: true
+      soundcloud: true
+      twitch: true
+      vimeo: true
+      http: true
+      local: false
+    filters: # All filters are enabled by default
+      volume: true
+      equalizer: true
+      karaoke: true
+      timescale: true
+      tremolo: true
+      vibrato: true
+      distortion: true
+      rotation: true
+      channelMix: true
+      lowPass: true
+    bufferDurationMs: 400
+    frameBufferDurationMs: 5000
+    opusEncodingQuality: 10
+    resamplingQuality: LOW
+    trackStuckThresholdMs: 10000
+    useSeekGhosting: true
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+    gc-warnings: true
+
+# Spotify Plugin Configuration (requires LavaSrc plugin)
+plugins:
+  lavasrc:
+    providers:
+      - "ytsearch:\"%ISRC%\""
+      - "ytsearch:%QUERY%"
+    sources:
+      spotify: true
+      applemusic: false
+      deezer: false
+      yandexmusic: false
+    spotify:
+      clientId: "32044d6999a64f8cb162ef818670e04b"
+      clientSecret: "8647b2af0ddd439fa49c85e6041c3acc"
+      countryCode: "US"

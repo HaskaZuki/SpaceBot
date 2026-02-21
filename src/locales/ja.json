@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ エラーが発生しました！",
+        "no_voice": "❌ ボイスチャンネルに参加してください！",
+        "success": "✅ 成功！",
+        "premium_only": "❌ この機能はプレミアムサーバー/ユーザー限定です。",
+        "admin_only": "❌ 管理者権限が必要です。"
+    },
+    "play": {
+        "searching": "🔍 **{query}** を検索中...",
+        "added_to_queue": "✅ キューに追加しました：**{title}**",
+        "playlist_added": "✅ プレイリストを追加しました：**{title}**（{count}曲）",
+        "no_results": "❌ 結果が見つかりませんでした。",
+        "join_error": "❌ ボイスチャンネルに参加できませんでした。"
+    },
+    "queue": {
+        "empty": "📭 キューは空です。",
+        "now_playing": "🎶 **再生中：** {title}",
+        "up_next": "🔜 **次の曲：**"
+    },
+    "errors": {
+        "no_player": "❌ 現在何も再生していません。",
+        "voice_mismatch": "❌ 同じボイスチャンネルにいる必要があります！"
+    }
+}

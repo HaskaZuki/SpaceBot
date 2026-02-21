@@ -1,0 +1,7 @@
+{
+    "searching": "🔍 Mencari **{query}**...",
+    "added_to_queue": "✅ Menambahkan ke antrean: **{title}**",
+    "playlist_added": "✅ Playlist ditambahkan: **{title}** ({count} lagu)",
+    "no_results": "❌ Tidak ada hasil ditemukan.",
+    "join_error": "❌ Gagal masuk ke voice channel."
+}

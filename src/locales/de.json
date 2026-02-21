@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ Ein Fehler ist aufgetreten!",
+        "no_voice": "❌ Du musst in einem Sprachkanal sein!",
+        "success": "✅ Erfolg!",
+        "premium_only": "❌ Diese Funktion ist nur für Premium-Server/Benutzer.",
+        "admin_only": "❌ Du brauchst Administrator-Berechtigung."
+    },
+    "play": {
+        "searching": "🔍 Suche nach **{query}**...",
+        "added_to_queue": "✅ Zur Warteschlange hinzugefügt: **{title}**",
+        "playlist_added": "✅ Playlist hinzugefügt: **{title}** ({count} Titel)",
+        "no_results": "❌ Keine Ergebnisse gefunden.",
+        "join_error": "❌ Konnte deinem Sprachkanal nicht beitreten."
+    },
+    "queue": {
+        "empty": "📭 Die Warteschlange ist leer.",
+        "now_playing": "🎶 **Wird gespielt:** {title}",
+        "up_next": "🔜 **Als Nächstes:**"
+    },
+    "errors": {
+        "no_player": "❌ Ich spiele gerade nichts ab.",
+        "voice_mismatch": "❌ Du musst im selben Sprachkanal sein wie ich!"
+    }
+}

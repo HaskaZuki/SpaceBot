@@ -1,0 +1,5 @@
+{
+    "empty": "📭 La cola está vacía.",
+    "now_playing": "🎶 **Reproduciendo:** {title}",
+    "up_next": "🔜 **Siguiente:**"
+}

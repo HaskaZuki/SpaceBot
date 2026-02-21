@@ -1,0 +1,7 @@
+{
+    "searching": "🔍 **{query}** を検索中...",
+    "added_to_queue": "✅ キューに追加しました：**{title}**",
+    "playlist_added": "✅ プレイリストを追加しました：**{title}**（{count}曲）",
+    "no_results": "❌ 結果が見つかりませんでした。",
+    "join_error": "❌ ボイスチャンネルに参加できませんでした。"
+}

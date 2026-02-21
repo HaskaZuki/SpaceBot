@@ -1,0 +1,178 @@
+const musicPlayer = require('../utils/musicPlayer');
+const GuildConfig = require('../models/GuildConfig');
+
+module.exports = {
+    name: 'interactionCreate',
+    execute: async (interaction) => {
+        if (interaction.isButton()) {
+            const guildId = interaction.guild?.id;
+            if (!guildId) return;
+            
+            const member = interaction.member;
+
+            if (interaction.customId.startsWith('help_') || interaction.customId.startsWith('settings_')) {
+                return;
+            }
+
+            try {
+                await interaction.deferUpdate().catch(() => {});
+
+                if (!member.voice?.channel) {
+                    return interaction.followUp({ content: '❌ You must be in a voice channel!', flags: 64 }).catch(() => {});
+                }
+
+                switch (interaction.customId) {
+                    case 'play_pause':
+                        await musicPlayer.pauseResume(interaction.client, guildId);
+                        break;
+                    case 'stop':
+                        await musicPlayer.stopPlayer(interaction.client, guildId);
+                        break;
+                    case 'skip':
+                        await musicPlayer.skipTrack(interaction.client, guildId);
+                        break;
+                    case 'loop':
+                        const mode = await musicPlayer.setLoop(interaction.client, guildId);
+                        await interaction.followUp({ content: `🔁 Loop mode set to: **${mode}**`, flags: 64 }).catch(() => {});
+                        break;
+                    case 'shuffle':
+                        await musicPlayer.shuffleQueue(interaction.client, guildId);
+                        await interaction.followUp({ content: '🔀 Queue shuffled!', flags: 64 }).catch(() => {});
+                        break;
+                }
+            } catch (error) {
+                console.error('Button interaction error:', error.message);
+            }
+            return;
+        }
+
+        if (interaction.isStringSelectMenu()) {
+            if (interaction.customId.startsWith('search_select_')) {
+                const userId = interaction.customId.replace('search_select_', '');
+                
+                if (userId !== interaction.user.id) {
+                    return interaction.reply({ content: '❌ This search was initiated by someone else!', flags: 64 });
+                }
+
+                const searchData = global.searchCache?.[userId];
+                if (!searchData) {
+                    return interaction.reply({ content: '❌ Search results expired! Please search again.', flags: 64 });
+                }
+
+                const selectedIndex = parseInt(interaction.values[0]);
+                const selectedTrack = searchData.tracks[selectedIndex];
+
+                if (!selectedTrack) {
+                    return interaction.reply({ content: '❌ Invalid selection!', flags: 64 });
+                }
+
+                await interaction.deferUpdate();
+
+                try {
+                    const result = await musicPlayer.playTrackDirect(
+                        interaction.client,
+                        searchData.guildId,
+                        searchData.voiceChannelId,
+                        selectedTrack,
+                        searchData.textChannel
+                    );
+
+                    delete global.searchCache[userId];
+
+                    await interaction.followUp({
+                        content: `✅ Added to queue: **${selectedTrack.info.title}** by ${selectedTrack.info.author}`,
+                        flags: 64
+                    });
+                } catch (error) {
+                    console.error('Play from search error:', error);
+                    await interaction.followUp({
+                        content: '❌ Failed to add track to queue.',
+                        flags: 64
+                    });
+                }
+            }
+            return;
+        }
+
+        if (interaction.isAutocomplete()) {
+            const command = interaction.client.commands.get(interaction.commandName);
+            if (!command || !command.autocomplete) return;
+            try {
+                await command.autocomplete(interaction);
+            } catch (error) {
+                console.error('Autocomplete error:', error.message);
+            }
+            return;
+        }
+
+        if (interaction.isChatInputCommand()) {
+            const command = interaction.client.commands.get(interaction.commandName);
+            if (!command) return;
+
+            if (command.category === 'dj') {
+                const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
+                const isAdmin = interaction.member.permissions.has('Administrator');
+                
+                if (config && config.djRoleId) {
+                    const hasRole = interaction.member.roles.cache.has(config.djRoleId);
+                    if (!hasRole && !isAdmin) {
+                        return interaction.reply({ 
+                            content: `🚫 You need the <@&${config.djRoleId}> role to use this command!`, 
+                            flags: 64 
+                        });
+                    }
+                } else {
+                    if (!isAdmin) {
+                        return interaction.reply({ 
+                            content: `🚫 No DJ role has been configured. Only **Administrators** can use this command.\nAn admin can set a DJ role using \`/setdj\`.`, 
+                            flags: 64 
+                        });
+                    }
+                }
+            }
+
+            if (command.category === 'admin') {
+                if (!interaction.member.permissions.has('Administrator')) {
+                     return interaction.reply({ 
+                        content: `🚫 You need **Administrator** permission to use this command!`, 
+                        flags: 64 
+                    });
+                }
+            }
+
+            if (command.category === 'owner') {
+                if (interaction.user.id !== process.env.OWNER_ID) {
+                    return interaction.reply({ 
+                        content: `🚫 This command is restricted to the **Bot Owner** only!`, 
+                        flags: 64 
+                    });
+                }
+            }
+
+            if (command.category === 'premium') {
+                const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
+                if (!config || !config.isPremium) {
+                    return interaction.reply({ 
+                        content: `🚫 This server must be **Premium** to use this command!\n💎 Contact the bot owner to upgrade to Premium.`, 
+                        flags: 64 
+                    });
+                }
+            }
+
+            try {
+                await command.execute(interaction);
+            } catch (error) {
+                console.error('Command execution error:', error);
+                try {
+                    if (interaction.replied || interaction.deferred) {
+                        await interaction.followUp({ content: '❌ There was an error executing this command!', flags: 64 });
+                    } else {
+                        await interaction.reply({ content: '❌ There was an error executing this command!', flags: 64 });
+                    }
+                } catch (replyError) {
+                    console.error('Failed to send error reply:', replyError.message);
+                }
+            }
+        }
+    }
+};

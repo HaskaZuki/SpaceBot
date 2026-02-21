@@ -1,0 +1,7 @@
+{
+    "searching": "🔍 Suche nach **{query}**...",
+    "added_to_queue": "✅ Zur Warteschlange hinzugefügt: **{title}**",
+    "playlist_added": "✅ Playlist hinzugefügt: **{title}** ({count} Titel)",
+    "no_results": "❌ Keine Ergebnisse gefunden.",
+    "join_error": "❌ Konnte deinem Sprachkanal nicht beitreten."
+}

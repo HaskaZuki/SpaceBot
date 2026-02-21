@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ Terjadi kesalahan!",
+        "no_voice": "❌ Kamu harus masuk ke voice channel dulu!",
+        "success": "✅ Berhasil!",
+        "premium_only": "❌ Fitur ini hanya untuk server/user Premium.",
+        "admin_only": "❌ Kamu butuh izin Administrator."
+    },
+    "play": {
+        "searching": "🔍 Mencari **{query}**...",
+        "added_to_queue": "✅ Menambahkan ke antrean: **{title}**",
+        "playlist_added": "✅ Playlist ditambahkan: **{title}** ({count} lagu)",
+        "no_results": "❌ Tidak ada hasil ditemukan.",
+        "join_error": "❌ Gagal masuk ke voice channel."
+    },
+    "queue": {
+        "empty": "📭 Antrean musik sedang kosong.",
+        "now_playing": "🎶 **Sedang Diputar:** {title}",
+        "up_next": "🔜 **Berikutnya:**"
+    },
+    "errors": {
+        "no_player": "❌ Saya tidak sedang memutar apa-apa.",
+        "voice_mismatch": "❌ Kamu harus berada di voice channel yang sama dengan saya!"
+    }
+}

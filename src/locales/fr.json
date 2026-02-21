@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ Une erreur s'est produite !",
+        "no_voice": "❌ Vous devez être dans un salon vocal !",
+        "success": "✅ Succès !",
+        "premium_only": "❌ Cette fonctionnalité est réservée aux serveurs/utilisateurs Premium.",
+        "admin_only": "❌ Vous avez besoin de la permission Administrateur."
+    },
+    "play": {
+        "searching": "🔍 Recherche de **{query}**...",
+        "added_to_queue": "✅ Ajouté à la file d'attente : **{title}**",
+        "playlist_added": "✅ Playlist ajoutée : **{title}** ({count} pistes)",
+        "no_results": "❌ Aucun résultat trouvé.",
+        "join_error": "❌ Impossible de rejoindre votre salon vocal."
+    },
+    "queue": {
+        "empty": "📭 La file d'attente est vide.",
+        "now_playing": "🎶 **En cours :** {title}",
+        "up_next": "🔜 **Suivant :**"
+    },
+    "errors": {
+        "no_player": "❌ Je ne joue rien pour le moment.",
+        "voice_mismatch": "❌ Vous devez être dans le même salon vocal que moi !"
+    }
+}

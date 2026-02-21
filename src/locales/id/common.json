@@ -1,0 +1,7 @@
+{
+    "error": "❌ Terjadi kesalahan!",
+    "no_voice": "❌ Kamu harus masuk ke voice channel dulu!",
+    "success": "✅ Berhasil!",
+    "premium_only": "❌ Fitur ini hanya untuk server/user Premium.",
+    "admin_only": "❌ Kamu butuh izin Administrator."
+}

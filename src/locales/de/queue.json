@@ -1,0 +1,5 @@
+{
+    "empty": "📭 Die Warteschlange ist leer.",
+    "now_playing": "🎶 **Wird gespielt:** {title}",
+    "up_next": "🔜 **Als Nächstes:**"
+}

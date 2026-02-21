@@ -1,0 +1,7 @@
+{
+    "searching": "🔍 Procurando **{query}**...",
+    "added_to_queue": "✅ Adicionado à fila: **{title}**",
+    "playlist_added": "✅ Playlist adicionada: **{title}** ({count} faixas)",
+    "no_results": "❌ Nenhum resultado encontrado.",
+    "join_error": "❌ Não foi possível entrar no seu canal de voz."
+}

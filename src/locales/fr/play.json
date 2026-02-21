@@ -1,0 +1,7 @@
+{
+    "searching": "🔍 Recherche de **{query}**...",
+    "added_to_queue": "✅ Ajouté à la file d'attente : **{title}**",
+    "playlist_added": "✅ Playlist ajoutée : **{title}** ({count} pistes)",
+    "no_results": "❌ Aucun résultat trouvé.",
+    "join_error": "❌ Impossible de rejoindre votre salon vocal."
+}

@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ 오류가 발생했습니다!",
+        "no_voice": "❌ 음성 채널에 먼저 참여해야 합니다!",
+        "success": "✅ 성공!",
+        "premium_only": "❌ 이 기능은 프리미엄 서버/사용자만 사용할 수 있습니다.",
+        "admin_only": "❌ 관리자 권한이 필요합니다."
+    },
+    "play": {
+        "searching": "🔍 **{query}** 검색 중...",
+        "added_to_queue": "✅ 대기열에 추가됨: **{title}**",
+        "playlist_added": "✅ 플레이리스트 추가됨: **{title}** ({count}곡)",
+        "no_results": "❌ 결과를 찾을 수 없습니다.",
+        "join_error": "❌ 음성 채널에 참여할 수 없습니다."
+    },
+    "queue": {
+        "empty": "📭 대기열이 비어 있습니다.",
+        "now_playing": "🎶 **재생 중:** {title}",
+        "up_next": "🔜 **다음 곡:**"
+    },
+    "errors": {
+        "no_player": "❌ 현재 재생 중인 곡이 없습니다.",
+        "voice_mismatch": "❌ 저와 같은 음성 채널에 있어야 합니다!"
+    }
+}

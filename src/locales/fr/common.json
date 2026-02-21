@@ -1,0 +1,7 @@
+{
+    "error": "❌ Une erreur s'est produite !",
+    "no_voice": "❌ Vous devez être dans un salon vocal !",
+    "success": "✅ Succès !",
+    "premium_only": "❌ Cette fonctionnalité est réservée aux serveurs/utilisateurs Premium.",
+    "admin_only": "❌ Vous avez besoin de la permission Administrateur."
+}

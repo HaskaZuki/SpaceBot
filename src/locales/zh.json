@@ -1,0 +1,25 @@
+{
+    "common": {
+        "error": "❌ 发生了错误！",
+        "no_voice": "❌ 你必须在语音频道中！",
+        "success": "✅ 成功！",
+        "premium_only": "❌ 此功能仅限高级服务器/用户使用。",
+        "admin_only": "❌ 你需要管理员权限。"
+    },
+    "play": {
+        "searching": "🔍 正在搜索 **{query}**...",
+        "added_to_queue": "✅ 已添加到队列：**{title}**",
+        "playlist_added": "✅ 已添加播放列表：**{title}**（{count} 首曲目）",
+        "no_results": "❌ 未找到结果。",
+        "join_error": "❌ 无法加入你的语音频道。"
+    },
+    "queue": {
+        "empty": "📭 队列为空。",
+        "now_playing": "🎶 **正在播放：** {title}",
+        "up_next": "🔜 **下一首：**"
+    },
+    "errors": {
+        "no_player": "❌ 当前没有播放任何内容。",
+        "voice_mismatch": "❌ 你必须和我在同一个语音频道！"
+    }
+}

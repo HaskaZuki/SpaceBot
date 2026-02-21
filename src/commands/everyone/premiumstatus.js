@@ -1,0 +1,45 @@
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const GuildConfig = require('../../models/GuildConfig');
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('premiumstatus')
+        .setDescription('Check server premium status'),
+    
+    async execute(interaction) {
+        const GuildConfig = require('../../models/GuildConfig');
+        const UserSettings = require('../../models/UserSettings');
+        
+        const [guildConfig, userSettings] = await Promise.all([
+            GuildConfig.findOne({ guildId: interaction.guild.id }),
+            UserSettings.findOne({ userId: interaction.user.id })
+        ]);
+        
+        const isServerPrem = guildConfig && guildConfig.isPremium;
+        const isUserPrem = userSettings && userSettings.isPremium;
+        
+        const embed = new EmbedBuilder()
+            .setColor('#ffd700')
+            .setTitle('💎 Premium Status Check')
+            .setDescription('Current Premium status for you and this server.')
+            .addFields(
+                { 
+                    name: `👤 User Status (${interaction.user.username})`, 
+                    value: isUserPrem 
+                        ? `✅ **Premium Active**\nExpires: ${userSettings.premiumExpiresAt ? new Date(userSettings.premiumExpiresAt).toDateString() : '**Lifetime**'}`
+                        : '❌ **Free Plan**',
+                    inline: false 
+                },
+                { 
+                    name: `🏰 Server Status (${interaction.guild.name})`, 
+                    value: isServerPrem 
+                        ? `✅ **Premium Active**\nExpires: ${guildConfig.premiumExpiresAt ? new Date(guildConfig.premiumExpiresAt).toDateString() : '**Lifetime**'}`
+                        : '❌ **Free Plan**',
+                    inline: false 
+                }
+            )
+            .setFooter({ text: isUserPrem || isServerPrem ? 'Thanks for supporting XylosBot!' : 'Upgrade to unlock exclusive features!' });
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+    },
+};
