@@ -39,7 +39,8 @@ manager.on('shardCreate', shard => {
     });
 });
 
-const maxSpawnRetries = 5;
+const maxSpawnRetries = 10;
+const baseWaitSec = 8;
 
 function spawnWithRetry(retriesLeft = maxSpawnRetries) {
     return manager.spawn().then(() => {
@@ -50,16 +51,21 @@ function spawnWithRetry(retriesLeft = maxSpawnRetries) {
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log('');
     }).catch(async (err) => {
-        const res = err?.cause ?? err;
-        const is429 = res?.status === 429 || res?.statusText === 'Too Many Requests' || (typeof err?.message === 'string' && (err.message.includes('429') || err.message.includes('Too Many Requests')));
+        const res = err?.cause ?? err?.response ?? err;
+        const status = res?.status;
+        const statusText = res?.statusText;
+        const msg = typeof err?.message === 'string' ? err.message : '';
+        const is429 = status === 429 || statusText === 'Too Many Requests' ||
+            msg.includes('429') || msg.includes('Too Many Requests');
         const headers = res?.headers;
-        const retryAfterHeader = headers?.get?.('retry-after') ?? headers?.['retry-after'];
+        const getHeader = (h, k) => (typeof h?.get === 'function' ? h.get(k) : h?.[k] ?? h?.[k.toLowerCase?.()]);
+        const retryAfterHeader = getHeader(headers, 'retry-after');
         const retryAfter = retryAfterHeader != null ? parseInt(String(retryAfterHeader), 10) : null;
-        const waitSec = Number.isFinite(retryAfter) ? Math.max(retryAfter, 2) : 5;
+        const waitSec = Number.isFinite(retryAfter) ? Math.max(retryAfter, 3) : baseWaitSec;
 
-        if (is429 && retriesLeft > 0) {
+        if (retriesLeft > 0 && (is429 || msg.includes('gateway') || msg.includes('spawn'))) {
             console.warn('');
-            console.warn(`⏳ Discord rate limit (429). Waiting ${waitSec}s before retry (${retriesLeft} left)...`);
+            console.warn(`⏳ ${is429 ? 'Discord rate limit (429)' : 'Spawn failed'}. Waiting ${waitSec}s before retry (${retriesLeft} left)...`);
             console.warn('');
             await new Promise(r => setTimeout(r, waitSec * 1000));
             return spawnWithRetry(retriesLeft - 1);
@@ -74,7 +80,13 @@ function spawnWithRetry(retriesLeft = maxSpawnRetries) {
     });
 }
 
-spawnWithRetry();
+const startupDelaySec = parseInt(process.env.STARTUP_DELAY_SEC || '0', 10) || 0;
+if (startupDelaySec > 0) {
+    console.log(`⏳ Waiting ${startupDelaySec}s before first spawn (STARTUP_DELAY_SEC)...`);
+    setTimeout(() => spawnWithRetry(), startupDelaySec * 1000);
+} else {
+    spawnWithRetry();
+}
 
 process.on('SIGINT', () => {
     console.log('');
