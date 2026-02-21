@@ -24,6 +24,14 @@ const io = new Server(server, {
 });
 
 module.exports = (client) => {
+    const fs = require('fs');
+    const mongoose = require('mongoose');
+
+    // Health check: no session, no DB. Nginx / you can hit this to confirm Node is up.
+    app.get('/health', (req, res) => {
+        res.status(200).send('ok');
+    });
+
     passport.serializeUser((user, done) => done(null, user));
     passport.deserializeUser((obj, done) => done(null, obj));
 
@@ -37,19 +45,24 @@ module.exports = (client) => {
     }));
 
     const MongoStore = require('connect-mongo').default || require('connect-mongo');
-    const mongoose = require('mongoose');
-
     const isProduction = process.env.NODE_ENV === 'production';
 
-    const sessionMiddleware = session({
-        store: MongoStore.create({ 
+    let sessionStore;
+    try {
+        sessionStore = MongoStore.create({
             client: mongoose.connection.getClient(),
             ttl: 30 * 24 * 60 * 60
-        }),
+        });
+    } catch (e) {
+        console.warn('[Dashboard] Session store (Mongo) failed, using memory:', e.message);
+    }
+
+    const sessionMiddleware = session({
+        store: sessionStore,
         secret: process.env.SESSION_SECRET || 'keyboard cat',
         resave: false,
         saveUninitialized: false,
-        cookie: { 
+        cookie: {
             secure: isProduction,
             httpOnly: true,
             maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -106,7 +119,6 @@ module.exports = (client) => {
 
     const clientBuildPath = path.join(__dirname, 'client', 'build');
     const indexHtml = path.join(clientBuildPath, 'index.html');
-    const fs = require('fs');
     if (!fs.existsSync(indexHtml)) {
         console.warn('[Dashboard] No client build at', indexHtml, '- run: cd src/web/client && npm run build');
     }
@@ -126,8 +138,8 @@ module.exports = (client) => {
 
     // Must be last: catch unhandled errors so we don't return 500 without logging
     app.use((err, req, res, next) => {
-        console.error('[Dashboard] Unhandled error:', err);
-        res.status(500).send('Internal Server Error');
+        console.error('[Dashboard] 500 at', req.method, req.path, err?.stack || err);
+        if (!res.headersSent) res.status(500).send('Internal Server Error');
     });
 
     client.dashboardIO = io;
