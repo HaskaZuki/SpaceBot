@@ -5,8 +5,6 @@ const path = require('path');
 require('dotenv').config();
 const database = require('./database');
 
-database.connect();
-
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -159,6 +157,8 @@ for (const file of eventFiles) {
     }
 }
 
-require('./web/server')(client);
-
-client.login(process.env.DISCORD_TOKEN);
+(async () => {
+    await database.connect();
+    require('./web/server')(client);
+    client.login(process.env.DISCORD_TOKEN);
+})();

@@ -106,10 +106,12 @@ module.exports = (client) => {
 
     const clientBuildPath = path.join(__dirname, 'client', 'build');
     app.use(express.static(clientBuildPath));
-    app.get('/*', (req, res) => {
+    // SPA fallback: path '/' only (Express 5/path-to-regexp v8 reject '/*')
+    app.use('/', (req, res, next) => {
         if (!req.path.startsWith('/api') && !req.path.startsWith('/auth')) {
-            res.sendFile(path.join(clientBuildPath, 'index.html'));
+            return res.sendFile(path.join(clientBuildPath, 'index.html'));
         }
+        next();
     });
 
     client.dashboardIO = io;
