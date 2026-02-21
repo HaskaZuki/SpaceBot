@@ -5,12 +5,13 @@ const path = require('path');
 require('dotenv').config();
 const database = require('./database');
 
+// Discord Portal: only "Server Members Intent" enabled (no Message Content, no Presence)
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
+        GatewayIntentBits.GuildMessages
     ]
 });
 

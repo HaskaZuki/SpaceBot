@@ -14,10 +14,11 @@ const app = express();
 const server = http.createServer(app);
 
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
+const ALLOWED_ORIGINS = [DASHBOARD_URL, 'http://localhost:3000', 'http://localhost:3001', 'https://spacebot.me', 'http://spacebot.me'];
 
 const io = new Server(server, {
     cors: {
-        origin: [DASHBOARD_URL, 'http://localhost:3000', 'http://localhost:3001'],
+        origin: ALLOWED_ORIGINS,
         credentials: true
     }
 });
@@ -64,9 +65,8 @@ module.exports = (client) => {
     app.use(express.urlencoded({ extended: true }));
     
     app.use((req, res, next) => {
-        const allowedOrigins = [DASHBOARD_URL, 'http://localhost:3000', 'http://localhost:3001'];
         const origin = req.headers.origin;
-        if (allowedOrigins.includes(origin)) {
+        if (origin && ALLOWED_ORIGINS.includes(origin)) {
             res.header('Access-Control-Allow-Origin', origin);
         }
         res.header('Access-Control-Allow-Credentials', 'true');
@@ -105,13 +105,29 @@ module.exports = (client) => {
     app.use('/api/player', playerRoutes(client, io));
 
     const clientBuildPath = path.join(__dirname, 'client', 'build');
+    const indexHtml = path.join(clientBuildPath, 'index.html');
+    const fs = require('fs');
+    if (!fs.existsSync(indexHtml)) {
+        console.warn('[Dashboard] No client build at', indexHtml, '- run: cd src/web/client && npm run build');
+    }
     app.use(express.static(clientBuildPath));
     // SPA fallback: path '/' only (Express 5/path-to-regexp v8 reject '/*')
     app.use('/', (req, res, next) => {
         if (!req.path.startsWith('/api') && !req.path.startsWith('/auth')) {
-            return res.sendFile(path.join(clientBuildPath, 'index.html'));
+            return res.sendFile(indexHtml, (err) => {
+                if (err) {
+                    console.error('[Dashboard] sendFile index.html failed:', err.message);
+                    res.status(503).send('Dashboard build not found. Run: cd src/web/client && npm run build');
+                }
+            });
         }
         next();
+    });
+
+    // Must be last: catch unhandled errors so we don't return 500 without logging
+    app.use((err, req, res, next) => {
+        console.error('[Dashboard] Unhandled error:', err);
+        res.status(500).send('Internal Server Error');
     });
 
     client.dashboardIO = io;
