@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSocket } from '../context/SocketContext';
+import { useSocket } from '../../context/SocketContext';
 import './PersistentPlayer.css';
 
 function PersistentPlayer() {
