@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 
 const commandDetails = {
     play: {
@@ -470,6 +470,8 @@ const categoryConfig = {
     admin: { emoji: '⚙️', label: 'Admin', color: '#95a5a6', permission: 'Administrator' }
 };
 
+const categoryOrder = ['everyone', 'dj', 'playback', 'premium', 'admin'];
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('help')
@@ -519,7 +521,7 @@ async function showCommandDetail(interaction, cmdName) {
             
         return interaction.reply({ 
             content: `❌ Command \`/${cmdName}\` not found.${suggestionText}`, 
-            flags: 64 
+            flags: MessageFlags.Ephemeral
         });
     }
 
@@ -557,7 +559,48 @@ async function showCommandDetail(interaction, cmdName) {
 
     embed.setFooter({ text: 'Use /help to see all commands' });
 
-    await interaction.reply({ embeds: [embed], flags: 64 });
+    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+}
+
+function buildCategoryEmbed(catKey, categories) {
+    const cat = categoryConfig[catKey];
+    const cmds = categories[catKey] || [];
+
+    const embed = new EmbedBuilder()
+        .setColor(cat.color)
+        .setTitle(`${cat.emoji} ${cat.label} Commands`)
+        .setDescription(`**Permission:** ${cat.permission}\n\n`);
+
+    const fields = cmds.map(cmdName => {
+        const cmd = commandDetails[cmdName];
+        return {
+            name: `\`${cmd.usage}\``,
+            value: cmd.description.length > 80 ? cmd.description.slice(0, 77) + '...' : cmd.description,
+            inline: true
+        };
+    });
+
+    for (let i = 0; i < fields.length; i += 25) {
+        embed.setFields(fields.slice(i, i + 25));
+    }
+
+    embed.setFooter({ text: `${cmds.length} commands • /help command:<name> for details` });
+    return embed;
+}
+
+function buildNavButtons(userId, currentCat) {
+    const row = new ActionRowBuilder();
+    for (const catKey of categoryOrder) {
+        const cat = categoryConfig[catKey];
+        row.addComponents(
+            new ButtonBuilder()
+                .setCustomId(`help_cat_${userId}_${catKey}`)
+                .setEmoji(cat.emoji)
+                .setStyle(catKey === currentCat ? ButtonStyle.Primary : ButtonStyle.Secondary)
+                .setLabel(cat.label)
+        );
+    }
+    return row;
 }
 
 async function showOverview(interaction) {
@@ -567,96 +610,64 @@ async function showOverview(interaction) {
         categories[cmd.category].push(name);
     }
 
-    const embeds = [];
+    const totalCmds = Object.keys(commandDetails).length;
+    const totalCats = Object.keys(categoryConfig).length;
 
     const mainEmbed = new EmbedBuilder()
         .setColor('#7C3AED')
         .setTitle('📖 Space Music — Command Guide')
         .setDescription(
-            '**Use the menu below to browse commands by category.**\n' +
-            'For detailed info on any command: `/help command:<name>`\n\n' +
-            `🎵 **${Object.keys(commandDetails).length}** commands available across **${Object.keys(categoryConfig).length}** categories`
-        );
+            `**${totalCmds}** commands across **${totalCats}** categories\n\n` +
+            categoryOrder.map(catKey => {
+                const cat = categoryConfig[catKey];
+                const count = (categories[catKey] || []).length;
+                return `${cat.emoji} **${cat.label}** — ${count} commands`;
+            }).join('\n') +
+            '\n\n*Click a button below to browse a category*\n*Use `/help command:<name>` for command details*'
+        )
+        .setFooter({ text: 'Buttons expire after 3 minutes' });
 
-    const categoryOrder = ['everyone', 'dj', 'playback', 'premium', 'admin'];
-    for (const catKey of categoryOrder) {
-        const cat = categoryConfig[catKey];
-        const cmds = categories[catKey] || [];
-        if (cmds.length === 0) continue;
-        mainEmbed.addFields({
-            name: `${cat.emoji} ${cat.label} (${cmds.length})`,
-            value: cmds.map(c => `\`/${c}\``).join(', '),
-            inline: false
-        });
-    }
-
-    mainEmbed.setFooter({ text: 'Select a category below for details, or use /help command:<name>' });
-    embeds.push(mainEmbed);
-
-    const menuOptions = categoryOrder
-        .filter(catKey => categories[catKey]?.length > 0)
-        .map(catKey => {
-            const cat = categoryConfig[catKey];
-            return {
-                label: cat.label,
-                description: `${(categories[catKey] || []).length} commands — ${cat.permission}`,
-                value: catKey,
-                emoji: cat.emoji
-            };
-        });
-
-    const selectMenu = new StringSelectMenuBuilder()
-        .setCustomId(`help_category_${interaction.user.id}`)
-        .setPlaceholder('📂 Select a category for details...')
-        .addOptions(menuOptions);
-
-    const row = new ActionRowBuilder().addComponents(selectMenu);
+    const row = buildNavButtons(interaction.user.id, null);
 
     const reply = await interaction.reply({ 
-        embeds: embeds, 
+        embeds: [mainEmbed], 
         components: [row], 
-        flags: 64 
+        flags: MessageFlags.Ephemeral
     });
 
     const collector = reply.createMessageComponentCollector({ 
-        time: 120_000 
+        time: 180_000
     });
 
-    collector.on('collect', async (menuInteraction) => {
-        if (menuInteraction.user.id !== interaction.user.id) {
-            return menuInteraction.reply({ content: '❌ This menu is not for you!', flags: 64 });
+    collector.on('collect', async (btnInteraction) => {
+        if (btnInteraction.user.id !== interaction.user.id) {
+            return btnInteraction.reply({ content: '❌ This menu is not for you!', flags: MessageFlags.Ephemeral });
         }
 
-        const selectedCategory = menuInteraction.values[0];
-        const cat = categoryConfig[selectedCategory];
-        const cmds = categories[selectedCategory] || [];
+        const parts = btnInteraction.customId.split('_');
+        const selectedCategory = parts[parts.length - 1];
 
-        const detailEmbed = new EmbedBuilder()
-            .setColor(cat.color)
-            .setTitle(`${cat.emoji} ${cat.label} Commands`)
-            .setDescription(`**Permission:** ${cat.permission}\n\n`);
+        const detailEmbed = buildCategoryEmbed(selectedCategory, categories);
+        const newRow = buildNavButtons(interaction.user.id, selectedCategory);
 
-        const fields = cmds.map(cmdName => {
-            const cmd = commandDetails[cmdName];
-            return {
-                name: `\`${cmd.usage}\``,
-                value: cmd.description.length > 80 ? cmd.description.slice(0, 77) + '...' : cmd.description,
-                inline: true
-            };
-        });
-
-        for (let i = 0; i < fields.length; i += 25) {
-            detailEmbed.setFields(fields.slice(i, i + 25));
-        }
-
-        detailEmbed.setFooter({ text: `${cmds.length} commands • /help command:<name> for details` });
-
-        await menuInteraction.update({ embeds: [detailEmbed], components: [row] });
+        await btnInteraction.update({ embeds: [detailEmbed], components: [newRow] });
     });
 
     collector.on('end', async () => {
         try {
-            await interaction.editReply({ components: [] });
+            const disabledRow = new ActionRowBuilder();
+            for (const catKey of categoryOrder) {
+                const cat = categoryConfig[catKey];
+                disabledRow.addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`help_cat_expired_${catKey}`)
+                        .setEmoji(cat.emoji)
+                        .setLabel(cat.label)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(true)
+                );
+            }
+            await interaction.editReply({ components: [disabledRow] });
         } catch {
             // Message might be deleted
         }

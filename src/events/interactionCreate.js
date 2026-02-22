@@ -148,7 +148,7 @@ module.exports = {
                 if (interaction.user.id !== ownerId) {
                     console.warn(`[OWNER CHECK] Denied: user=${interaction.user.id}, expected=${ownerId || 'NOT SET'}`);
                     return interaction.reply({
-                        content: `🚫 This command is restricted to the **Bot Owner** only!`,
+                        content: `🔒 **Owner-Only Command**\n\nThe \`/${interaction.commandName}\` command is restricted to the **Bot Owner** only and cannot be used by regular users.\n\nIf you need assistance, please contact the bot owner.`,
                         flags: 64
                     });
                 }

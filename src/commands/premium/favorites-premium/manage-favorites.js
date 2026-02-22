@@ -1,7 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../../utils/musicPlayer');
 const storage = require('../../../utils/storage');
 const { formatTime } = require('../../../utils/validators');
+
+const ITEMS_PER_PAGE = 10;
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -50,27 +52,78 @@ module.exports = {
             
             if (subcommand === 'list') {
                 const favorites = userFavorites.favorites;
-                const itemsPerPage = 10;
-                const totalPages = Math.ceil(favorites.length / itemsPerPage);
-                const page = 0;
-                
-                const startIdx = page * itemsPerPage;
-                const endIdx = Math.min(startIdx + itemsPerPage, favorites.length);
-                const pageFavorites = favorites.slice(startIdx, endIdx);
-                
-                const embed = new EmbedBuilder()
-                    .setColor('#FFD700')
-                    .setTitle(`⭐ Your Favorites (${favorites.length} tracks)`)
-                    .setDescription(
-                        pageFavorites.map((fav, idx) => 
-                            `**${startIdx + idx + 1}.** [${fav.info.title}](${fav.info.uri})\n` +
-                            `└ ${fav.info.author} • ${formatTime(fav.info.length)}`
-                        ).join('\n\n')
-                    )
-                    .setFooter({ text: `Use /favorites play to play all favorites` })
-                    .setTimestamp();
-                
-                await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+                const totalPages = Math.max(1, Math.ceil(favorites.length / ITEMS_PER_PAGE));
+                let currentPage = 0;
+
+                function buildEmbed(page) {
+                    const startIdx = page * ITEMS_PER_PAGE;
+                    const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, favorites.length);
+                    const pageFavorites = favorites.slice(startIdx, endIdx);
+
+                    return new EmbedBuilder()
+                        .setColor('#FFD700')
+                        .setTitle(`⭐ Your Favorites (${favorites.length} tracks)`)
+                        .setDescription(
+                            pageFavorites.map((fav, idx) => 
+                                `**${startIdx + idx + 1}.** [${fav.info.title}](${fav.info.uri})\n` +
+                                `└ ${fav.info.author} • ${formatTime(fav.info.length)}`
+                            ).join('\n\n')
+                        )
+                        .setFooter({ text: `Page ${page + 1}/${totalPages} • Use /favorites play to play all` })
+                        .setTimestamp();
+                }
+
+                function buildButtons(page) {
+                    return new ActionRowBuilder().addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`fav_prev_${userId}`)
+                            .setEmoji('◀️')
+                            .setStyle(ButtonStyle.Secondary)
+                            .setDisabled(page === 0),
+                        new ButtonBuilder()
+                            .setCustomId(`fav_next_${userId}`)
+                            .setEmoji('▶️')
+                            .setStyle(ButtonStyle.Secondary)
+                            .setDisabled(page >= totalPages - 1)
+                    );
+                }
+
+                const components = totalPages > 1 ? [buildButtons(currentPage)] : [];
+
+                const reply = await interaction.reply({ 
+                    embeds: [buildEmbed(currentPage)], 
+                    components,
+                    flags: MessageFlags.Ephemeral
+                });
+
+                if (totalPages <= 1) return;
+
+                const collector = reply.createMessageComponentCollector({ time: 120_000 });
+
+                collector.on('collect', async (btnInteraction) => {
+                    if (btnInteraction.user.id !== interaction.user.id) {
+                        return btnInteraction.reply({ content: '❌ This is not your favorites view!', flags: MessageFlags.Ephemeral });
+                    }
+
+                    if (btnInteraction.customId.includes('prev')) {
+                        currentPage = Math.max(0, currentPage - 1);
+                    } else {
+                        currentPage = Math.min(totalPages - 1, currentPage + 1);
+                    }
+
+                    await btnInteraction.update({
+                        embeds: [buildEmbed(currentPage)],
+                        components: [buildButtons(currentPage)]
+                    });
+                });
+
+                collector.on('end', async () => {
+                    try {
+                        await interaction.editReply({ components: [] });
+                    } catch {
+                        // Message might be deleted
+                    }
+                });
                 
             } else if (subcommand === 'play') {
                 const guildId = interaction.guild.id;

@@ -53,6 +53,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
     try {
+        // Deploy global commands (visible to everyone)
         console.log(`Started refreshing ${globalCommands.length} global commands.`);
         const globalData = await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),
@@ -60,6 +61,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
         );
         console.log(`Successfully reloaded ${globalData.length} global commands.`);
 
+        // Deploy owner commands to owner's guild only (hidden from other servers)
         if (process.env.OWNER_GUILD_ID) {
             console.log(`Registering ${ownerCommands.length} owner commands to guild ${process.env.OWNER_GUILD_ID}...`);
             const ownerData = await rest.put(
@@ -67,8 +69,16 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
                 { body: ownerCommands },
             );
             console.log(`Successfully reloaded ${ownerData.length} owner-only guild commands.`);
+            console.log('Owner commands are only visible in the owner guild and protected by OWNER_ID check.');
         } else {
-            console.warn('[WARNING] OWNER_GUILD_ID not set in .env — owner commands will NOT be registered anywhere.');
+            // Fallback: deploy owner commands globally but they are still protected by OWNER_ID check
+            console.warn('[WARNING] OWNER_GUILD_ID not set in .env');
+            console.warn('Deploying owner commands globally (they are still protected by OWNER_ID check in the bot).');
+            const allData = await rest.put(
+                Routes.applicationCommands(process.env.CLIENT_ID),
+                { body: [...globalCommands, ...ownerCommands] },
+            );
+            console.log(`Deployed ${allData.length} total commands globally (including owner commands).`);
         }
     } catch (error) {
         console.error(error);
