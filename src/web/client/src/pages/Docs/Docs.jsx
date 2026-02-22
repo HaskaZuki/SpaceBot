@@ -8,21 +8,50 @@ const docsSections = [
     title: 'Getting Started',
     icon: '🚀',
     content: `
-      Welcome to SpaceBot! This documentation will help you get started with using SpaceBot
-      in your Discord server.
-      
-      ## Adding SpaceBot to Your Server
-      1. Use the invite link from our dashboard
-      2. Select the server you want to add SpaceBot to
-      3. Grant the required permissions
-      4. SpaceBot will join your server automatically!
-      
-      ## Basic Commands
-      - \`/play <song>\` - Play a song or add to queue
-      - \`/queue\` - View the current queue
-      - \`/skip\` - Skip the current song
-      - \`/pause\` - Pause the current song
-      - \`/resume\` - Resume playback
+## 🚀 Getting Started
+
+### How to Add Bot to Your Server
+1. Go to spacebot.me
+2. Click "Login with Discord"
+3. Select the server you want to add
+4. Allow all required permissions
+5. Done! Bot will join your server
+
+### Quick Commands
+/play <song> - Play a song from YouTube, Spotify, SoundCloud
+/queue - View the music queue
+/skip - Skip current song
+/pause - Pause playback
+/resume - Resume playback
+/leave - Disconnect from voice channel
+    `
+  },
+  {
+    id: 'setup',
+    title: 'Setup Bot',
+    icon: '⚙️',
+    content: `
+## ⚙️ Setting Up SpaceBot
+
+### Automatic Setup
+Run this command on your server:
+
+/setup
+
+Bot will automatically create #space-music channel!
+
+### Manual Setup
+You can also set up manually:
+1. Create a new text channel
+2. Name it "space-music" or whatever you want
+3. Type /play in that channel
+4. Bot will automatically join your voice channel
+
+### Server Configuration
+/setdj @role - Set DJ role
+/language en/id/ja/ko - Change language
+/announce - Toggle song announcements
+/limit 50 - Set queue limit
     `
   },
   {
@@ -30,92 +59,138 @@ const docsSections = [
     title: 'Music Commands',
     icon: '🎵',
     content: `
-      SpaceBot has a powerful music system with many features:
-      
-      ## Playback
-      - \`/play [query]\` - Play music from YouTube, Spotify, SoundCloud
-      - \`/search [query]\` - Search and select from results
-      - \`/queue\` - View upcomming songs
-      - \`/nowplaying\` - Current song info
-      
-      ## Controls
-      - \`/pause\` - Pause playback
-      - \`/resume\` - Resume playback  
-      - \`/skip\` - Skip to next song
-      - \`/stop\` - Stop playback and clear queue
-      - \`/leave\` - Disconnect from voice channel
-      
-      ## Queue Management
-      - \`/clear\` - Clear the queue
-      - \`/shuffle\` - Shuffle the queue
-      - \`/remove [position]\` - Remove a song from queue
-      - \`/move [from] [to]\` - Move song in queue
+## 🎵 Music Commands
+
+### Basic
+/play <song> - Play song from YouTube, Spotify, SoundCloud
+/search <query> - Search and pick from results
+/queue - View music queue
+/nowplaying - See current track
+/grab - Save track info to your DM
+
+### Controls
+/pause - Pause playback
+/resume - Resume playback
+/skip - Skip to next song
+/stop - Stop and clear queue
+/leave - Disconnect from voice channel
+
+### Queue Management
+/clear - Clear all queue
+/shuffle - Shuffle the queue
+/remove <position> - Remove specific song
+/move <from> <to> - Move song in queue
+/loop off/track/queue - Set loop mode
+    `
+  },
+  {
+    id: 'filters',
+    title: 'Audio Filters',
+    icon: '🎛️',
+    content: `
+## 🎛️ Audio Filters (Premium)
+
+### Available Filters
+/filter bassboost - Bass boost effect
+/filter nightcore - Nightcore effect
+/filter vaporwave - Vaporwave effect
+/filter 8d - 8D audio
+/filter karaoke - Karaoke mode
+/filter pop - Pop mode
+/filter soft - Soft mode
+/filter treble - Treble boost
+
+### Volume & Speed
+/volume 1-200 - Adjust volume (Premium)
+/speed 0.5-2.0 - Adjust speed (Premium)
+
+### Note
+- Audio filters are for Premium users only
+- Visit spacebot.me/pricing to upgrade
     `
   },
   {
     id: 'premium',
-    title: 'Premium Features',
+    title: 'Premium',
     icon: '💎',
     content: `
-      Upgrade to Premium for enhanced features!
-      
-      ## Premium Benefits
-      - 🎧 Higher audio quality (256kbps vs 128kbps)
-      - 📊 Extended queue (500 songs vs 50)
-      - 🎚️ Audio filters (bass boost, nightcore, etc.)
-      - ⏰ 24/7 Mode - Keep music playing always
-      - 📝 Unlimited playlists (100 vs 3)
-      - 🎵 Lyrics sync display
-      
-      ## Audio Filters
-      Premium users can apply these filters:
-      - Bass Boost - Enhance bass frequencies
-      - Nightcore - Speed up + pitch shift
-      - Vaporwave - Retro aesthetic
-      - Demon - Deep voice effect
-      - Speed control - Adjust playback speed
+## 💎 Premium SpaceBot
+
+### Benefits
+- Better audio quality (256kbps)
+- Longer queue (500 songs)
+- Audio filters (bassboost, nightcore, etc)
+- 24/7 mode - Bot stays in VC always
+- Unlimited playlists (100 vs 3)
+- Lyrics sync display
+
+### How to Upgrade
+1. Visit spacebot.me/pricing
+2. Choose your plan
+3. Click "Upgrade"
+4. Follow payment instructions
+
+### Premium Commands
+/247 - Toggle 24/7 mode
+/autoplay - Auto play similar songs
+/volume - Control volume
+/speed - Adjust speed
+/favorites - View favorites
     `
   },
   {
     id: 'dashboard',
-    title: 'Web Dashboard',
+    title: 'Dashboard',
     icon: '🌐',
     content: `
-      Control your server's music from our web dashboard!
-      
-      ## Features
-      - 📊 Server statistics and analytics
-      - ⚙️ Server-specific settings
-      - 🎵 Full music queue management
-      - 📈 Playback history
-      - 👥 User activity tracking
-      
-      ## Accessing the Dashboard
-      1. Visit spacebot.me
-      2. Login with Discord
-      3. Select your server
-      4. Manage settings and view stats!
+## 🌐 Web Dashboard
+
+### How to Access
+1. Open spacebot.me
+2. Click "Login with Discord"
+3. Select your server
+4. Start managing!
+
+### Dashboard Features
+- Server statistics & analytics
+- Server settings management
+- Music queue management
+- Playback history
+- User activity tracking
+- Playlist management
+
+### Dashboard Menu
+- Dashboard - Server overview
+- Music Player - Playback control
+- Playlists - Create & manage playlists
+- Analytics - Detailed statistics
+- Settings - Server configuration
     `
   },
   {
-    id: 'server-settings',
-    title: 'Server Settings',
-    icon: '⚙️',
+    id: 'playlist',
+    title: 'Playlists',
+    icon: '📋',
     content: `
-      Configure SpaceBot for your server!
-      
-      ## Setup Commands
-      - \`/setup\` - Interactive server setup
-      - \`/setdj [role]\` - Set DJ role
-      - \`/setvc [channel]\` - Set music request channel
-      - \`/settings\` - View all server settings
-      
-      ## Available Settings
-      - DJ Role - Who can use music commands
-      - Music Channel - Dedicated song request channel
-      - Language - Server language preference
-      - Auto-play - Auto play when queue is empty
-      - Default volume - Starting volume level
+## 📋 Playlist Management
+
+### Playlist Commands
+/playlist create <name> - Create new playlist
+/playlist add <name> - Add song to playlist
+/playlist remove <name> <position> - Remove from playlist
+/playlist delete <name> - Delete playlist
+/playlist list - View all playlists
+/playlist load <name> - Play a playlist
+
+### Export/Import
+/export-playlist <name> - Export to file
+/playlist import - Import from file
+
+### Favorites
+/add-favorite - Add current song to favorites
+/manage-favorites list - View favorites
+/manage-favorites play - Play favorites
+/manage-favorites remove - Remove from favorites
     `
   },
   {
@@ -123,63 +198,94 @@ const docsSections = [
     title: 'FAQ',
     icon: '❓',
     content: `
-      Frequently Asked Questions
-      
-      ## Why isn't music playing?
-      - Make sure the bot is in a voice channel
-      - Check if the queue has songs
-      - Verify the bot has permission to connect/speak
-      
-      ## How do I get support?
-      - Join our support server
-      - Use /help command for command list
-      - Check the dashboard for server stats
-      
-      ## Can I use Spotify?
-      Yes! SpaceBot supports:
-      - YouTube videos and playlists
-      - Spotify tracks and playlists
-      - SoundCloud tracks
-      - Direct MP3/FLAC URLs
-      
-      ## How do I become premium?
-      Visit spacebot.me/pricing to see available plans!
+## ❓ Frequently Asked Questions
+
+### Music won't play?
+- Make sure bot is in a voice channel
+- Check if queue has songs
+- Bot needs connect & speak permissions
+- Try /leave then /play again
+
+### How to get support?
+- Join discord server: discord.gg/spacebot
+- Use /help to see all commands
+- Check dashboard for server stats
+
+### Can I use Spotify?
+Yes! SpaceBot supports:
+- YouTube videos & playlists
+- Spotify tracks & playlists
+- SoundCloud
+- Direct MP3/URL links
+
+### How to get Premium?
+Visit spacebot.me/pricing for plans!
+
+### Bot offline?
+Try restart with /restart (owner only)
+or contact support server.
+    `
+  },
+  {
+    id: 'support',
+    title: 'Support',
+    icon: '🎫',
+    content: `
+## 🎫 Need Help?
+
+### Links
+🌐 Website: spacebot.me
+💬 Discord: discord.gg/spacebot
+📚 Docs: spacebot.me/docs
+
+### Command Help
+/help - View all commands
+/help <command> - Command details
+/support - Support server link
+
+### Troubleshooting
+/Bot not responding?
+- Check if bot is online
+- Try kick then re-invite
+
+/Music stops by itself?
+- Check connection stability
+- Try /247 for Premium
+
+/Queue not saved?
+- Queue resets when bot restarts
+- Use playlists to save
+
+### Contact
+Join discord.gg/spacebot for direct help!
     `
   }
 ];
 
 function Docs() {
   const [activeSection, setActiveSection] = useState('getting-started');
-  const [searchQuery, setSearchQuery] = useState('');
 
   const currentSection = docsSections.find(s => s.id === activeSection);
 
-  const filteredSections = searchQuery 
-    ? docsSections.filter(s => 
-        s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.content.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : docsSections;
+  // Build breadcrumb path
+  const getBreadcrumb = () => {
+    const items = ['Docs', activeSection.charAt(0).toUpperCase() + activeSection.slice(1)];
+    return items.join(' / ');
+  };
 
   return (
     <div className="docs-page">
       <div className="docs-sidebar">
         <div className="docs-logo">
-          <span className="docs-logo-icon">📚</span>
-          <span className="docs-logo-text">Docs</span>
+          <Link to="/" className="docs-logo-link">
+            <span className="docs-logo-icon">🚀</span>
+            <span className="docs-logo-text">SpaceBot</span>
+          </Link>
+          <span className="docs-logo-sub">Docs</span>
         </div>
         
-        <div className="docs-search">
-          <input
-            type="text"
-            placeholder="Search docs..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
         <nav className="docs-nav">
-          {filteredSections.map(section => (
+          {docsSections.map(section => (
             <button
               key={section.id}
               className={`docs-nav-item ${activeSection === section.id ? 'active' : ''}`}
@@ -201,6 +307,10 @@ function Docs() {
       <div className="docs-content">
         {currentSection && (
           <>
+            <div className="docs-breadcrumb">
+              {getBreadcrumb()}
+            </div>
+            
             <div className="docs-header">
               <span className="docs-header-icon">{currentSection.icon}</span>
               <h1>{currentSection.title}</h1>
@@ -211,11 +321,18 @@ function Docs() {
                 if (line.trim().startsWith('## ')) {
                   return <h2 key={i}>{line.replace('## ', '')}</h2>;
                 }
+                if (line.trim().startsWith('### ')) {
+                  return <h3 key={i}>{line.replace('### ', '')}</h3>;
+                }
                 if (line.trim().startsWith('- ')) {
                   return <li key={i}>{line.replace('- ', '')}</li>;
                 }
                 if (line.trim() === '') {
                   return <br key={i} />;
+                }
+                // Highlight /commands
+                if (line.includes('/')) {
+                  return <p key={i} className="docs-code">{line}</p>;
                 }
                 return <p key={i}>{line}</p>;
               })}

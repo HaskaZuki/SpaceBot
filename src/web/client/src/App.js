@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Music from './pages/Music';
@@ -16,28 +17,112 @@ import PersistentPlayer from './components/PersistentPlayer';
 import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
+import './styles/global.css';
+
+const pageVariants = {
+  initial: {
+    opacity: 0,
+    y: 10
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: 'easeOut'
+    }
+  },
+  exit: {
+    opacity: 0,
+    y: -10,
+    transition: {
+      duration: 0.2,
+      ease: 'easeIn'
+    }
+  }
+};
+
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Landing />
+          </motion.div>
+        } />
+        <Route path="/commands" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Commands />
+          </motion.div>
+        } />
+        <Route path="/features" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Features />
+          </motion.div>
+        } />
+        <Route path="/docs" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Docs />
+          </motion.div>
+        } />
+        <Route path="/leaderboard" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Leaderboard />
+          </motion.div>
+        } />
+        <Route path="/updates" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Updates />
+          </motion.div>
+        } />
+        <Route path="/dashboard" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Dashboard />
+          </motion.div>
+        } />
+        <Route path="/music" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Music />
+          </motion.div>
+        } />
+        <Route path="/playlists" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Playlists />
+          </motion.div>
+        } />
+        <Route path="/pricing" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Pricing />
+          </motion.div>
+        } />
+        <Route path="/settings" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Settings />
+          </motion.div>
+        } />
+        <Route path="/analytics" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Analytics />
+          </motion.div>
+        } />
+      </Routes>
+    </AnimatePresence>
+  );
+}
 
 function App() {
   return (
     <AuthProvider>
       <SocketProvider>
         <Router>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/commands" element={<Commands />} />
-            <Route path="/features" element={<Features />} />
-            <Route path="/docs" element={<Docs />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/updates" element={<Updates />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/music" element={<Music />} />
-            <Route path="/playlists" element={<Playlists />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/analytics" element={<Analytics />} />
-          </Routes>
-          <PersistentPlayer />
-          <Footer />
+          <div className="app-container">
+            <AnimatedRoutes />
+            <PersistentPlayer />
+            <Footer />
+          </div>
         </Router>
       </SocketProvider>
     </AuthProvider>
@@ -45,4 +130,3 @@ function App() {
 }
 
 export default App;
-

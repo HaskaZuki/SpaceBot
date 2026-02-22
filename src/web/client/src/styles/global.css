@@ -44,7 +44,17 @@ body {
   overflow-x: hidden;
   line-height: 1.6;
   min-height: 100vh;
-  padding-bottom: 80px; /* Space for persistent player */
+  padding-bottom: 100px;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-container > *:not(.footer):not(.persistent-player) {
+  flex: 1;
 }
 
 body::before {

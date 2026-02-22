@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const GuildConfig = require('../../models/GuildConfig');
 const UserSettings = require('../../models/UserSettings');
+const PlayHistory = require('../../models/PlayHistory');
 const mongoose = require('mongoose');
 
 module.exports = (client) => {
@@ -597,6 +598,59 @@ module.exports = (client) => {
             await settings.save();
             res.json({ success: true, message: `${type} cleared successfully` });
         } catch (err) {
+            res.status(500).json({ success: false, message: err.message });
+        }
+    });
+
+    router.get('/guild/:id/leaderboard', checkAuth, async (req, res) => {
+        const guildId = req.params.id;
+        
+        const hasAccess = req.user.guilds?.find(g => g.id === guildId && (BigInt(g.permissions) & 0x20n) === 0x20n);
+        if (!hasAccess) return res.status(403).json({ message: 'Forbidden' });
+
+        try {
+            const leaderboard = await PlayHistory.aggregate([
+                { $match: { guildId } },
+                {
+                    $group: {
+                        _id: '$userId',
+                        trackCount: { $sum: 1 },
+                        totalDuration: { $sum: '$duration' },
+                        lastPlayed: { $max: '$timestamp' },
+                        tracks: {
+                            $push: {
+                                title: '$trackTitle',
+                                artist: '$artist',
+                                timestamp: '$timestamp'
+                            }
+                        }
+                    }
+                },
+                { $sort: { trackCount: -1 } },
+                { $limit: 10 }
+            ]);
+
+            const leaderboardWithUsers = await Promise.all(
+                leaderboard.map(async (entry, index) => {
+                    const userSettings = await UserSettings.findOne({ userId: entry._id });
+                    const user = client.users.cache.get(entry._id) || 
+                        (userSettings ? { username: userSettings.username, avatar: userSettings.avatar } : null);
+                    
+                    return {
+                        rank: index + 1,
+                        userId: entry._id,
+                        username: user?.username || `User#${entry._id.slice(0, 8)}`,
+                        avatar: user?.avatar || null,
+                        trackCount: entry.trackCount,
+                        totalDuration: entry.totalDuration,
+                        lastPlayed: entry.lastPlayed
+                    };
+                })
+            );
+
+            res.json({ success: true, leaderboard: leaderboardWithUsers });
+        } catch (err) {
+            console.error('Error fetching leaderboard:', err);
             res.status(500).json({ success: false, message: err.message });
         }
     });

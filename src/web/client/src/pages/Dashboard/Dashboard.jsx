@@ -30,6 +30,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [botStats, setBotStats] = useState(null);
   const [saveStatus, setSaveStatus] = useState('');
+  const [leaderboard, setLeaderboard] = useState([]);
+  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
 
   useEffect(() => {
     fetchServers();
@@ -90,10 +92,29 @@ function Dashboard() {
     setSelectedServer(serverId ? servers.find(s => s.id === serverId) : null);
     if (serverId) {
       fetchServerConfig(serverId);
+      fetchLeaderboard(serverId);
     } else {
       setServerConfig(null);
       setPendingChanges({});
       setHasUnsavedChanges(false);
+      setLeaderboard([]);
+    }
+  };
+
+  const fetchLeaderboard = async (serverId) => {
+    setLoadingLeaderboard(true);
+    try {
+      const res = await fetch(`${config.apiUrl}/api/guild/${serverId}/leaderboard`, {
+        credentials: 'include'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setLeaderboard(data.leaderboard || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch leaderboard:', error);
+    } finally {
+      setLoadingLeaderboard(false);
     }
   };
 
@@ -443,6 +464,55 @@ function Dashboard() {
                   </a>
                 </div>
               )}
+            </div>
+
+            <div className="leaderboard-section">
+              <div className="setting-card leaderboard-card">
+                <div className="setting-header">
+                  <div className="setting-icon"><i className="fas fa-trophy" /></div>
+                  <div className="setting-title">Server Leaderboard</div>
+                </div>
+                <p className="setting-description">
+                  Top listeners in this server based on play history.
+                </p>
+                {loadingLeaderboard ? (
+                  <div className="loading-container">
+                    <div className="spinner" />
+                  </div>
+                ) : leaderboard.length > 0 ? (
+                  <div className="leaderboard-list">
+                    {leaderboard.map((entry) => (
+                      <div key={entry.userId} className={`leaderboard-entry rank-${entry.rank}`}>
+                        <div className="leaderboard-rank">
+                          {entry.rank <= 3 ? (
+                            <span className={`medal medal-${entry.rank}`}>
+                              {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
+                            </span>
+                          ) : (
+                            <span className="rank-number">{entry.rank}</span>
+                          )}
+                        </div>
+                        <div className="leaderboard-user">
+                          <img 
+                            src={entry.avatar ? `https://cdn.discordapp.com/avatars/${entry.userId}/${entry.avatar}.png?size=32` : `https://cdn.discordapp.com/embed/avatars/0.png`} 
+                            alt="avatar"
+                            className="leaderboard-avatar"
+                          />
+                          <span className="leaderboard-username">{entry.username}</span>
+                        </div>
+                        <div className="leaderboard-stats">
+                          <span className="track-count">{entry.trackCount.toLocaleString()} tracks</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="empty-state-small">
+                    <i className="fas fa-music" />
+                    <p>No play history yet for this server</p>
+                  </div>
+                )}
+              </div>
             </div>
           </>
         )}

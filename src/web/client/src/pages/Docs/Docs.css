@@ -20,11 +20,26 @@
 
 .docs-logo {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
   padding: 0 8px 24px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 24px;
+}
+
+.docs-logo-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.docs-logo-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .docs-logo-icon {
@@ -121,6 +136,16 @@
   max-width: 900px;
 }
 
+.docs-breadcrumb {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.docs-breadcrumb span {
+  color: var(--accent);
+}
+
 .docs-header {
   display: flex;
   align-items: center;
@@ -177,6 +202,17 @@
   border-radius: 4px;
   font-family: 'Fira Code', monospace;
   font-size: 14px;
+  color: var(--accent);
+}
+
+.docs-code {
+  background: rgba(250, 35, 59, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  color: var(--accent);
+  margin: 8px 0;
 }
 
 .docs-nav-buttons {
