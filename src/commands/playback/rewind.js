@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const { formatTime, validatePlayerState, validateVoiceState } = require('../../utils/validators');
 
@@ -16,15 +16,21 @@ module.exports = {
     async execute(interaction) {
         const guildId = interaction.guild.id;
         
-        try {            const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
+        try {
+            const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
             if (!voiceCheck.valid) {
-                return interaction.reply({ content: `❌ ${voiceCheck.error}`, ephemeral: true });
-            }            const playerState = musicPlayer.players.get(guildId);            const playerCheck = validatePlayerState(playerState, { requireTrack: true, requirePlayer: true });
+                return interaction.reply({ content: `❌ ${voiceCheck.error}`, flags: MessageFlags.Ephemeral });
+            }
+            const playerState = musicPlayer.players.get(guildId);
+            const playerCheck = validatePlayerState(playerState, { requireTrack: true, requirePlayer: true });
             if (!playerCheck.valid) {
-                return interaction.reply({ content: `❌ ${playerCheck.error}`, ephemeral: true });
-            }            const seconds = interaction.options.getInteger('seconds') || 10;
-            const rewindMs = seconds * 1000;            const currentPosition = playerState.player.position || 0;
-            const newPosition = Math.max(0, currentPosition - rewindMs);            try {
+                return interaction.reply({ content: `❌ ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
+            }
+            const seconds = interaction.options.getInteger('seconds') || 10;
+            const rewindMs = seconds * 1000;
+            const currentPosition = playerState.player.position || 0;
+            const newPosition = Math.max(0, currentPosition - rewindMs);
+            try {
                 await playerState.player.seekTo(newPosition);
                 
                 await interaction.reply({
@@ -35,7 +41,7 @@ module.exports = {
                 console.error('Rewind error:', seekError);
                 await interaction.reply({ 
                     content: '❌ Failed to rewind. This track may not support seeking.', 
-                    ephemeral: true 
+                    flags: MessageFlags.Ephemeral
                 });
             }
             
@@ -45,7 +51,7 @@ module.exports = {
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({ 
                     content: '❌ An error occurred while rewinding!', 
-                    ephemeral: true 
+                    flags: MessageFlags.Ephemeral
                 });
             }
         }

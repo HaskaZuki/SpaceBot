@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const storage = require('../../utils/storage');
 const musicPlayer = require('../../utils/musicPlayer');
 const { validateVoiceState, sanitizeInput, isValidLength } = require('../../utils/validators');
@@ -71,7 +71,7 @@ module.exports = {
         } catch (error) {
             console.error('Playlist command error:', error);
             if (!interaction.replied && !interaction.deferred) {
-                await interaction.reply({ content: '❌ An error occurred!', ephemeral: true });
+                await interaction.reply({ content: '❌ An error occurred!', flags: MessageFlags.Ephemeral });
             }
         }
     },
@@ -80,7 +80,7 @@ module.exports = {
         const name = sanitizeInput(interaction.options.getString('name'));
         
         if (!isValidLength(name, 1, 50)) {
-            return interaction.reply({ content: '❌ Playlist name must be 1-50 characters!', ephemeral: true });
+            return interaction.reply({ content: '❌ Playlist name must be 1-50 characters!', flags: MessageFlags.Ephemeral });
         }
         
         let userPlaylists = await storage.getUser('playlists', userId);
@@ -89,11 +89,11 @@ module.exports = {
         }
         
         if (userPlaylists.playlists.some(p => p.name.toLowerCase() === name.toLowerCase())) {
-            return interaction.reply({ content: `❌ Playlist "**${name}**" already exists!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Playlist "**${name}**" already exists!`, flags: MessageFlags.Ephemeral });
         }
         
         if (userPlaylists.playlists.length >= userPlaylists.maxPlaylists) {
-            return interaction.reply({ content: `❌ Max playlists reached (${userPlaylists.maxPlaylists})!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Max playlists reached (${userPlaylists.maxPlaylists})!`, flags: MessageFlags.Ephemeral });
         }
         
         userPlaylists.playlists.push({
@@ -106,10 +106,10 @@ module.exports = {
         if (success) {
             await interaction.reply({
                 content: `✅ Created playlist "**${name}**"!\n\nUse \`/playlist add\` to add tracks.`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         } else {
-            await interaction.reply({ content: '❌ Failed to create playlist!', ephemeral: true });
+            await interaction.reply({ content: '❌ Failed to create playlist!', flags: MessageFlags.Ephemeral });
         }
     },
     
@@ -119,17 +119,17 @@ module.exports = {
         
         const playerState = musicPlayer.players.get(guildId);
         if (!playerState?.currentTrack) {
-            return interaction.reply({ content: '❌ No track playing!', ephemeral: true });
+            return interaction.reply({ content: '❌ No track playing!', flags: MessageFlags.Ephemeral });
         }
         
         const userPlaylists = await storage.getUser('playlists', userId);
         if (!userPlaylists) {
-            return interaction.reply({ content: '❌ No playlists found! Use `/playlist create` first.', ephemeral: true });
+            return interaction.reply({ content: '❌ No playlists found! Use `/playlist create` first.', flags: MessageFlags.Ephemeral });
         }
         
         const playlist = userPlaylists.playlists.find(p => p.name.toLowerCase() === playlistName.toLowerCase());
         if (!playlist) {
-            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, flags: MessageFlags.Ephemeral });
         }
         
         const track = {
@@ -139,7 +139,7 @@ module.exports = {
         };
         
         if (playlist.tracks.some(t => t.info.uri === track.info.uri)) {
-            return interaction.reply({ content: `❌ Track already in playlist!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Track already in playlist!`, flags: MessageFlags.Ephemeral });
         }
         
         playlist.tracks.push(track);
@@ -148,10 +148,10 @@ module.exports = {
         if (success) {
             await interaction.reply({
                 content: `➕ Added **${track.info.title}** to "**${playlistName}**"!\n\nTotal tracks: ${playlist.tracks.length}`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         } else {
-            await interaction.reply({ content: '❌ Failed to add track!', ephemeral: true });
+            await interaction.reply({ content: '❌ Failed to add track!', flags: MessageFlags.Ephemeral });
         }
     },
     
@@ -160,21 +160,21 @@ module.exports = {
         
         const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
         if (!voiceCheck.valid) {
-            return interaction.reply({ content: `❌ ${voiceCheck.error}`, ephemeral: true });
+            return interaction.reply({ content: `❌ ${voiceCheck.error}`, flags: MessageFlags.Ephemeral });
         }
         
         const userPlaylists = await storage.getUser('playlists', userId);
         if (!userPlaylists) {
-            return interaction.reply({ content: '❌ No playlists found!', ephemeral: true });
+            return interaction.reply({ content: '❌ No playlists found!', flags: MessageFlags.Ephemeral });
         }
         
         const playlist = userPlaylists.playlists.find(p => p.name.toLowerCase() === playlistName.toLowerCase());
         if (!playlist) {
-            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, flags: MessageFlags.Ephemeral });
         }
         
         if (playlist.tracks.length === 0) {
-            return interaction.reply({ content: `❌ Playlist is empty!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Playlist is empty!`, flags: MessageFlags.Ephemeral });
         }
         
         await interaction.deferReply();
@@ -203,7 +203,7 @@ module.exports = {
     async handleList(interaction, userId) {
         const userPlaylists = await storage.getUser('playlists', userId);
         if (!userPlaylists || userPlaylists.playlists.length === 0) {
-            return interaction.reply({ content: '❌ No playlists yet! Use `/playlist create`.', ephemeral: true });
+            return interaction.reply({ content: '❌ No playlists yet! Use `/playlist create`.', flags: MessageFlags.Ephemeral });
         }
         
         const { EmbedBuilder } = require('discord.js');
@@ -216,7 +216,7 @@ module.exports = {
                 ).join('\n')
             );
         
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
     
     async handleView(interaction, userId) {
@@ -224,16 +224,16 @@ module.exports = {
         const userPlaylists = await storage.getUser('playlists', userId);
         
         if (!userPlaylists) {
-            return interaction.reply({ content: '❌ No playlists found!', ephemeral: true });
+            return interaction.reply({ content: '❌ No playlists found!', flags: MessageFlags.Ephemeral });
         }
         
         const playlist = userPlaylists.playlists.find(p => p.name.toLowerCase() === playlistName.toLowerCase());
         if (!playlist) {
-            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, flags: MessageFlags.Ephemeral });
         }
         
         if (playlist.tracks.length === 0) {
-            return interaction.reply({ content: `📝 Playlist "**${playlistName}**" is empty!`, ephemeral: true });
+            return interaction.reply({ content: `📝 Playlist "**${playlistName}**" is empty!`, flags: MessageFlags.Ephemeral });
         }
         
         const { EmbedBuilder } = require('discord.js');
@@ -248,7 +248,7 @@ module.exports = {
             )
             .setFooter({ text: `${playlist.tracks.length} total tracks` });
         
-        await interaction.reply({ embeds: [embed], ephemeral: true });
+        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
     
     async handleDelete(interaction, userId) {
@@ -256,12 +256,12 @@ module.exports = {
         const userPlaylists = await storage.getUser('playlists', userId);
         
         if (!userPlaylists) {
-            return interaction.reply({ content: '❌ No playlists found!', ephemeral: true });
+            return interaction.reply({ content: '❌ No playlists found!', flags: MessageFlags.Ephemeral });
         }
         
         const idx = userPlaylists.playlists.findIndex(p => p.name.toLowerCase() === playlistName.toLowerCase());
         if (idx === -1) {
-            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, ephemeral: true });
+            return interaction.reply({ content: `❌ Playlist "**${playlistName}**" not found!`, flags: MessageFlags.Ephemeral });
         }
         
         const deleted = userPlaylists.playlists.splice(idx, 1)[0];
@@ -270,10 +270,10 @@ module.exports = {
         if (success) {
             await interaction.reply({
                 content: `🗑️ Deleted playlist "**${deleted.name}**" (${deleted.tracks.length} tracks)`,
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         } else {
-            await interaction.reply({ content: '❌ Failed to delete playlist!', ephemeral: true });
+            await interaction.reply({ content: '❌ Failed to delete playlist!', flags: MessageFlags.Ephemeral });
         }
     },
     

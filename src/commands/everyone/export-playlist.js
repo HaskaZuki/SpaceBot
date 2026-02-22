@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const GuildConfig = require('../../models/GuildConfig');
 
@@ -21,7 +21,8 @@ module.exports = {
                     { name: '🍎 Apple Music', value: 'apple' }
                 )),
     
-    async execute(interaction) {        
+    async execute(interaction) {
+        
         const playlistName = interaction.options.getString('playlist');
         const platform = interaction.options.getString('platform');
         
@@ -36,7 +37,7 @@ module.exports = {
                     '• Import from other platforms\n' +
                     '• Share playlists publicly\n\n' +
                     'Step-by-step export will begin shortly...',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
     },
     

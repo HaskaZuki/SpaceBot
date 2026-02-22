@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../../utils/musicPlayer');
 const storage = require('../../../utils/storage');
 const { formatTime } = require('../../../utils/validators');
@@ -34,7 +34,7 @@ module.exports = {
         if (!userSettings || !userSettings.isPremium) {
              return interaction.reply({
                  content: '🔒 **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to manage favorites.',
-                 ephemeral: true
+                 flags: MessageFlags.Ephemeral
              });
         }
         
@@ -44,7 +44,7 @@ module.exports = {
             if (!userFavorites || userFavorites.favorites.length === 0) {
                 return interaction.reply({
                     content: '❌ You don\'t have any favorites yet!\n\nUse `/favorite` while a track is playing to add it.',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
             
@@ -70,7 +70,7 @@ module.exports = {
                     .setFooter({ text: `Use /favorites play to play all favorites` })
                     .setTimestamp();
                 
-                await interaction.reply({ embeds: [embed], ephemeral: true });
+                await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
                 
             } else if (subcommand === 'play') {
                 const guildId = interaction.guild.id;
@@ -79,7 +79,7 @@ module.exports = {
                 if (!member.voice?.channel) {
                     return interaction.reply({
                         content: '❌ You must be in a voice channel to play favorites!',
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
                 
@@ -122,7 +122,7 @@ module.exports = {
                 if (index < 0 || index >= userFavorites.favorites.length) {
                     return interaction.reply({
                         content: `❌ Invalid position! You have ${userFavorites.favorites.length} favorites.`,
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
                 
@@ -134,19 +134,19 @@ module.exports = {
                         await interaction.reply({
                             content: `🗑️ Removed from favorites: **${removed.info.title}**\n\n` +
                                     `Remaining favorites: ${userFavorites.favorites.length}`,
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     } else {
                         await interaction.reply({
                             content: '❌ Failed to update favorites!',
-                            ephemeral: true
+                            flags: MessageFlags.Ephemeral
                         });
                     }
                 } catch (removeError) {
                     console.error('Remove favorite error:', removeError);
                     await interaction.reply({
                         content: '❌ An error occurred while removing favorite!',
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
             }
@@ -157,7 +157,7 @@ module.exports = {
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({
                     content: '❌ An error occurred!',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
         }

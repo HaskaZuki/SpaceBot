@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 
 module.exports = {
@@ -16,6 +16,6 @@ module.exports = {
 
         config.autoPlay = !config.autoPlay;
         await config.save();
-        await interaction.reply({ content: `Autoplay is now **${config.autoPlay ? 'ON' : 'OFF'}**.`, ephemeral: true });
+        await interaction.reply({ content: `Autoplay is now **${config.autoPlay ? 'ON' : 'OFF'}**.`, flags: MessageFlags.Ephemeral });
     },
 };

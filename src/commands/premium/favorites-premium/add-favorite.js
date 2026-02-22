@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../../utils/musicPlayer');
 const storage = require('../../../utils/storage');
 const { validatePlayerState } = require('../../../utils/validators');
@@ -17,7 +17,7 @@ module.exports = {
         if (!userSettings || !userSettings.isPremium) {
              return interaction.reply({
                  content: '🔒 **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to save unlimited tracks.',
-                 ephemeral: true
+                 flags: MessageFlags.Ephemeral
              });
         }
         
@@ -27,7 +27,7 @@ module.exports = {
             if (!playerCheck.valid) {
                 return interaction.reply({ 
                     content: `❌ ${playerCheck.error}`,
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
 
@@ -48,13 +48,13 @@ module.exports = {
             if (alreadyFavorited) {
                 return interaction.reply({
                     content: `⭐ **${currentTrack.info.title}** is already in your favorites!`,
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
             if (userFavorites.favorites.length >= userFavorites.maxFavorites) {
                 return interaction.reply({
                     content: `❌ Favorites limit reached (${userFavorites.maxFavorites})!\n\nUse \`/unfavorite\` to remove some tracks first.`,
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
             try {
@@ -74,14 +74,14 @@ module.exports = {
                 } else {
                     await interaction.reply({
                         content: '❌ Failed to save favorite!',
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
             } catch (saveError) {
                 console.error('Save favorite error:', saveError);
                 await interaction.reply({
                     content: '❌ An error occurred while saving your favorite!',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
             
@@ -91,7 +91,7 @@ module.exports = {
             if (!interaction.replied) {
                 await interaction.reply({
                     content: '❌ An error occurred!',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             }
         }

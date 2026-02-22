@@ -141,10 +141,15 @@ module.exports = {
             }
 
             if (command.category === 'owner') {
-                if (interaction.user.id !== process.env.OWNER_ID) {
-                    return interaction.reply({ 
-                        content: `🚫 This command is restricted to the **Bot Owner** only!`, 
-                        flags: 64 
+                const ownerId = (process.env.OWNER_ID || '').trim();
+                if (!ownerId) {
+                    console.error('[OWNER CHECK] OWNER_ID is not set in environment variables!');
+                }
+                if (interaction.user.id !== ownerId) {
+                    console.warn(`[OWNER CHECK] Denied: user=${interaction.user.id}, expected=${ownerId || 'NOT SET'}`);
+                    return interaction.reply({
+                        content: `🚫 This command is restricted to the **Bot Owner** only!`,
+                        flags: 64
                     });
                 }
             }
