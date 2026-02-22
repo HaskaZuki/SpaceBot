@@ -30,35 +30,109 @@ module.exports = {
         const shardInfo = getShardInfo(client);
         const shoukaku = client.shoukaku;
         const lavalinkNodes = shoukaku ? [...shoukaku.nodes.values()] : [];
-        const lavalinkStatus = lavalinkNodes.length > 0 
-            ? lavalinkNodes.map(n => `${n.name}: ${n.state === 2 ? '🟢 Connected' : '🔴 Disconnected'}`).join('\n')
-            : '❌ No Nodes';
-
+        
+        // CPU Info
+        const cpus = os.cpus();
+        let cpuUsage = 0;
+        cpus.forEach(cpu => {
+            const total = Object.values(cpu.times).reduce((acc, t) => acc + t, 0);
+            const usage = ((cpu.times.user / total) * 100);
+            cpuUsage += usage;
+        });
+        const avgCpu = (cpuUsage / cpus.length).toFixed(2);
+        
+        // Process Info
+        const processUptime = process.uptime();
+        const nodeVersion = process.version;
+        const v8Version = process.versions.v8;
+        
+        // Network Info
+        const networkInterfaces = os.networkInterfaces();
+        let internalIP = 'N/A';
+        for (const name of Object.keys(networkInterfaces)) {
+            for (const iface of networkInterfaces[name]) {
+                if (iface.family === 'IPv4' && !iface.internal) {
+                    internalIP = iface.address;
+                    break;
+                }
+            }
+        }
+        
+        // Build detailed stats string
+        const statsText = [
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            '📊 **BOT STATISTICS**',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            `🤖 Bot Name: ${client.user.username}`,
+            `🆔 Bot ID: ${client.user.id}`,
+            `📂 Loaded Commands: ${client.commands.size}`,
+            `⏰ Uptime: ${uptimeStr}`,
+            '',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            '🌐 **GLOBAL STATISTICS**',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            `🌍 Total Servers: ${totalGuilds.toLocaleString()}`,
+            `👥 Total Users: ${totalUsers.toLocaleString()}`,
+            `🎵 Voice Connections: ${totalVoiceConnections.toLocaleString()}`,
+            `📺 Total Channels: ${client.channels.cache.size.toLocaleString()}`,
+            `😀 Total Emojis: ${client.emojis.cache.size.toLocaleString()}`,
+            '',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            '💻 **SHARD STATISTICS**',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            `🧩 This Shard ID: ${shardInfo.id}`,
+            `📂 This Shard Servers: ${shardInfo.guilds.toLocaleString()}`,
+            `🔀 Total Shards: ${shardInfo.total}`,
+            '',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            '🔧 **SYSTEM INFORMATION**',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            `🖥️ Platform: ${os.platform()} ${os.arch()}`,
+            `💾 System RAM: ${systemFreeMemMB}GB / ${systemMemMB}GB (Free)`,
+            `🧠 Bot Memory: ${memUsedMB}MB / ${memTotalMB}MB (Heap)`, 
+            `📈 CPU Usage: ${avgCpu}% (Average)`,
+            `🖧 CPU Cores: ${cpus.length}`,
+            `🌐 Internal IP: ${internalIP}`,
+            '',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            '📦 **SOFTWARE VERSIONS**',
+            '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
+            `🟢 Node.js: ${nodeVersion}`,
+            `🟣 V8 Engine: v${v8Version}`,
+            `💜 Discord.js: v${djsVersion}`,
+        ];
+        
+        // Add Lavalink info
+        if (lavalinkNodes.length > 0) {
+            statsText.push('');
+            statsText.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            statsText.push('🎵 **LAVALINK NODES**');
+            statsText.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+            lavalinkNodes.forEach(node => {
+                const status = node.state === 2 ? '🟢' : '🔴';
+                const players = node.stats ? node.stats.players : 0;
+                const playing = node.stats ? node.stats.playingPlayers : 0;
+                statsText.push(`${status} ${node.name}`);
+                statsText.push(`   Players: ${players} | Playing: ${playing}`);
+                if (node.stats) {
+                    statsText.push(`   CPU: ${node.stats.cpu.toFixed(1)}% | Memory: ${(node.stats.memory.used / 1024 / 1024).toFixed(0)}MB`);
+                }
+            });
+        } else {
+            statsText.push('');
+            statsText.push('🎵 Lavalink: ❌ No nodes connected');
+        }
+        
+        statsText.push('');
+        statsText.push(`📡 WebSocket Ping: ${client.ws.ping}ms`);
+        statsText.push(`⏱️ Response Time: ${Date.now() - interaction.createdTimestamp}ms`);
+        
         const embed = new EmbedBuilder()
             .setColor('#6366f1')
             .setTitle('📊 SpaceBot Statistics')
             .setThumbnail(client.user.displayAvatarURL())
-            .addFields(
-                { name: '⏰ Uptime', value: uptimeStr, inline: true },
-                { name: '📡 Ping', value: `${client.ws.ping}ms`, inline: true },
-                { name: '🧩 Shard', value: shardInfo.isSharded ? `${shardInfo.id}/${shardInfo.total}` : 'No Sharding', inline: true },
-                
-                { name: '🌐 Total Servers', value: totalGuilds.toLocaleString(), inline: true },
-                { name: '👥 Total Users', value: totalUsers.toLocaleString(), inline: true },
-                { name: '🎵 Voice Connections', value: totalVoiceConnections.toLocaleString(), inline: true },
-                
-                { name: '📺 This Shard Servers', value: shardInfo.guilds.toLocaleString(), inline: true },
-                { name: '📺 This Shard Channels', value: totalChannels.toLocaleString(), inline: true },
-                { name: '💾 Memory (Bot)', value: `${memUsedMB} / ${memTotalMB} MB`, inline: true },
-                
-                { name: '💻 System RAM', value: `${systemFreeMemMB} / ${systemMemMB} GB free`, inline: true },
-                { name: '🖥️ Platform', value: `${os.platform()} ${os.arch()}`, inline: true },
-                { name: '📦 Node.js', value: process.version, inline: true },
-                
-                { name: '🔧 Discord.js', value: `v${djsVersion}`, inline: true },
-                { name: '🎵 Lavalink', value: lavalinkStatus, inline: false }
-            )
-            .setFooter({ text: `Bot ID: ${client.user.id}` })
+            .setDescription(statsText.join('\n'))
+            .setFooter({ text: `Shard ${shardInfo.id}/${shardInfo.total} | Requested by ${interaction.user.username}` })
             .setTimestamp();
 
         await interaction.editReply({ embeds: [embed] });

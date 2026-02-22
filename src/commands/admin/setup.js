@@ -11,7 +11,8 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply({ flags: 64 });
 
-        try {            const existingChannel = interaction.guild.channels.cache.find(
+        try {
+            const existingChannel = interaction.guild.channels.cache.find(
                 ch => ch.name === 'space-music' && ch.type === ChannelType.GuildText
             );
 
@@ -22,7 +23,9 @@ module.exports = {
                             `The channel **#space-music** already exists in this server.\n` +
                             `Delete that channel first if you want to run setup again.`
                 });
-            }            let config = await GuildConfig.findOne({ guildId: interaction.guild.id });
+            }
+            
+            let config = await GuildConfig.findOne({ guildId: interaction.guild.id });
             if (config && config.musicChannelId) {
                 const dbChannel = interaction.guild.channels.cache.get(config.musicChannelId);
                 if (dbChannel) {
@@ -32,7 +35,9 @@ module.exports = {
                                 `You've already configured a music controller in this server.`
                     });
                 }
-            }            const channel = await interaction.guild.channels.create({
+            }
+            
+            const channel = await interaction.guild.channels.create({
                 name: 'space-music',
                 type: ChannelType.GuildText,
                 topic: '🎵 Send song names or links here to play music!',
@@ -43,10 +48,16 @@ module.exports = {
                         allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory],
                     }
                 ]
-            });            const { embeds, components } = createMusicEmbed(config, null, [], 'Idle');
-            const message = await channel.send({ embeds, components });            if (!config) {
+            });
+            
+            // Create config first if it doesn't exist
+            if (!config) {
                 config = await GuildConfig.create({ guildId: interaction.guild.id });
             }
+            
+            const { embeds, components } = createMusicEmbed(config, null, [], 'Idle');
+            const message = await channel.send({ embeds, components });
+            
             config.musicChannelId = channel.id;
             config.musicMessageId = message.id;
             await config.save();

@@ -8,6 +8,11 @@ const navItems = [
   { path: '/music', icon: 'fa-music', label: 'Music Player' },
   { path: '/playlists', icon: 'fa-list', label: 'Playlists' },
   { path: '/analytics', icon: 'fa-chart-bar', label: 'Analytics' },
+  { path: '/commands', icon: 'fa-terminal', label: 'Commands' },
+  { path: '/leaderboard', icon: 'fa-trophy', label: 'Leaderboard' },
+  { path: '/updates', icon: 'fa-bullhorn', label: 'Updates' },
+  { path: '/docs', icon: 'fa-book', label: 'Docs' },
+  { path: '/features', icon: 'fa-star', label: 'Features' },
   { path: '/pricing', icon: 'fa-crown', label: 'Premium' }
 ];
 

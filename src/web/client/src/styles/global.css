@@ -44,6 +44,7 @@ body {
   overflow-x: hidden;
   line-height: 1.6;
   min-height: 100vh;
+  padding-bottom: 80px; /* Space for persistent player */
 }
 
 body::before {

@@ -459,6 +459,13 @@ const commandDetails = {
         options: [],
         examples: ['/fix'],
         category: 'admin'
+    },
+    support: {
+        description: 'Get support server invite link and help resources',
+        usage: '/support',
+        options: [],
+        examples: ['/support'],
+        category: 'everyone'
     }
 };
 

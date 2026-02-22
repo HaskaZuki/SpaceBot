@@ -5,3 +5,8 @@ export { default as Playlists } from './Playlists';
 export { default as Pricing } from './Pricing';
 export { default as Settings } from './Settings';
 export { default as Analytics } from './Analytics';
+export { default as Commands } from './Commands';
+export { default as Features } from './Features';
+export { default as Docs } from './Docs';
+export { default as Leaderboard } from './Leaderboard';
+export { default as Updates } from './Updates';
