@@ -7,7 +7,7 @@ const features = [
   {
     icon: 'fa-music',
     color: 'red',
-    title: 'Crystal Clear Audio',
+    title: '🎵 Crystal Clear Audio',
     desc: 'High-quality streaming from YouTube, Spotify, SoundCloud, and more via Lavalink technology.'
   },
   {
