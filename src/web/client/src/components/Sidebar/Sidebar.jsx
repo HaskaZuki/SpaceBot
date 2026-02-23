@@ -3,17 +3,23 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
+// ============================================
+// LOGO CONFIGURATION - Ganti dengan URL logo bot Anda
+// ============================================
+const BOT_LOGO = 'https://cdn.discordapp.com/embed/avatars/0.png'; // Ganti dengan logo bot Anda
+// ============================================
+
 const navItems = [
-  { path: '/dashboard', icon: 'fa-home', label: 'Dashboard' },
-  { path: '/music', icon: 'fa-music', label: 'Music Player' },
-  { path: '/playlists', icon: 'fa-list', label: 'Playlists' },
-  { path: '/analytics', icon: 'fa-chart-bar', label: 'Analytics' },
-  { path: '/commands', icon: 'fa-terminal', label: 'Commands' },
-  { path: '/leaderboard', icon: 'fa-trophy', label: 'Leaderboard' },
-  { path: '/updates', icon: 'fa-bullhorn', label: 'Updates' },
-  { path: '/docs', icon: 'fa-book', label: 'Docs' },
-  { path: '/features', icon: 'fa-star', label: 'Features' },
-  { path: '/pricing', icon: 'fa-crown', label: 'Premium' }
+  { path: '/dashboard', label: 'Dashboard' },
+  { path: '/music', label: 'Music Player' },
+  { path: '/playlists', label: 'Playlists' },
+  { path: '/analytics', label: 'Analytics' },
+  { path: '/dashboard/commands', label: 'Commands' },
+  { path: '/leaderboard', label: 'Leaderboard' },
+  { path: '/updates', label: 'Updates' },
+  { path: '/docs', label: 'Docs' },
+  { path: '/dashboard/features', label: 'Features' },
+  { path: '/pricing', label: 'Premium' }
 ];
 
 function Sidebar({ collapsed, open, onToggle }) {
@@ -23,7 +29,7 @@ function Sidebar({ collapsed, open, onToggle }) {
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${open ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo-container">
-          <div className="logo-icon">🚀</div>
+          <img src={BOT_LOGO} alt="SpaceBot" className="logo-icon-img" />
           {!collapsed && <span className="logo-text">SpaceBot</span>}
         </div>
       </div>
@@ -35,7 +41,6 @@ function Sidebar({ collapsed, open, onToggle }) {
             to={item.path}
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
-            <i className={`nav-icon fas ${item.icon}`} />
             {!collapsed && <span className="nav-text">{item.label}</span>}
             {item.path === '/pricing' && isPremium && !collapsed && (
               <span className="premium-badge-mini">PRO</span>
@@ -47,12 +52,10 @@ function Sidebar({ collapsed, open, onToggle }) {
       <div className="sidebar-footer">
         {!collapsed && isPremium && (
           <div className="premium-status-mini">
-            <i className="fas fa-gem" />
             <span>Premium Active</span>
           </div>
         )}
         <NavLink to="/settings" className="nav-item">
-          <i className="nav-icon fas fa-cog" />
           {!collapsed && <span className="nav-text">Settings</span>}
         </NavLink>
       </div>

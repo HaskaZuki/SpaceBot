@@ -13,6 +13,8 @@ import Features from './pages/Features';
 import Docs from './pages/Docs';
 import Leaderboard from './pages/Leaderboard';
 import Updates from './pages/Updates';
+import DashboardCommands from './pages/DashboardCommands';
+import DashboardFeatures from './pages/DashboardFeatures';
 import PersistentPlayer from './components/PersistentPlayer';
 import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
@@ -106,6 +108,16 @@ function AnimatedRoutes() {
         <Route path="/analytics" element={
           <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
             <Analytics />
+          </motion.div>
+        } />
+        <Route path="/dashboard/commands" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <DashboardCommands />
+          </motion.div>
+        } />
+        <Route path="/dashboard/features" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <DashboardFeatures />
           </motion.div>
         } />
       </Routes>

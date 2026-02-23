@@ -3,6 +3,21 @@ import { Link } from 'react-router-dom';
 import config from '../../config';
 import './Landing.css';
 
+// ============================================
+// IMAGE CONFIGURATION - Ganti URL gambar di sini
+// ============================================
+const IMAGES = {
+  // Feature images - Ganti dengan URL Imgur atau URL lainnya
+  crystalAudio: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
+  audioFilters: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop',
+  smartQueue: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&h=400&fit=crop',
+  webDashboard: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
+  
+  // Avatar default untuk leaderboard
+  defaultAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+};
+// ============================================
+
 // Custom hook for scroll animation
 function useScrollAnimation() {
   const ref = useRef(null);
@@ -38,52 +53,52 @@ const features = [
     color: 'red',
     title: 'Crystal Clear Audio',
     desc: 'High-quality streaming from YouTube, Spotify, SoundCloud, and more via Lavalink technology.',
-    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop'
+    image: IMAGES.crystalAudio
   },
   {
     icon: 'fa-sliders',
     color: 'purple',
     title: 'Audio Filters',
     desc: 'Bass boost, nightcore, 8D audio, vaporwave, karaoke, and more — transform any track instantly.',
-    image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop'
+    image: IMAGES.audioFilters
   },
   {
     icon: 'fa-list-check',
     color: 'blue',
     title: 'Smart Queue',
     desc: 'Advanced queue with shuffle, loop, jump, search, and automatic playlist loading support.',
-    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&h=400&fit=crop'
+    image: IMAGES.smartQueue
   },
   {
     icon: 'fa-display',
     color: 'green',
     title: 'Web Dashboard',
     desc: 'Apple Music-inspired web interface to search songs, control playback, and manage your server.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop'
+    image: IMAGES.webDashboard
   }
 ];
 
 const commands = [
-  { name: '/play', desc: 'Play any song from YouTube, Spotify, or direct URL', category: 'Music' },
+  { name: '/play', desc: 'Play any song from YouTube, Spotify, or URL', category: 'Music' },
   { name: '/search', desc: 'Search and pick from multiple results', category: 'Music' },
-  { name: '/nowplaying', desc: 'See current track with live progress bar', category: 'Music' },
+  { name: '/nowplaying', desc: 'See current track with progress bar', category: 'Music' },
   { name: '/lyrics', desc: 'Get full lyrics for any song', category: 'Music' },
-  { name: '/playlist', desc: 'Create and manage personal playlists', category: 'Playlist' },
-  { name: '/leaderboard', desc: 'See top listeners in your server', category: 'Stats' },
-  { name: '/playerstats', desc: 'View listening statistics and top tracks', category: 'Stats' },
-  { name: '/grab', desc: 'Save current song to your DMs', category: 'Utility' },
-  { name: '/queue', desc: 'View and manage the current queue', category: 'Music' },
-  { name: '/filter', desc: 'Apply audio filters like bassboost', category: 'Premium' },
-  { name: '/247', desc: 'Keep bot in voice channel 24/7', category: 'Premium' },
+  { name: '/playlist', desc: 'Create and manage playlists', category: 'Playlist' },
+  { name: '/leaderboard', desc: 'See top listeners in server', category: 'Stats' },
+  { name: '/playerstats', desc: 'View listening statistics', category: 'Stats' },
+  { name: '/grab', desc: 'Save current song to DMs', category: 'Utility' },
+  { name: '/queue', desc: 'View and manage the queue', category: 'Music' },
+  { name: '/filter', desc: 'Apply audio filters', category: 'Premium' },
+  { name: '/247', desc: 'Keep bot in VC 24/7', category: 'Premium' },
   { name: '/autoplay', desc: 'Auto-play similar songs', category: 'Premium' }
 ];
 
 const leaderboardData = [
-  { rank: 1, user: 'MusicLover', plays: 2847, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1' },
-  { rank: 2, user: 'NightOwl', plays: 2234, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2' },
-  { rank: 3, user: 'BeatDropper', plays: 1987, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3' },
-  { rank: 4, user: 'VibeMaster', plays: 1654, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4' },
-  { rank: 5, user: 'ChillSeeker', plays: 1432, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5' }
+  { rank: 1, user: 'MusicLover', plays: 2847, avatar: IMAGES.defaultAvatar },
+  { rank: 2, user: 'NightOwl', plays: 2234, avatar: IMAGES.defaultAvatar },
+  { rank: 3, user: 'BeatDropper', plays: 1987, avatar: IMAGES.defaultAvatar },
+  { rank: 4, user: 'VibeMaster', plays: 1654, avatar: IMAGES.defaultAvatar },
+  { rank: 5, user: 'ChillSeeker', plays: 1432, avatar: IMAGES.defaultAvatar }
 ];
 
 const chartData = [

@@ -4,6 +4,9 @@
 
 .leaderboard-header {
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .page-title {
@@ -13,7 +16,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 0.5rem;
+  margin: 0;
 }
 
 .page-title i {
@@ -23,7 +26,7 @@
 .page-subtitle {
   color: var(--text-secondary);
   font-size: 0.95rem;
-  margin-bottom: 1.5rem;
+  margin: 0;
 }
 
 .time-filter {

@@ -177,7 +177,7 @@ function Dashboard() {
   const guildIsPremium = serverConfig?.isPremium || false;
 
   return (
-    <DashboardLayout title="🏠 Dashboard">
+    <DashboardLayout title="Dashboard">
       <div className="dashboard-content">
         {botStats && (
           <div className="quick-stats-row">

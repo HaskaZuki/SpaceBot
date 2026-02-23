@@ -219,6 +219,9 @@
 .section-header {
   text-align: center;
   margin-bottom: 4rem;
+  width: 100%;
+  display: block;
+  clear: both;
 }
 
 .section-title {
@@ -226,6 +229,8 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 1rem;
+  display: block;
+  width: 100%;
 }
 
 .section-sub {
@@ -233,6 +238,7 @@
   font-size: 1.1rem;
   max-width: 600px;
   margin: 0 auto;
+  display: block;
 }
 
 /* Features Section - Alternating Layout */
@@ -240,6 +246,13 @@
   padding: 6rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.features-section .section-header {
+  width: 100%;
 }
 
 .feature-row {
@@ -359,6 +372,14 @@
 .commands-section {
   padding: 6rem 2rem;
   background: linear-gradient(180deg, transparent, rgba(250, 35, 59, 0.03), transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.commands-section .section-header {
+  width: 100%;
+  max-width: 1200px;
 }
 
 .commands-grid {
@@ -366,6 +387,7 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -383,6 +405,9 @@
   opacity: 0;
   transform: translateY(20px);
   animation: fadeInUp 0.5s ease forwards;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
 }
 
 .command-card:hover {
@@ -398,6 +423,8 @@
   color: var(--accent);
   margin-bottom: 0.5rem;
   font-weight: 600;
+  display: inline-block;
+  max-width: fit-content;
 }
 
 .command-name {
@@ -412,6 +439,11 @@
   color: var(--text-secondary);
   font-size: 0.9rem;
   line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Analytics Section */
@@ -419,6 +451,13 @@
   padding: 6rem 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.analytics-section .section-header {
+  width: 100%;
 }
 
 .analytics-grid {
@@ -555,6 +594,14 @@
 .leaderboard-section {
   padding: 6rem 2rem;
   background: linear-gradient(180deg, transparent, rgba(191, 90, 242, 0.03), transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.leaderboard-section .section-header {
+  width: 100%;
+  max-width: 600px;
 }
 
 .leaderboard-container {
@@ -751,6 +798,14 @@
 .discord-section {
   padding: 6rem 2rem;
   background: linear-gradient(180deg, transparent, rgba(88, 101, 242, 0.05), transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.discord-section .section-header {
+  width: 100%;
+  max-width: 900px;
 }
 
 .discord-container {

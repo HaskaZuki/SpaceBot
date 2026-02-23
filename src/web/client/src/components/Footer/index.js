@@ -2,6 +2,12 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './Footer.css';
 
+// ============================================
+// LOGO CONFIGURATION - Ganti dengan URL logo bot Anda
+// ============================================
+const BOT_LOGO = 'https://cdn.discordapp.com/embed/avatars/0.png'; // Ganti dengan logo bot Anda
+// ============================================
+
 function Footer() {
   const currentYear = new Date().getFullYear();
   
@@ -10,7 +16,7 @@ function Footer() {
       <div className="footer-content">
         <div className="footer-brand">
           <div className="footer-logo">
-            <span className="footer-icon">🚀</span>
+            <img src={BOT_LOGO} alt="SpaceBot Logo" className="footer-logo-img" />
             <span className="footer-title">SpaceBot</span>
           </div>
           <p className="footer-desc">

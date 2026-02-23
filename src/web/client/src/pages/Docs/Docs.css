@@ -1,7 +1,8 @@
 /* Docs Page Layout */
 .docs-page {
   display: flex;
-  min-height: 100vh;
+  min-height: auto;
+  flex: 1;
   background: #0a0a0f;
 }
 
@@ -25,8 +26,8 @@
 
 /* Left Sidebar */
 .docs-sidebar {
-  width: 280px;
-  min-width: 280px;
+  width: 240px;
+  min-width: 240px;
   background: #0d0d14;
   border-right: 1px solid #1f1f2e;
   padding: 24px 0;
@@ -164,20 +165,23 @@
 /* Main Content */
 .docs-main {
   flex: 1;
-  margin-left: 280px;
-  min-height: 100vh;
+  margin-left: 240px;
+  min-height: auto;
+  width: calc(100% - 240px);
 }
 
 .docs-content-wrapper {
   display: flex;
-  max-width: 1400px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
 }
 
 .docs-content {
   flex: 1;
   padding: 48px 64px;
-  max-width: 800px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 /* Breadcrumb */
@@ -356,6 +360,8 @@
   top: 0;
   height: 100vh;
   overflow-y: auto;
+  border-left: 1px solid #1f1f2e;
+  background: #0d0d14;
 }
 
 .docs-toc-title {
