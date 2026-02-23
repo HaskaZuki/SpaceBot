@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -58,14 +59,14 @@ module.exports = {
             if (subcommand === 'unset') {
                 if (!config.allowedVoiceChannels || config.allowedVoiceChannels.length === 0) {
                     return interaction.reply({ 
-                        content: '❌ No voice channel restriction is currently set.', 
+                        content: `${emoji.status.error} No voice channel restriction is currently set.`, 
                         flags: 64 
                     });
                 }
                 config.allowedVoiceChannels = [];
                 await config.save();
                 return interaction.reply({ 
-                    content: '✅ Voice channel restriction removed. Bot can now join any voice channel.', 
+                    content: `${emoji.status.success} Voice channel restriction removed. Bot can now join any voice channel.`, 
                     ephemeral: false 
                 });
             }
@@ -91,14 +92,14 @@ module.exports = {
                 await config.save();
                 
                 await interaction.reply({ 
-                    content: `✅ Bot restricted to voice channel: ${channel}\n` +
+                    content: `${emoji.status.success} Bot restricted to voice channel: ${channel}\n` +
                             `The bot will only join this voice channel.`, 
                     ephemeral: false 
                 });
             }
         } catch (error) {
             console.error('setvc error:', error);
-            await interaction.reply({ content: '❌ Failed to update voice channel restriction.', flags: 64 });
+            await interaction.reply({ content: `${emoji.status.error} Failed to update voice channel restriction.`, flags: 64 });
         }
     },
 };

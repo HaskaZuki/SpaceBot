@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,7 +9,7 @@ module.exports = {
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setColor('#5865F2')
-            .setTitle('🚀 SpaceBot — Migration to Slash Commands Complete')
+            .setTitle(`${emoji.animated.rocket} SpaceBot — Migration to Slash Commands Complete`)
             .setDescription(
                 'SpaceBot has been fully migrated to **Discord Slash Commands**!\n\n' +
                 'All legacy prefix-based commands (`!play`, `!skip`, etc.) have been removed.\n' +
@@ -17,7 +18,7 @@ module.exports = {
             )
             .addFields(
                 {
-                    name: '✅ What Changed',
+                    name: `${emoji.status.success} What Changed`,
                     value:
                         '• All commands now use `/command` format\n' +
                         '• Prefix system (`!`, `?`, etc.) fully removed\n' +

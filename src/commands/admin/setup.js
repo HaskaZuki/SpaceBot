@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 const { createMusicEmbed } = require('../../utils/embedBuilder');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -62,11 +63,11 @@ module.exports = {
             config.musicMessageId = message.id;
             await config.save();
 
-            await interaction.editReply(`✅ Setup complete! Access your music controller here: ${channel}`);
+            await interaction.editReply(`${emoji.status.success} Setup complete! Access your music controller here: ${channel}`);
 
         } catch (error) {
             console.error('Setup error:', error);
-            await interaction.editReply('❌ Failed to set up music system.');
+            await interaction.editReply(`${emoji.status.error} Failed to set up music system.`);
         }
     },
 };

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const i18n = require('../../utils/i18n');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -43,7 +44,8 @@ module.exports = {
         }
 
         try {
-            await interaction.deferReply();
+            // Show loading emoji while searching
+            await interaction.reply({ content: `${emoji.animated.loading} Searching for \`${query}\`...` });
         } catch (e) {
             return;
         }
@@ -59,19 +61,17 @@ module.exports = {
             );
             
             if (result && result.error) {
-                await interaction.editReply(`❌ ${result.error}`);
+                await interaction.editReply({ content: `${emoji.status.error} ${result.error}` });
             } else if (result && result.track) {
-                const msg = i18n.get(lang, 'play.added_to_queue', { 
-                    title: result.track.info?.title || query 
-                });
-                await interaction.editReply(msg);
+                const msg = `${emoji.status.success} Added to queue: **${result.track.info?.title || query}**`;
+                await interaction.editReply({ content: msg });
             } else {
-                await interaction.editReply(i18n.get(lang, 'play.no_results'));
+                await interaction.editReply({ content: `${emoji.status.error} No results found.` });
             }
         } catch (error) {
             console.error('Play command error:', error);
             try {
-                await interaction.editReply(i18n.get(lang, 'common.error'));
+                await interaction.editReply({ content: i18n.get(lang, 'common.error') });
             } catch (e) { }
         }
     },

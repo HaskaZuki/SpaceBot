@@ -89,8 +89,10 @@ function Dashboard() {
     if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Discard them?')) {
       return;
     }
-    setSelectedServer(serverId ? servers.find(s => s.id === serverId) : null);
-    if (serverId) {
+    const server = serverId ? servers.find(s => s.id === serverId) : null;
+    setSelectedServer(server);
+    
+    if (serverId && server?.hasBot) {
       fetchServerConfig(serverId);
       fetchLeaderboard(serverId);
     } else {
@@ -222,11 +224,13 @@ function Dashboard() {
           >
             <option value="">Choose a server to manage...</option>
             {servers.map(server => (
-              <option key={server.id} value={server.id}>{server.name}</option>
+              <option key={server.id} value={server.id}>
+                {server.name} {!server.hasBot ? '(Bot not added)' : ''}
+              </option>
             ))}
           </select>
           <p className="server-hint">
-            🔒 Only servers where you have Administrator permission are shown
+            Only servers where you have Administrator permission are shown
           </p>
         </div>
 
@@ -236,6 +240,24 @@ function Dashboard() {
               <i className="fas fa-arrow-up" />
               <h3>Select a Server</h3>
               <p>Choose a server from the dropdown above to manage its settings</p>
+            </div>
+          </div>
+        )}
+
+        {selectedServer && !selectedServer.hasBot && (
+          <div className="server-select-card">
+            <div className="empty-state">
+              <i className="fas fa-robot" />
+              <h3>Bot Not in Server</h3>
+              <p>SpaceBot hasn't been added to {selectedServer.name} yet.</p>
+              <a 
+                href={`https://discord.com/oauth2/authorize?client_id=${process.env.REACT_APP_CLIENT_ID || 'YOUR_CLIENT_ID'}&permissions=36768800&scope=bot%20applications.commands&guild_id=${selectedServer.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="add-bot-btn"
+              >
+                <i className="fas fa-plus" /> Add SpaceBot to {selectedServer.name}
+              </a>
             </div>
           </div>
         )}

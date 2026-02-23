@@ -1,370 +1,296 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Setup, Commands, Filters, Premium, Dashboard, Playlists, FAQ, Support } from './pages';
 import './Docs.css';
 
-const docsSections = [
+// Introduction component inline
+const Introduction = () => (
+  <div className="docs-body">
+    <h2 id="getting-started">Getting Started</h2>
+    <p className="docs-description">Welcome to SpaceBot! Here's how to get started with the bot.</p>
+    
+    <h3 id="add-to-server">How to Add Bot to Your Server</h3>
+    <ol>
+      <li>Go to <a href="https://spacebot.me" target="_blank" rel="noopener noreferrer" className="docs-link">spacebot.me</a></li>
+      <li>Click "Login with Discord"</li>
+      <li>Select the server you want to add</li>
+      <li>Allow all required permissions</li>
+      <li>Done! Bot will join your server</li>
+    </ol>
+    
+    <h3 id="quick-commands">Quick Commands</h3>
+    <div className="docs-command-grid">
+      <div className="docs-command-item">
+        <code>/play</code>
+        <span>Play a song</span>
+      </div>
+      <div className="docs-command-item">
+        <code>/queue</code>
+        <span>View the queue</span>
+      </div>
+      <div className="docs-command-item">
+        <code>/skip</code>
+        <span>Skip current song</span>
+      </div>
+      <div className="docs-command-item">
+        <code>/pause</code>
+        <span>Pause playback</span>
+      </div>
+      <div className="docs-command-item">
+        <code>/resume</code>
+        <span>Resume playback</span>
+      </div>
+      <div className="docs-command-item">
+        <code>/leave</code>
+        <span>Disconnect bot</span>
+      </div>
+    </div>
+  </div>
+);
+
+// Sidebar navigation data with categories
+const navCategories = [
   {
-    id: 'getting-started',
     title: 'Getting Started',
-    icon: '🚀',
-    content: `
-## 🚀 Getting Started
-
-### How to Add Bot to Your Server
-1. Go to spacebot.me
-2. Click "Login with Discord"
-3. Select the server you want to add
-4. Allow all required permissions
-5. Done! Bot will join your server
-
-### Quick Commands
-/play <song> - Play a song from YouTube, Spotify, SoundCloud
-/queue - View the music queue
-/skip - Skip current song
-/pause - Pause playback
-/resume - Resume playback
-/leave - Disconnect from voice channel
-    `
+    items: [
+      { path: '/docs', label: 'Introduction', exact: true },
+      { path: '/docs/setup', label: 'Setup Bot' },
+    ]
   },
   {
-    id: 'setup',
-    title: 'Setup Bot',
-    icon: '⚙️',
-    content: `
-## ⚙️ Setting Up SpaceBot
-
-### Automatic Setup
-Run this command on your server:
-
-/setup
-
-Bot will automatically create #space-music channel!
-
-### Manual Setup
-You can also set up manually:
-1. Create a new text channel
-2. Name it "space-music" or whatever you want
-3. Type /play in that channel
-4. Bot will automatically join your voice channel
-
-### Server Configuration
-/setdj @role - Set DJ role
-/language en/id/ja/ko - Change language
-/announce - Toggle song announcements
-/limit 50 - Set queue limit
-    `
+    title: 'Commands',
+    items: [
+      { path: '/docs/commands', label: 'Music Commands' },
+      { path: '/docs/filters', label: 'Audio Filters' },
+      { path: '/docs/playlists', label: 'Playlists' },
+    ]
   },
   {
-    id: 'music-commands',
-    title: 'Music Commands',
-    icon: '🎵',
-    content: `
-## 🎵 Music Commands
-
-### Basic
-/play <song> - Play song from YouTube, Spotify, SoundCloud
-/search <query> - Search and pick from results
-/queue - View music queue
-/nowplaying - See current track
-/grab - Save track info to your DM
-
-### Controls
-/pause - Pause playback
-/resume - Resume playback
-/skip - Skip to next song
-/stop - Stop and clear queue
-/leave - Disconnect from voice channel
-
-### Queue Management
-/clear - Clear all queue
-/shuffle - Shuffle the queue
-/remove <position> - Remove specific song
-/move <from> <to> - Move song in queue
-/loop off/track/queue - Set loop mode
-    `
-  },
-  {
-    id: 'filters',
-    title: 'Audio Filters',
-    icon: '🎛️',
-    content: `
-## 🎛️ Audio Filters (Premium)
-
-### Available Filters
-/filter bassboost - Bass boost effect
-/filter nightcore - Nightcore effect
-/filter vaporwave - Vaporwave effect
-/filter 8d - 8D audio
-/filter karaoke - Karaoke mode
-/filter pop - Pop mode
-/filter soft - Soft mode
-/filter treble - Treble boost
-
-### Volume & Speed
-/volume 1-200 - Adjust volume (Premium)
-/speed 0.5-2.0 - Adjust speed (Premium)
-
-### Note
-- Audio filters are for Premium users only
-- Visit spacebot.me/pricing to upgrade
-    `
-  },
-  {
-    id: 'premium',
     title: 'Premium',
-    icon: '💎',
-    content: `
-## 💎 Premium SpaceBot
-
-### Benefits
-- Better audio quality (256kbps)
-- Longer queue (500 songs)
-- Audio filters (bassboost, nightcore, etc)
-- 24/7 mode - Bot stays in VC always
-- Unlimited playlists (100 vs 3)
-- Lyrics sync display
-
-### How to Upgrade
-1. Visit spacebot.me/pricing
-2. Choose your plan
-3. Click "Upgrade"
-4. Follow payment instructions
-
-### Premium Commands
-/247 - Toggle 24/7 mode
-/autoplay - Auto play similar songs
-/volume - Control volume
-/speed - Adjust speed
-/favorites - View favorites
-    `
+    items: [
+      { path: '/docs/premium', label: 'Premium Features' },
+    ]
   },
   {
-    id: 'dashboard',
-    title: 'Dashboard',
-    icon: '🌐',
-    content: `
-## 🌐 Web Dashboard
-
-### How to Access
-1. Open spacebot.me
-2. Click "Login with Discord"
-3. Select your server
-4. Start managing!
-
-### Dashboard Features
-- Server statistics & analytics
-- Server settings management
-- Music queue management
-- Playback history
-- User activity tracking
-- Playlist management
-
-### Dashboard Menu
-- Dashboard - Server overview
-- Music Player - Playback control
-- Playlists - Create & manage playlists
-- Analytics - Detailed statistics
-- Settings - Server configuration
-    `
+    title: 'Other',
+    items: [
+      { path: '/docs/dashboard', label: 'Dashboard' },
+      { path: '/docs/faq', label: 'FAQ' },
+      { path: '/docs/support', label: 'Support' },
+    ]
   },
-  {
-    id: 'playlist',
-    title: 'Playlists',
-    icon: '📋',
-    content: `
-## 📋 Playlist Management
-
-### Playlist Commands
-/playlist create <name> - Create new playlist
-/playlist add <name> - Add song to playlist
-/playlist remove <name> <position> - Remove from playlist
-/playlist delete <name> - Delete playlist
-/playlist list - View all playlists
-/playlist load <name> - Play a playlist
-
-### Export/Import
-/export-playlist <name> - Export to file
-/playlist import - Import from file
-
-### Favorites
-/add-favorite - Add current song to favorites
-/manage-favorites list - View favorites
-/manage-favorites play - Play favorites
-/manage-favorites remove - Remove from favorites
-    `
-  },
-  {
-    id: 'faq',
-    title: 'FAQ',
-    icon: '❓',
-    content: `
-## ❓ Frequently Asked Questions
-
-### Music won't play?
-- Make sure bot is in a voice channel
-- Check if queue has songs
-- Bot needs connect & speak permissions
-- Try /leave then /play again
-
-### How to get support?
-- Join discord server: discord.gg/spacebot
-- Use /help to see all commands
-- Check dashboard for server stats
-
-### Can I use Spotify?
-Yes! SpaceBot supports:
-- YouTube videos & playlists
-- Spotify tracks & playlists
-- SoundCloud
-- Direct MP3/URL links
-
-### How to get Premium?
-Visit spacebot.me/pricing for plans!
-
-### Bot offline?
-Try restart with /restart (owner only)
-or contact support server.
-    `
-  },
-  {
-    id: 'support',
-    title: 'Support',
-    icon: '🎫',
-    content: `
-## 🎫 Need Help?
-
-### Links
-🌐 Website: spacebot.me
-💬 Discord: discord.gg/spacebot
-📚 Docs: spacebot.me/docs
-
-### Command Help
-/help - View all commands
-/help <command> - Command details
-/support - Support server link
-
-### Troubleshooting
-/Bot not responding?
-- Check if bot is online
-- Try kick then re-invite
-
-/Music stops by itself?
-- Check connection stability
-- Try /247 for Premium
-
-/Queue not saved?
-- Queue resets when bot restarts
-- Use playlists to save
-
-### Contact
-Join discord.gg/spacebot for direct help!
-    `
-  }
 ];
 
+// Flatten nav items for navigation
+const allNavItems = navCategories.flatMap(cat => cat.items);
+
+// Table of contents for each page
+const tableOfContents = {
+  '/docs': [
+    { id: 'getting-started', label: 'Getting Started' },
+    { id: 'add-to-server', label: 'Add to Server' },
+    { id: 'quick-commands', label: 'Quick Commands' },
+  ],
+  '/docs/setup': [
+    { id: 'automatic-setup', label: 'Automatic Setup' },
+    { id: 'manual-setup', label: 'Manual Setup' },
+    { id: 'server-configuration', label: 'Server Configuration' },
+  ],
+  '/docs/commands': [
+    { id: 'basic', label: 'Basic' },
+    { id: 'controls', label: 'Controls' },
+    { id: 'queue-management', label: 'Queue Management' },
+  ],
+  '/docs/filters': [
+    { id: 'available-filters', label: 'Available Filters' },
+    { id: 'volume-speed', label: 'Volume & Speed' },
+  ],
+  '/docs/premium': [
+    { id: 'benefits', label: 'Benefits' },
+    { id: 'how-to-upgrade', label: 'How to Upgrade' },
+    { id: 'premium-commands', label: 'Premium Commands' },
+  ],
+  '/docs/dashboard': [
+    { id: 'how-to-access', label: 'How to Access' },
+    { id: 'features', label: 'Features' },
+    { id: 'dashboard-menu', label: 'Dashboard Menu' },
+  ],
+  '/docs/playlists': [
+    { id: 'playlist-commands', label: 'Playlist Commands' },
+    { id: 'favorites', label: 'Favorites' },
+  ],
+  '/docs/faq': [
+    { id: 'music-issues', label: 'Music Issues' },
+    { id: 'support', label: 'Support' },
+    { id: 'spotify', label: 'Spotify' },
+    { id: 'premium-questions', label: 'Premium Questions' },
+    { id: 'bot-offline', label: 'Bot Offline' },
+  ],
+  '/docs/support': [
+    { id: 'links', label: 'Quick Links' },
+    { id: 'command-help', label: 'Command Help' },
+    { id: 'troubleshooting', label: 'Troubleshooting' },
+    { id: 'contact', label: 'Contact Us' },
+  ],
+};
+
 function Docs() {
-  const [activeSection, setActiveSection] = useState('getting-started');
+  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Get current page info
+  const currentItem = allNavItems.find(item => 
+    item.exact ? location.pathname === item.path : location.pathname.startsWith(item.path)
+  ) || allNavItems[0];
 
-  const currentSection = docsSections.find(s => s.id === activeSection);
+  // Get previous and next pages
+  const currentIndex = allNavItems.findIndex(item => 
+    item.exact ? location.pathname === item.path : location.pathname.startsWith(item.path)
+  );
+  const prevPage = currentIndex > 0 ? allNavItems[currentIndex - 1] : null;
+  const nextPage = currentIndex < allNavItems.length - 1 ? allNavItems[currentIndex + 1] : null;
 
-  // Build breadcrumb path
-  const getBreadcrumb = () => {
-    const items = ['Docs', activeSection.charAt(0).toUpperCase() + activeSection.slice(1)];
-    return items.join(' / ');
-  };
+  // Get table of contents for current page
+  const currentTOC = tableOfContents[location.pathname] || [];
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   return (
     <div className="docs-page">
-      <div className="docs-sidebar">
-        <div className="docs-logo">
-          <Link to="/" className="docs-logo-link">
-            <span className="docs-logo-icon">🚀</span>
+      {/* Mobile Menu Toggle */}
+      <button 
+        className="docs-mobile-toggle"
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 12h18M3 6h18M3 18h18"/>
+        </svg>
+        Menu
+      </button>
+
+      {/* Left Sidebar */}
+      <aside className={`docs-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
+        <div className="docs-sidebar-header">
+          <Link to="/" className="docs-logo">
+            <span className="docs-logo-icon">S</span>
             <span className="docs-logo-text">SpaceBot</span>
           </Link>
-          <span className="docs-logo-sub">Docs</span>
+          <span className="docs-version">v1.0.0</span>
         </div>
-        
+
+        {/* Search */}
+        <div className="docs-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input 
+            type="text" 
+            placeholder="Search docs..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        {/* Navigation */}
         <nav className="docs-nav">
-          {docsSections.map(section => (
-            <button
-              key={section.id}
-              className={`docs-nav-item ${activeSection === section.id ? 'active' : ''}`}
-              onClick={() => setActiveSection(section.id)}
-            >
-              <span className="docs-nav-icon">{section.icon}</span>
-              <span>{section.title}</span>
-            </button>
+          {navCategories.map((category, idx) => (
+            <div key={idx} className="docs-nav-category">
+              <h4 className="docs-nav-title">{category.title}</h4>
+              {category.items.map(item => (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`docs-nav-item ${location.pathname === item.path || (!item.exact && location.pathname.startsWith(item.path) && item.path !== '/docs') ? 'active' : ''}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
           ))}
         </nav>
+      </aside>
 
-        <div className="docs-footer">
-          <Link to="/" className="docs-back-link">
-            ← Back to Home
-          </Link>
-        </div>
-      </div>
-
-      <div className="docs-content">
-        {currentSection && (
-          <>
+      {/* Main Content */}
+      <main className="docs-main">
+        <div className="docs-content-wrapper">
+          {/* Content Area */}
+          <div className="docs-content">
+            {/* Breadcrumb */}
             <div className="docs-breadcrumb">
-              {getBreadcrumb()}
-            </div>
-            
-            <div className="docs-header">
-              <span className="docs-header-icon">{currentSection.icon}</span>
-              <h1>{currentSection.title}</h1>
-            </div>
-            
-            <div className="docs-body">
-              {currentSection.content.split('\n').map((line, i) => {
-                if (line.trim().startsWith('## ')) {
-                  return <h2 key={i}>{line.replace('## ', '')}</h2>;
-                }
-                if (line.trim().startsWith('### ')) {
-                  return <h3 key={i}>{line.replace('### ', '')}</h3>;
-                }
-                if (line.trim().startsWith('- ')) {
-                  return <li key={i}>{line.replace('- ', '')}</li>;
-                }
-                if (line.trim() === '') {
-                  return <br key={i} />;
-                }
-                // Highlight /commands
-                if (line.includes('/')) {
-                  return <p key={i} className="docs-code">{line}</p>;
-                }
-                return <p key={i}>{line}</p>;
-              })}
+              <Link to="/docs" className="breadcrumb-link">Docs</Link>
+              <span className="breadcrumb-separator">/</span>
+              <span className="breadcrumb-current">{currentItem.label}</span>
             </div>
 
-            <div className="docs-nav-buttons">
-              {docsSections.findIndex(s => s.id === activeSection) > 0 && (
-                <button 
-                  className="docs-nav-btn prev"
-                  onClick={() => {
-                    const idx = docsSections.findIndex(s => s.id === activeSection);
-                    setActiveSection(docsSections[idx - 1].id);
-                  }}
-                >
-                  ← Previous
-                </button>
-              )}
-              {docsSections.findIndex(s => s.id === activeSection) < docsSections.length - 1 && (
-                <button 
-                  className="docs-nav-btn next"
-                  onClick={() => {
-                    const idx = docsSections.findIndex(s => s.id === activeSection);
-                    setActiveSection(docsSections[idx + 1].id);
-                  }}
-                >
-                  Next →
-                </button>
-              )}
+            {/* Page Header */}
+            <div className="docs-header">
+              <h1>{currentItem.label}</h1>
             </div>
-          </>
-        )}
-      </div>
+
+            {/* Page Content */}
+            <Routes>
+              <Route path="/" element={<Introduction />} />
+              <Route path="/setup" element={<Setup />} />
+              <Route path="/commands" element={<Commands />} />
+              <Route path="/filters" element={<Filters />} />
+              <Route path="/premium" element={<Premium />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/playlists" element={<Playlists />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/support" element={<Support />} />
+            </Routes>
+
+            {/* Footer Navigation */}
+            <div className="docs-footer-nav">
+              {prevPage ? (
+                <Link to={prevPage.path} className="docs-nav-card prev">
+                  <span className="docs-nav-card-label">Previous</span>
+                  <span className="docs-nav-card-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                    {prevPage.label}
+                  </span>
+                </Link>
+              ) : <div />}
+              {nextPage ? (
+                <Link to={nextPage.path} className="docs-nav-card next">
+                  <span className="docs-nav-card-label">Next</span>
+                  <span className="docs-nav-card-title">
+                    {nextPage.label}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="m9 18 6-6-6-6"/>
+                    </svg>
+                  </span>
+                </Link>
+              ) : <div />}
+            </div>
+          </div>
+
+          {/* Right Sidebar - Table of Contents */}
+          {currentTOC.length > 0 && (
+            <aside className="docs-toc">
+              <h4 className="docs-toc-title">On this page</h4>
+              <nav className="docs-toc-nav">
+                {currentTOC.map(item => (
+                  <a 
+                    key={item.id} 
+                    href={`#${item.id}`}
+                    className="docs-toc-item"
+                  >
+                    {item.label}
+                  </a>
+                ))}
+              </nav>
+            </aside>
+          )}
+        </div>
+      </main>
     </div>
   );
 }

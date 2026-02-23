@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const musicPlayer = require('../../../utils/musicPlayer');
 const storage = require('../../../utils/storage');
 const { formatTime } = require('../../../utils/validators');
+const emoji = require('../../../utils/emojiConfig');
 
 const ITEMS_PER_PAGE = 10;
 
@@ -35,7 +36,7 @@ module.exports = {
         
         if (!userSettings || !userSettings.isPremium) {
              return interaction.reply({
-                 content: '🔒 **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to manage favorites.',
+                 content: `${emoji.premium.star} **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to manage favorites.`,
                  flags: MessageFlags.Ephemeral
              });
         }
@@ -45,7 +46,7 @@ module.exports = {
             
             if (!userFavorites || userFavorites.favorites.length === 0) {
                 return interaction.reply({
-                    content: '❌ You don\'t have any favorites yet!\n\nUse `/favorite` while a track is playing to add it.',
+                    content: `${emoji.status.error} You don't have any favorites yet!\n\nUse \`/favorite\` while a track is playing to add it.`,
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -62,7 +63,7 @@ module.exports = {
 
                     return new EmbedBuilder()
                         .setColor('#FFD700')
-                        .setTitle(`⭐ Your Favorites (${favorites.length} tracks)`)
+                        .setTitle(`${emoji.premium.star} Your Favorites (${favorites.length} tracks)`)
                         .setDescription(
                             pageFavorites.map((fav, idx) => 
                                 `**${startIdx + idx + 1}.** [${fav.info.title}](${fav.info.uri})\n` +
@@ -102,7 +103,7 @@ module.exports = {
 
                 collector.on('collect', async (btnInteraction) => {
                     if (btnInteraction.user.id !== interaction.user.id) {
-                        return btnInteraction.reply({ content: '❌ This is not your favorites view!', flags: MessageFlags.Ephemeral });
+                        return btnInteraction.reply({ content: `${emoji.status.error} This is not your favorites view!`, flags: MessageFlags.Ephemeral });
                     }
 
                     if (btnInteraction.customId.includes('prev')) {
@@ -131,7 +132,7 @@ module.exports = {
                 
                 if (!member.voice?.channel) {
                     return interaction.reply({
-                        content: '❌ You must be in a voice channel to play favorites!',
+                        content: `${emoji.status.error} You must be in a voice channel to play favorites!`,
                         flags: MessageFlags.Ephemeral
                     });
                 }
@@ -158,13 +159,13 @@ module.exports = {
                     }
                     
                     await interaction.editReply({
-                        content: `⭐ Added **${addedCount}** favorites to the queue!`
+                        content: `${emoji.premium.star} Added **${addedCount}** favorites to the queue!`
                     });
                     
                 } catch (playError) {
                     console.error('Play favorites error:', playError);
                     await interaction.editReply({
-                        content: '❌ An error occurred while adding favorites to queue!'
+                        content: `${emoji.status.error} An error occurred while adding favorites to queue!`
                     });
                 }
                 
@@ -174,7 +175,7 @@ module.exports = {
                 
                 if (index < 0 || index >= userFavorites.favorites.length) {
                     return interaction.reply({
-                        content: `❌ Invalid position! You have ${userFavorites.favorites.length} favorites.`,
+                        content: `${emoji.status.error} Invalid position! You have ${userFavorites.favorites.length} favorites.`,
                         flags: MessageFlags.Ephemeral
                     });
                 }
@@ -185,20 +186,20 @@ module.exports = {
                     
                     if (success) {
                         await interaction.reply({
-                            content: `🗑️ Removed from favorites: **${removed.info.title}**\n\n` +
+                            content: `${emoji.controls.remove} Removed from favorites: **${removed.info.title}**\n\n` +
                                     `Remaining favorites: ${userFavorites.favorites.length}`,
                             flags: MessageFlags.Ephemeral
                         });
                     } else {
                         await interaction.reply({
-                            content: '❌ Failed to update favorites!',
+                            content: `${emoji.status.error} Failed to update favorites!`,
                             flags: MessageFlags.Ephemeral
                         });
                     }
                 } catch (removeError) {
                     console.error('Remove favorite error:', removeError);
                     await interaction.reply({
-                        content: '❌ An error occurred while removing favorite!',
+                        content: `${emoji.status.error} An error occurred while removing favorite!`,
                         flags: MessageFlags.Ephemeral
                     });
                 }
@@ -209,7 +210,7 @@ module.exports = {
             
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({
-                    content: '❌ An error occurred!',
+                    content: `${emoji.status.error} An error occurred!`,
                     flags: MessageFlags.Ephemeral
                 });
             }

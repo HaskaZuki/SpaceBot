@@ -1,8 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const PlayHistory = require('../../models/PlayHistory');
 const musicPlayer = require('../../utils/musicPlayer');
+const emoji = require('../../utils/emojiConfig');
 
-const medals = ['🥇', '🥈', '🥉'];
+const medals = ['1st', '2nd', '3rd'];
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,10 +14,10 @@ module.exports = {
                 .setDescription('Time period for the leaderboard')
                 .setRequired(false)
                 .addChoices(
-                    { name: '📅 Today', value: 'today' },
-                    { name: '📆 This Week', value: 'week' },
-                    { name: '🗓️ This Month', value: 'month' },
-                    { name: '🌟 All Time', value: 'all' }
+                    { name: 'Today', value: 'today' },
+                    { name: 'This Week', value: 'week' },
+                    { name: 'This Month', value: 'month' },
+                    { name: 'All Time', value: 'all' }
                 )),
     
     category: 'everyone',
@@ -63,14 +64,14 @@ module.exports = {
             ]);
 
             if (topListeners.length === 0) {
-                return interaction.editReply('📊 No listening data yet for this server! Start playing some music.');
+                return interaction.editReply('No listening data yet for this server! Start playing some music.');
             }
 
             const periodLabels = {
-                today: '📅 Today',
-                week: '📆 This Week',
-                month: '🗓️ This Month',
-                all: '🌟 All Time'
+                today: 'Today',
+                week: 'This Week',
+                month: 'This Month',
+                all: 'All Time'
             };
 
             const entries = [];
@@ -92,7 +93,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#F59E0B')
-                .setTitle(`🏆 Listening Leaderboard — ${interaction.guild.name}`)
+                .setTitle(`Listening Leaderboard — ${interaction.guild.name}`)
                 .setDescription(`**Period:** ${periodLabels[period]}\n\n${entries.join('\n')}`)
                 .setFooter({ text: `${topListeners.reduce((acc, l) => acc + l.totalPlays, 0)} total plays tracked` })
                 .setTimestamp();
@@ -104,7 +105,7 @@ module.exports = {
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
             console.error('Leaderboard error:', error);
-            await interaction.editReply('❌ Failed to load leaderboard. Please try again.');
+            await interaction.editReply(`${emoji.status.error} Failed to load leaderboard. Please try again.`);
         }
     },
 };

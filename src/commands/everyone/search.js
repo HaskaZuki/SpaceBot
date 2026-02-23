@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,10 +15,10 @@ module.exports = {
                 .setDescription('Music source to search from')
                 .setRequired(false)
                 .addChoices(
-                    { name: '🎵 YouTube', value: 'youtube' },
-                    { name: '🎶 YouTube Music', value: 'ytmusic' },
-                    { name: '🔊 SoundCloud', value: 'soundcloud' },
-                    { name: '� Spotify', value: 'spotify' }
+                    { name: 'YouTube', value: 'youtube' },
+                    { name: 'YouTube Music', value: 'ytmusic' },
+                    { name: 'SoundCloud', value: 'soundcloud' },
+                    { name: 'Spotify', value: 'spotify' }
                 )),
     
     async execute(interaction) {
@@ -27,7 +28,7 @@ module.exports = {
         const member = interaction.member;
         
         if (!member.voice.channel) {
-            return interaction.reply({ content: '❌ You must be in a voice channel!', flags: 64 });
+            return interaction.reply({ content: `${emoji.status.error} You must be in a voice channel!`, flags: 64 });
         }
         const nodes = [...interaction.client.shoukaku.nodes.values()];
         const node = nodes.find(n => n.state === 2 || n.state === 1);
@@ -35,19 +36,19 @@ module.exports = {
         if (!node || nodes.length === 0) {
             console.log(`[SEARCH] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}`).join(', ')}`);
             return interaction.reply({ 
-                content: '❌ Music service is not available. Lavalink server is not connected.', 
+                content: `${emoji.status.error} Music service is not available. Lavalink server is not connected.`, 
                 flags: 64 
             });
         }
 
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        await interaction.reply({ content: `${emoji.animated.loading} Searching for **${query}**...`, flags: MessageFlags.Ephemeral });
 
         try {
             const sourceConfig = {
-                soundcloud: { prefix: 'scsearch', emoji: '🔊 SoundCloud' },
-                spotify: { prefix: 'spsearch', emoji: '🎧 Spotify' },
-                ytmusic: { prefix: 'ytmsearch', emoji: '� YouTube Music' },
-                youtube: { prefix: 'ytsearch', emoji: '🎵 YouTube' }
+                soundcloud: { prefix: 'scsearch', emoji: emoji.sources.soundcloud },
+                spotify: { prefix: 'spsearch', emoji: emoji.sources.spotify },
+                ytmusic: { prefix: 'ytmsearch', emoji: emoji.sources.youtube },
+                youtube: { prefix: 'ytsearch', emoji: emoji.sources.youtube }
             };
 
             const selectedSource = sourceConfig[source] || sourceConfig.youtube;
@@ -75,7 +76,7 @@ module.exports = {
             }
 
             if (!result || result.loadType === 'empty' || result.loadType === 'error') {
-                return interaction.editReply(`❌ No results found for: **${query}**\n\nTried multiple sources but found nothing. Try a different search term!`);
+                return interaction.editReply(`${emoji.status.error} No results found for: **${query}**\n\nTried multiple sources but found nothing. Try a different search term!`);
             }
             let tracks = [];
             if (result.loadType === 'search') {
@@ -87,13 +88,13 @@ module.exports = {
             }
 
             if (tracks.length === 0) {
-                return interaction.editReply(`❌ No results found for: **${query}**`);
+                return interaction.editReply(`${emoji.status.error} No results found for: **${query}**`);
             }
             const topTracks = tracks.slice(0, 10);
             
             const embed = new EmbedBuilder()
                 .setColor('#6366f1')
-                .setTitle(`🔎 Search Results`)
+                .setTitle(`Search Results`)
                 .setDescription(`Showing top ${topTracks.length} results for: **${query}**\n\n` +
                     topTracks.map((track, i) => 
                         `**${i + 1}.** [${track.info.title}](${track.info.uri})\n` +
@@ -131,7 +132,7 @@ module.exports = {
 
         } catch (error) {
             console.error('Search error:', error);
-            await interaction.editReply(`❌ Failed to search. Error: ${error.message}`);
+            await interaction.editReply(`${emoji.status.error} Failed to search. Error: ${error.message}`);
         }
     },
 };

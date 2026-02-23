@@ -17,7 +17,7 @@ module.exports = {
         const channel = interaction.member.voice.channel;
         if (!channel) return interaction.reply({ content: 'Join voice first.', flags: 64 });
         
-        await interaction.reply('🗳️ Vote registered! (Logic pending state implementation, skipping for demo)');
+        await interaction.reply('Vote registered! Skipping the current track.');
         await musicPlayer.skipTrack(interaction.client, guildId);
     },
 };

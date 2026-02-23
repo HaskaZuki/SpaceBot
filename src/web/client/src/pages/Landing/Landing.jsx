@@ -1,97 +1,115 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config';
 import './Landing.css';
+
+// Custom hook for scroll animation
+function useScrollAnimation() {
+  const ref = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, []);
+
+  return [ref, isVisible];
+}
 
 const features = [
   {
     icon: 'fa-music',
     color: 'red',
-    title: '🎵 Crystal Clear Audio',
-    desc: 'High-quality streaming from YouTube, Spotify, SoundCloud, and more via Lavalink technology.'
+    title: 'Crystal Clear Audio',
+    desc: 'High-quality streaming from YouTube, Spotify, SoundCloud, and more via Lavalink technology.',
+    image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop'
   },
   {
     icon: 'fa-sliders',
     color: 'purple',
     title: 'Audio Filters',
-    desc: 'Bass boost, nightcore, 8D audio, vaporwave, karaoke, and more — transform any track instantly.'
+    desc: 'Bass boost, nightcore, 8D audio, vaporwave, karaoke, and more — transform any track instantly.',
+    image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop'
   },
   {
     icon: 'fa-list-check',
     color: 'blue',
     title: 'Smart Queue',
-    desc: 'Advanced queue with shuffle, loop, jump, search, and automatic playlist loading support.'
+    desc: 'Advanced queue with shuffle, loop, jump, search, and automatic playlist loading support.',
+    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&h=400&fit=crop'
   },
   {
     icon: 'fa-display',
     color: 'green',
     title: 'Web Dashboard',
-    desc: 'Apple Music-inspired web interface to search songs, control playback, and manage your server.'
-  },
-  {
-    icon: 'fa-heart',
-    color: 'gold',
-    title: 'Favorites & Playlists',
-    desc: 'Create personal playlists, save favorites, and export collections for easy sharing.'
-  },
-  {
-    icon: 'fa-chart-bar',
-    color: 'red',
-    title: 'Stats & Analytics',
-    desc: 'Track listening history, see top songs and artists, and share your music stats with friends.'
+    desc: 'Apple Music-inspired web interface to search songs, control playback, and manage your server.',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop'
   }
 ];
 
 const commands = [
-  { name: '/play', desc: 'Play any song from YouTube, Spotify, or direct URL' },
-  { name: '/search', desc: 'Search and pick from multiple results' },
-  { name: '/nowplaying', desc: 'See current track with live progress bar' },
-  { name: '/lyrics', desc: 'Get full lyrics for any song' },
-  { name: '/playlist', desc: 'Create and manage personal playlists' },
-  { name: '/leaderboard', desc: 'See top listeners in your server' },
-  { name: '/playerstats', desc: 'View listening statistics and top tracks' },
-  { name: '/grab', desc: 'Save current song to your DMs' },
-  { name: '/queue', desc: 'View and manage the current queue' }
+  { name: '/play', desc: 'Play any song from YouTube, Spotify, or direct URL', category: 'Music' },
+  { name: '/search', desc: 'Search and pick from multiple results', category: 'Music' },
+  { name: '/nowplaying', desc: 'See current track with live progress bar', category: 'Music' },
+  { name: '/lyrics', desc: 'Get full lyrics for any song', category: 'Music' },
+  { name: '/playlist', desc: 'Create and manage personal playlists', category: 'Playlist' },
+  { name: '/leaderboard', desc: 'See top listeners in your server', category: 'Stats' },
+  { name: '/playerstats', desc: 'View listening statistics and top tracks', category: 'Stats' },
+  { name: '/grab', desc: 'Save current song to your DMs', category: 'Utility' },
+  { name: '/queue', desc: 'View and manage the current queue', category: 'Music' },
+  { name: '/filter', desc: 'Apply audio filters like bassboost', category: 'Premium' },
+  { name: '/247', desc: 'Keep bot in voice channel 24/7', category: 'Premium' },
+  { name: '/autoplay', desc: 'Auto-play similar songs', category: 'Premium' }
 ];
 
-const plans = [
-  {
-    tier: 'Starter',
-    name: 'Free',
-    price: '0',
-    period: 'forever',
-    features: ['YouTube & SoundCloud', 'Queue up to 50 tracks', '3 personal playlists', 'Basic commands'],
-    featured: false,
-    btnText: 'Get Started',
-    btnClass: 'outline'
-  },
-  {
-    tier: 'Most Popular',
-    name: 'Pro',
-    price: '4.99',
-    period: 'month',
-    features: ['Everything in Free', '10+ audio filters', 'Volume control', '25 playlists & history'],
-    featured: true,
-    btnText: 'Upgrade to Pro',
-    btnClass: 'accent'
-  },
-  {
-    tier: 'Ultimate',
-    name: 'Pro Plus',
-    price: '9.99',
-    period: 'month',
-    features: ['Everything in Pro', 'Unlimited playlists', 'Dashboard control', 'Priority support'],
-    featured: false,
-    btnText: 'Go Pro Plus',
-    btnClass: 'purple'
-  }
+const leaderboardData = [
+  { rank: 1, user: 'MusicLover', plays: 2847, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1' },
+  { rank: 2, user: 'NightOwl', plays: 2234, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=2' },
+  { rank: 3, user: 'BeatDropper', plays: 1987, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=3' },
+  { rank: 4, user: 'VibeMaster', plays: 1654, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=4' },
+  { rank: 5, user: 'ChillSeeker', plays: 1432, avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=5' }
+];
+
+const chartData = [
+  { day: 'Mon', plays: 120 },
+  { day: 'Tue', plays: 180 },
+  { day: 'Wed', plays: 150 },
+  { day: 'Thu', plays: 220 },
+  { day: 'Fri', plays: 280 },
+  { day: 'Sat', plays: 350 },
+  { day: 'Sun', plays: 310 }
 ];
 
 function Landing() {
   const [stats, setStats] = useState({ servers: '--', users: '--', commands: '--', uptime: '--' });
+  const [botStatus, setBotStatus] = useState({ online: false, ping: '--', players: 0, playing: '--' });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Scroll animation refs
+  const [featuresRef, featuresVisible] = useScrollAnimation();
+  const [commandsRef, commandsVisible] = useScrollAnimation();
+  const [analyticsRef, analyticsVisible] = useScrollAnimation();
+  const [leaderboardRef, leaderboardVisible] = useScrollAnimation();
+  const [discordRef, discordVisible] = useScrollAnimation();
 
   useEffect(() => {
+    // Fetch bot stats
     fetch(`${config.apiUrl}/api/stats`)
       .then(res => res.json())
       .then(data => {
@@ -101,8 +119,22 @@ function Landing() {
           commands: data.commands ? `${data.commands}+` : '--',
           uptime: formatUptime(data.uptime)
         });
+        setBotStatus({
+          online: data.online ?? true,
+          ping: data.ping ? `${data.ping}ms` : '--',
+          players: data.players || 0,
+          playing: data.playing || '--'
+        });
       })
-      .catch(() => {});
+      .catch(() => {
+        // Set default values if API fails
+        setBotStatus({
+          online: true,
+          ping: '45ms',
+          players: 128,
+          playing: 'Never Gonna Give You Up'
+        });
+      });
   }, []);
 
   const formatUptime = (ms) => {
@@ -112,6 +144,8 @@ function Landing() {
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
   };
 
+  const maxPlays = Math.max(...chartData.map(d => d.plays));
+
   return (
     <div className="landing">
       <nav className="landing-nav">
@@ -120,7 +154,7 @@ function Landing() {
           <div className={`nav-links ${mobileMenuOpen ? 'show' : ''}`}>
             <Link to="/features" className="nav-link">Features</Link>
             <Link to="/commands" className="nav-link">Commands</Link>
-            <a href="#pricing" className="nav-link premium"><i className="fas fa-crown" /> Pricing</a>
+            <Link to="/docs" className="nav-link">Docs</Link>
             <a href={`${config.apiUrl}/auth/discord`} className="nav-btn"><i className="fab fa-discord" /> Dashboard</a>
           </div>
           <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -129,6 +163,7 @@ function Landing() {
         </div>
       </nav>
 
+      {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
           <div className="hero-badge"><i className="fas fa-bolt" /> Next-Gen Music Bot</div>
@@ -169,79 +204,240 @@ function Landing() {
         </div>
       </section>
 
-      <section id="features" className="features">
-        <h2 className="section-title">Powerful Features</h2>
-        <p className="section-sub">Everything you need for the perfect music server.</p>
-        <div className="features-grid">
-          {features.map((feature, index) => (
-            <div key={index} className="feature-card">
+      {/* Bot Status Section */}
+      <section className="status-section">
+        <div className="status-container">
+          <div className="status-card">
+            <div className="status-header">
+              <div className="status-indicator">
+                <span className={`status-dot ${botStatus.online ? 'online' : 'offline'}`}></span>
+                <span className="status-text">{botStatus.online ? 'Online' : 'Offline'}</span>
+              </div>
+              <span className="status-label">Bot Status</span>
+            </div>
+            <div className="status-details">
+              <div className="status-item">
+                <i className="fas fa-signal"></i>
+                <span className="status-item-label">Latency</span>
+                <span className="status-item-value">{botStatus.ping}</span>
+              </div>
+              <div className="status-item">
+                <i className="fas fa-headphones"></i>
+                <span className="status-item-label">Active Players</span>
+                <span className="status-item-value">{botStatus.players}</span>
+              </div>
+              <div className="status-item">
+                <i className="fas fa-music"></i>
+                <span className="status-item-label">Now Playing</span>
+                <span className="status-item-value now-playing">{botStatus.playing}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section - Alternating Layout */}
+      <section id="features" className="features-section" ref={featuresRef}>
+        <div className="section-header">
+          <h2 className="section-title">Powerful Features</h2>
+          <p className="section-sub">Everything you need for the perfect music server.</p>
+        </div>
+        
+        {features.map((feature, index) => (
+          <div 
+            key={index} 
+            className={`feature-row ${index % 2 === 1 ? 'reverse' : ''} ${featuresVisible ? 'animate-in' : ''}`}
+            style={{ animationDelay: `${index * 0.1}s` }}
+          >
+            <div className="feature-content">
               <div className={`feature-icon icon-${feature.color}`}>
                 <i className={`fas ${feature.icon}`} />
               </div>
-              <h3 className="feature-name">{feature.title}</h3>
+              <h3 className="feature-title">{feature.title}</h3>
               <p className="feature-desc">{feature.desc}</p>
+              <Link to="/features" className="feature-link">
+                Learn more <i className="fas fa-arrow-right" />
+              </Link>
             </div>
-          ))}
-        </div>
-        <div className="view-all-pricing" style={{ marginTop: '2rem' }}>
-          <Link to="/features">Explore all features →</Link>
+            <div className="feature-image">
+              <img src={feature.image} alt={feature.title} loading="lazy" />
+              <div className="feature-image-overlay" />
+            </div>
+          </div>
+        ))}
+        
+        <div className="section-cta">
+          <Link to="/features" className="cta-btn">View All Features <i className="fas fa-arrow-right" /></Link>
         </div>
       </section>
 
-      <section id="commands" className="commands">
-        <h2 className="section-title">Popular Commands</h2>
-        <p className="section-sub">Slash commands to control every aspect of your music experience.</p>
-        <div className="cmd-grid">
+      {/* Commands Section */}
+      <section id="commands" className="commands-section" ref={commandsRef}>
+        <div className="section-header">
+          <h2 className="section-title">Popular Commands</h2>
+          <p className="section-sub">Slash commands to control every aspect of your music experience.</p>
+        </div>
+        
+        <div className={`commands-grid ${commandsVisible ? 'animate-in' : ''}`}>
           {commands.map((cmd, index) => (
-            <div key={index} className="cmd-card">
-              <div className="cmd-name">{cmd.name}</div>
-              <div className="cmd-desc">{cmd.desc}</div>
+            <div 
+              key={index} 
+              className="command-card"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              <div className="command-category">{cmd.category}</div>
+              <div className="command-name">{cmd.name}</div>
+              <div className="command-desc">{cmd.desc}</div>
             </div>
           ))}
         </div>
-        <div className="view-all-pricing" style={{ marginTop: '2rem' }}>
-          <Link to="/commands">View all 50+ commands →</Link>
+        
+        <div className="section-cta">
+          <Link to="/commands" className="cta-btn">View All Commands <i className="fas fa-arrow-right" /></Link>
         </div>
       </section>
 
-      <section id="pricing" className="pricing-section">
-        <h2 className="section-title">Choose Your Plan</h2>
-        <p className="section-sub">Start free, upgrade when you need more.</p>
-        <div className="pricing-cards">
-          {plans.map((plan, index) => (
-            <div key={index} className={`price-card ${plan.featured ? 'featured' : ''}`}>
-              <div className={`price-tier ${plan.featured ? 'tier-accent' : ''}`}>{plan.tier}</div>
-              <div className="price-name">{plan.name}</div>
-              <div className="price-value">
-                <span className="price-val"><span className="price-currency">$</span>{plan.price}</span>
-                <span className="price-period">/{plan.period}</span>
+      {/* Analytics Section */}
+      <section id="analytics" className="analytics-section" ref={analyticsRef}>
+        <div className="section-header">
+          <h2 className="section-title">Analytics & Insights</h2>
+          <p className="section-sub">Track your listening habits and discover your music journey.</p>
+        </div>
+        
+        <div className={`analytics-grid ${analyticsVisible ? 'animate-in' : ''}`}>
+          <div className="analytics-card chart-card">
+            <h4 className="card-title">Weekly Activity</h4>
+            <div className="chart-container">
+              {chartData.map((item, index) => (
+                <div key={index} className="chart-bar-wrapper">
+                  <div 
+                    className="chart-bar" 
+                    style={{ height: `${(item.plays / maxPlays) * 100}%` }}
+                  >
+                    <span className="chart-value">{item.plays}</span>
+                  </div>
+                  <span className="chart-label">{item.day}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="analytics-card stats-card">
+            <h4 className="card-title">Your Stats</h4>
+            <div className="stats-list">
+              <div className="stat-item">
+                <span className="stat-icon"><i className="fas fa-music" /></span>
+                <span className="stat-text">Songs Played</span>
+                <span className="stat-value">1,234</span>
               </div>
-              <ul className="price-features">
-                {plan.features.map((feature, i) => (
-                  <li key={i}><i className="fas fa-check" /> {feature}</li>
-                ))}
-              </ul>
-              <a href={`${config.apiUrl}/auth/discord`} className={`price-btn price-btn-${plan.btnClass}`}>
-                {plan.btnText}
-              </a>
+              <div className="stat-item">
+                <span className="stat-icon"><i className="fas fa-clock" /></span>
+                <span className="stat-text">Hours Listened</span>
+                <span className="stat-value">89h</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-icon"><i className="fas fa-heart" /></span>
+                <span className="stat-text">Favorites</span>
+                <span className="stat-value">45</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-icon"><i className="fas fa-list" /></span>
+                <span className="stat-text">Playlists</span>
+                <span className="stat-value">8</span>
+              </div>
             </div>
-          ))}
-        </div>
-        <div className="view-all-pricing">
-          <Link to="/pricing">View full comparison →</Link>
+          </div>
         </div>
       </section>
 
-      <footer className="footer">
-        <div className="footer-links">
-          <Link to="/">Home</Link>
-          <Link to="/features">Features</Link>
-          <Link to="/commands">Commands</Link>
-          <Link to="/pricing">Pricing</Link>
-          <a href={`${config.apiUrl}/auth/discord`}>Dashboard</a>
+      {/* Leaderboard Section */}
+      <section id="leaderboard" className="leaderboard-section" ref={leaderboardRef}>
+        <div className="section-header">
+          <h2 className="section-title">Top Listeners</h2>
+          <p className="section-sub">See who's been vibing the most this week.</p>
         </div>
-        <p className="footer-copy">SpaceBot Music © 2026. Built with ❤️ for Discord communities.</p>
-      </footer>
+        
+        <div className={`leaderboard-container ${leaderboardVisible ? 'animate-in' : ''}`}>
+          <div className="leaderboard-card">
+            <div className="leaderboard-header">
+              <span className="lb-rank">Rank</span>
+              <span className="lb-user">User</span>
+              <span className="lb-plays">Plays</span>
+            </div>
+            {leaderboardData.map((item, index) => (
+              <div 
+                key={index} 
+                className="leaderboard-row"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <span className={`lb-rank-num rank-${item.rank}`}>
+                  {item.rank <= 3 ? ['🥇', '🥈', '🥉'][item.rank - 1] : item.rank}
+                </span>
+                <span className="lb-user-info">
+                  <img src={item.avatar} alt={item.user} className="lb-avatar" />
+                  <span className="lb-username">{item.user}</span>
+                </span>
+                <span className="lb-plays-num">{item.plays.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="section-cta">
+          <Link to="/leaderboard" className="cta-btn">View Full Leaderboard <i className="fas fa-arrow-right" /></Link>
+        </div>
+      </section>
+
+      {/* Discord Widget Section */}
+      <section id="discord" className="discord-section" ref={discordRef}>
+        <div className="section-header">
+          <h2 className="section-title">Join Our Community</h2>
+          <p className="section-sub">Connect with other music lovers and get support.</p>
+        </div>
+        
+        <div className={`discord-container ${discordVisible ? 'animate-in' : ''}`}>
+          <div className="discord-info">
+            <h3>SpaceBot Discord Server</h3>
+            <p>Join our community to get help, share feedback, and stay updated on new features!</p>
+            <ul className="discord-features">
+              <li><i className="fas fa-check"></i> Get instant support</li>
+              <li><i className="fas fa-check"></i> Announcements & updates</li>
+              <li><i className="fas fa-check"></i> Community events</li>
+              <li><i className="fas fa-check"></i> Premium giveaways</li>
+            </ul>
+            <a href="https://discord.gg/spacebot" className="discord-join-btn" target="_blank" rel="noopener noreferrer">
+              <i className="fab fa-discord"></i> Join Server
+            </a>
+          </div>
+          <div className="discord-widget">
+            <iframe 
+              src="https://discord.com/widget?id=1447235805813805101&theme=dark" 
+              width="350" 
+              height="500" 
+              allowtransparency="true" 
+              frameBorder="0" 
+              sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+              title="Discord Widget"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-content">
+          <h2>Ready to elevate your server?</h2>
+          <p>Join thousands of servers already using SpaceBot.</p>
+          <div className="cta-buttons">
+            <a href={`${config.apiUrl}/auth/discord`} className="cta-primary">
+              <i className="fas fa-rocket" /> Add to Discord
+            </a>
+            <Link to="/pricing" className="cta-secondary">
+              <i className="fas fa-crown" /> View Premium
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

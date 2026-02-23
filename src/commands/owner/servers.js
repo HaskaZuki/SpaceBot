@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
+const emoji = require('../../utils/emojiConfig');
 
 const PER_PAGE = 10;
 
@@ -90,7 +91,7 @@ module.exports = {
 
         collector.on('collect', async (btnInteraction) => {
             if (btnInteraction.user.id !== interaction.user.id) {
-                return btnInteraction.reply({ content: '❌ This is not your server list!', flags: MessageFlags.Ephemeral });
+                return btnInteraction.reply({ content: `${emoji.status.error} This is not your server list!`, flags: MessageFlags.Ephemeral });
             }
 
             if (btnInteraction.customId.includes('prev')) {

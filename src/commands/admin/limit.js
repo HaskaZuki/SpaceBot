@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -28,7 +29,7 @@ module.exports = {
             await config.save();
             
             const typeName = type === 'maxSongDuration' ? 'Duration' : 'Count';
-            await interaction.reply(`✅ ${typeName} limit set to **${val}** ${type === 'maxSongDuration' ? 'seconds' : 'songs'}`);
+            await interaction.reply(`${emoji.status.success} ${typeName} limit set to **${val}** ${type === 'maxSongDuration' ? 'seconds' : 'songs'}`);
         } catch (error) {
             console.error('limit error:', error);
             await interaction.reply({ content: 'Failed to update limit.', flags: 64 });

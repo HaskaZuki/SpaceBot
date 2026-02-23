@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const https = require('https');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,7 +28,7 @@ module.exports = {
         } else {
             const playerState = musicPlayer.players.get(guildId);
             if (!playerState || !playerState.currentTrack) {
-                return interaction.editReply('❌ No song is currently playing! Use `/lyrics query:song name` to search.');
+                return interaction.editReply(`${emoji.status.error} No song is currently playing! Use \`/lyrics query:song name\` to search.`);
             }
             
             const track = playerState.currentTrack;
@@ -39,14 +40,14 @@ module.exports = {
             const lyrics = await fetchLyrics(searchTitle, searchArtist);
             
             if (!lyrics) {
-                return interaction.editReply(`❌ No lyrics found for: **${searchTitle}**\n\nTry a more specific search with \`/lyrics query:artist - song\``);
+                return interaction.editReply(`${emoji.status.error} No lyrics found for: **${searchTitle}**\n\nTry a more specific search with \`/lyrics query:artist - song\``);
             }
 
             const chunks = splitLyrics(lyrics.plainLyrics, 3900);
             
             const embed = new EmbedBuilder()
                 .setColor('#FFFF64')
-                .setTitle(`🎵 ${lyrics.trackName}`)
+                .setTitle(lyrics.trackName)
                 .setAuthor({ name: lyrics.artistName })
                 .setDescription(chunks[0])
                 .setFooter({ 
@@ -67,7 +68,7 @@ module.exports = {
 
         } catch (error) {
             console.error('Lyrics error:', error);
-            await interaction.editReply('❌ Failed to fetch lyrics. Please try again.');
+            await interaction.editReply(`${emoji.status.error} Failed to fetch lyrics. Please try again.`);
         }
     },
 };

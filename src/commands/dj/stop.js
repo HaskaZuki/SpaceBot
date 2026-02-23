@@ -9,6 +9,6 @@ module.exports = {
     async execute(interaction) {
         const guildId = interaction.guild.id;
         await musicPlayer.stopPlayer(interaction.client, guildId);
-        await interaction.reply({ content: '⏹️ Stopped the music and cleared the queue.', flags: 64 });
+        await interaction.reply({ content: 'Stopped the music and cleared the queue.', flags: 64 });
     },
 };

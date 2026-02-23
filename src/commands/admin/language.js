@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -43,7 +44,7 @@ module.exports = {
                 ko: '🇰🇷 Korean', pt: '🇧🇷 Portuguese', ru: '🇷🇺 Russian',
                 zh: '🇨🇳 Chinese', th: '🇹🇭 Thai'
             };
-            await interaction.reply(`✅ Language set to **${langNames[lang] || lang}**`);
+            await interaction.reply(`${emoji.status.success} Language set to **${langNames[lang] || lang}**`);
         } catch (error) {
             console.error('language error:', error);
             await interaction.reply({ content: 'Failed to update language.', flags: 64 });

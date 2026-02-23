@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -53,8 +54,8 @@ module.exports = {
                             value: [
                                 `**Volume:** ${config.volume}%`,
                                 `**Loop:** ${config.loopMode}`,
-                                `**Auto Play:** ${config.autoPlay ? '✅' : '❌'}`,
-                                `**24/7 Mode:** ${config.alwaysOn ? '✅' : '❌'}`
+                                `**Auto Play:** ${config.autoPlay ? emoji.status.success : emoji.status.error}`,
+                                `**24/7 Mode:** ${config.alwaysOn ? emoji.status.success : emoji.status.error}`
                             ].join('\n'),
                             inline: true
                         },
@@ -63,7 +64,7 @@ module.exports = {
                             value: [
                                 `**Max Duration:** ${maxDuration}`,
                                 `**Max Queue:** ${maxSongs}`,
-                                `**Allow Playlists:** ${config.allowPlaylists ? '✅' : '❌'}`
+                                `**Allow Playlists:** ${config.allowPlaylists ? emoji.status.success : emoji.status.error}`
                             ].join('\n'),
                             inline: true
                         },
@@ -79,9 +80,9 @@ module.exports = {
                         {
                             name: 'Announcements | Settings',
                             value: [
-                                `**Announce Songs:** ${config.announceSongs ? '✅' : '❌'}`,
-                                `**Show Requester:** ${config.showRequester ? '✅' : '❌'}`,
-                                `**Delete Announcements:** ${config.deleteSongAnnouncements ? '✅' : '❌'}`
+                                `**Announce Songs:** ${config.announceSongs ? emoji.status.success : emoji.status.error}`,
+                                `**Show Requester:** ${config.showRequester ? emoji.status.success : emoji.status.error}`,
+                                `**Delete Announcements:** ${config.deleteSongAnnouncements ? emoji.status.success : emoji.status.error}`
                             ].join('\n'),
                             inline: false
                         }
@@ -150,12 +151,12 @@ module.exports = {
                         await config.save();
 
                         await btnInteraction.update({
-                            content: '✅ **All settings have been reset to default!**\n\nUse `/settings view` to see the current configuration.',
+                            content: `${emoji.status.success} **All settings have been reset to default!**\n\nUse \`/settings view\` to see the current configuration.`,
                             components: []
                         });
                     } else {
                         await btnInteraction.update({
-                            content: '❌ Reset cancelled.',
+                            content: `${emoji.status.error} Reset cancelled.`,
                             components: []
                         });
                     }
@@ -175,9 +176,9 @@ module.exports = {
         } catch (error) {
             console.error('Settings command error:', error);
             if (interaction.replied || interaction.deferred) {
-                await interaction.editReply({ content: '❌ Failed to process settings.' });
+                await interaction.editReply({ content: `${emoji.status.error} Failed to process settings.` });
             } else {
-                await interaction.reply({ content: '❌ Failed to process settings.', flags: 64 });
+                await interaction.reply({ content: `${emoji.status.error} Failed to process settings.`, flags: 64 });
             }
         }
     },

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const i18n = require('../../utils/i18n');
+const emoji = require('../../utils/emojiConfig');
 
 const ITEMS_PER_PAGE = 10;
 
@@ -52,12 +53,12 @@ module.exports = {
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
                     .setCustomId(`queue_prev_${userId}`)
-                    .setEmoji('◀️')
+                    .setLabel('Prev')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page === 0),
                 new ButtonBuilder()
                     .setCustomId(`queue_next_${userId}`)
-                    .setEmoji('▶️')
+                    .setLabel('Next')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page >= totalPages - 1)
             );
@@ -78,7 +79,7 @@ module.exports = {
 
         collector.on('collect', async (btnInteraction) => {
             if (btnInteraction.user.id !== interaction.user.id) {
-                return btnInteraction.reply({ content: '❌ This is not your queue view!', flags: MessageFlags.Ephemeral });
+                return btnInteraction.reply({ content: `${emoji.status.error} This is not your queue view!`, flags: MessageFlags.Ephemeral });
             }
 
             if (btnInteraction.customId.includes('prev')) {

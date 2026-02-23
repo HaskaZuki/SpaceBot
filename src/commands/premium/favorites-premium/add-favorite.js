@@ -2,6 +2,7 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../../utils/musicPlayer');
 const storage = require('../../../utils/storage');
 const { validatePlayerState } = require('../../../utils/validators');
+const emoji = require('../../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,7 +17,7 @@ module.exports = {
         
         if (!userSettings || !userSettings.isPremium) {
              return interaction.reply({
-                 content: '🔒 **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to save unlimited tracks.',
+                 content: `${emoji.premium.star} **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to save unlimited tracks.`,
                  flags: MessageFlags.Ephemeral
              });
         }
@@ -26,7 +27,7 @@ module.exports = {
             const playerCheck = validatePlayerState(playerState, { requireTrack: true });
             if (!playerCheck.valid) {
                 return interaction.reply({ 
-                    content: `❌ ${playerCheck.error}`,
+                    content: `${emoji.status.error} ${playerCheck.error}`,
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -47,13 +48,13 @@ module.exports = {
             
             if (alreadyFavorited) {
                 return interaction.reply({
-                    content: `⭐ **${currentTrack.info.title}** is already in your favorites!`,
+                    content: `${emoji.premium.star} **${currentTrack.info.title}** is already in your favorites!`,
                     flags: MessageFlags.Ephemeral
                 });
             }
             if (userFavorites.favorites.length >= userFavorites.maxFavorites) {
                 return interaction.reply({
-                    content: `❌ Favorites limit reached (${userFavorites.maxFavorites})!\n\nUse \`/unfavorite\` to remove some tracks first.`,
+                    content: `${emoji.status.error} Favorites limit reached (${userFavorites.maxFavorites})!\n\nUse \`/unfavorite\` to remove some tracks first.`,
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -68,19 +69,19 @@ module.exports = {
                 
                 if (success) {
                     await interaction.reply({
-                        content: `⭐ Added to favorites: **${currentTrack.info.title}**\n\n` +
+                        content: `${emoji.premium.star} Added to favorites: **${currentTrack.info.title}**\n\n` +
                                 `Total favorites: ${userFavorites.favorites.length}/${userFavorites.maxFavorites}`
                     });
                 } else {
                     await interaction.reply({
-                        content: '❌ Failed to save favorite!',
+                        content: `${emoji.status.error} Failed to save favorite!`,
                         flags: MessageFlags.Ephemeral
                     });
                 }
             } catch (saveError) {
                 console.error('Save favorite error:', saveError);
                 await interaction.reply({
-                    content: '❌ An error occurred while saving your favorite!',
+                    content: `${emoji.status.error} An error occurred while saving your favorite!`,
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -90,7 +91,7 @@ module.exports = {
             
             if (!interaction.replied) {
                 await interaction.reply({
-                    content: '❌ An error occurred!',
+                    content: `${emoji.status.error} An error occurred!`,
                     flags: MessageFlags.Ephemeral
                 });
             }

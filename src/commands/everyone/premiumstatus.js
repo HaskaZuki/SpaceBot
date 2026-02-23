@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,21 +21,21 @@ module.exports = {
         
         const embed = new EmbedBuilder()
             .setColor('#ffd700')
-            .setTitle('💎 Premium Status Check')
+            .setTitle(`${emoji.premium.diamond} Premium Status Check`)
             .setDescription('Current Premium status for you and this server.')
             .addFields(
                 { 
                     name: `👤 User Status (${interaction.user.username})`, 
                     value: isUserPrem 
-                        ? `✅ **Premium Active**\nExpires: ${userSettings.premiumExpiresAt ? new Date(userSettings.premiumExpiresAt).toDateString() : '**Lifetime**'}`
-                        : '❌ **Free Plan**',
+                        ? `${emoji.status.success} **Premium Active**\nExpires: ${userSettings.premiumExpiresAt ? new Date(userSettings.premiumExpiresAt).toDateString() : '**Lifetime**'}`
+                        : `${emoji.status.error} **Free Plan**`,
                     inline: false 
                 },
                 { 
                     name: `🏰 Server Status (${interaction.guild.name})`, 
                     value: isServerPrem 
-                        ? `✅ **Premium Active**\nExpires: ${guildConfig.premiumExpiresAt ? new Date(guildConfig.premiumExpiresAt).toDateString() : '**Lifetime**'}`
-                        : '❌ **Free Plan**',
+                        ? `${emoji.status.success} **Premium Active**\nExpires: ${guildConfig.premiumExpiresAt ? new Date(guildConfig.premiumExpiresAt).toDateString() : '**Lifetime**'}`
+                        : `${emoji.status.error} **Free Plan**`,
                     inline: false 
                 }
             )

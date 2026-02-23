@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const { formatTime, validatePlayerState, validateVoiceState } = require('../../utils/validators');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,12 +20,12 @@ module.exports = {
         try {
             const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
             if (!voiceCheck.valid) {
-                return interaction.reply({ content: `❌ ${voiceCheck.error}`, flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: `${emoji.status.error} ${voiceCheck.error}`, flags: MessageFlags.Ephemeral });
             }
             const playerState = musicPlayer.players.get(guildId);
             const playerCheck = validatePlayerState(playerState, { requireTrack: true, requirePlayer: true });
             if (!playerCheck.valid) {
-                return interaction.reply({ content: `❌ ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: `${emoji.status.error} ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
             }
             const seconds = interaction.options.getInteger('seconds') || 10;
             const forwardMs = seconds * 1000;
@@ -33,7 +34,7 @@ module.exports = {
             const newPosition = Math.min(trackDuration, currentPosition + forwardMs);
             if (newPosition >= trackDuration - 1000) {
                 return interaction.reply({
-                    content: '⏭️ Near end of track, skipping to next song instead...'
+                    content: `${emoji.controls.skip} Near end of track, skipping to next song instead...`
                 }).then(() => {
                     musicPlayer.skipTrack(interaction.client, guildId);
                 });
@@ -42,13 +43,13 @@ module.exports = {
                 await playerState.player.seekTo(newPosition);
                 
                 await interaction.reply({
-                    content: `⏩ Fast-forwarded **${seconds}s** to **${formatTime(newPosition)}**`
+                    content: `${emoji.controls.forward} Fast-forwarded **${seconds}s** to **${formatTime(newPosition)}**`
                 });
                 
             } catch (seekError) {
                 console.error('Forward error:', seekError);
                 await interaction.reply({ 
-                    content: '❌ Failed to fast-forward. This track may not support seeking.', 
+                    content: `${emoji.status.error} Failed to fast-forward. This track may not support seeking.`, 
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -58,7 +59,7 @@ module.exports = {
             
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({ 
-                    content: '❌ An error occurred while fast-forwarding!', 
+                    content: `${emoji.status.error} An error occurred while fast-forwarding!`, 
                     flags: MessageFlags.Ephemeral
                 });
             }

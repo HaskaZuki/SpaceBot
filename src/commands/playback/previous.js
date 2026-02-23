@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const { validatePlayerState, validateVoiceState } = require('../../utils/validators');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,16 +14,16 @@ module.exports = {
         try {
             const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
             if (!voiceCheck.valid) {
-                return interaction.reply({ content: `❌ ${voiceCheck.error}`, flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: `${emoji.status.error} ${voiceCheck.error}`, flags: MessageFlags.Ephemeral });
             }
             const playerState = musicPlayer.players.get(guildId);
             const playerCheck = validatePlayerState(playerState, { requirePlayer: true });
             if (!playerCheck.valid) {
-                return interaction.reply({ content: `❌ ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
+                return interaction.reply({ content: `${emoji.status.error} ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
             }
             if (!playerState.history || playerState.history.length === 0) {
                 return interaction.reply({ 
-                    content: '❌ No previous track in history!', 
+                    content: `${emoji.status.error} No previous track in history!`, 
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -37,13 +38,13 @@ module.exports = {
                 playerState.currentTrack = previousTrack;
                 
                 await interaction.reply({
-                    content: `⏮️ Playing previous track: **${previousTrack.info.title}**`
+                    content: `${emoji.controls.previous} Playing previous track: **${previousTrack.info.title}**`
                 });
                 
             } catch (playError) {
                 console.error('Previous track play error:', playError);
                 await interaction.reply({ 
-                    content: '❌ Failed to play previous track!', 
+                    content: `${emoji.status.error} Failed to play previous track!`, 
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -53,7 +54,7 @@ module.exports = {
             
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({ 
-                    content: '❌ An error occurred!', 
+                    content: `${emoji.status.error} An error occurred!`, 
                     flags: MessageFlags.Ephemeral
                 });
             }

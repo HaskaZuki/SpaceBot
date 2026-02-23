@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
+const emoji = require('../../utils/emojiConfig');
 
 const commandDetails = {
     play: {
@@ -470,11 +471,11 @@ const commandDetails = {
 };
 
 const categoryConfig = {
-    everyone: { emoji: '🎵', label: 'Music', color: '#e91e63', permission: 'Everyone' },
+    everyone: { emoji: emoji.animated.notes, label: 'Music', color: '#e91e63', permission: 'Everyone' },
     dj: { emoji: '🎚️', label: 'DJ Controls', color: '#9c27b0', permission: 'DJ Role / Admin' },
-    playback: { emoji: '⏯️', label: 'Playback', color: '#3F51B5', permission: 'DJ Role / Admin' },
-    premium: { emoji: '💎', label: 'Premium', color: '#f1c40f', permission: 'Premium Server' },
-    admin: { emoji: '⚙️', label: 'Admin', color: '#95a5a6', permission: 'Administrator' }
+    playback: { emoji: `${emoji.controls.play}`, label: 'Playback', color: '#3F51B5', permission: 'DJ Role / Admin' },
+    premium: { emoji: emoji.animated.premium, label: 'Premium', color: '#f1c40f', permission: 'Premium Server' },
+    admin: { emoji: emoji.ui.gear, label: 'Admin', color: '#95a5a6', permission: 'Administrator' }
 };
 
 const categoryOrder = ['everyone', 'dj', 'playback', 'premium', 'admin'];
@@ -527,7 +528,7 @@ async function showCommandDetail(interaction, cmdName) {
             : '';
             
         return interaction.reply({ 
-            content: `❌ Command \`/${cmdName}\` not found.${suggestionText}`, 
+            content: `${emoji.status.error} Command \`/${cmdName}\` not found.${suggestionText}`, 
             flags: MessageFlags.Ephemeral
         });
     }
@@ -648,7 +649,7 @@ async function showOverview(interaction) {
 
     collector.on('collect', async (btnInteraction) => {
         if (btnInteraction.user.id !== interaction.user.id) {
-            return btnInteraction.reply({ content: '❌ This menu is not for you!', flags: MessageFlags.Ephemeral });
+            return btnInteraction.reply({ content: `${emoji.status.error} This menu is not for you!`, flags: MessageFlags.Ephemeral });
         }
 
         const parts = btnInteraction.customId.split('_');

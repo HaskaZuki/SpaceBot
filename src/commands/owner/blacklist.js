@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -36,8 +37,10 @@ module.exports = {
                     const reason = interaction.options.getString('reason') || 'No reason provided';
                     config.isBlacklisted = true;
                     config.blacklistReason = reason;
-                    await config.save();                    let leftGuild = false;
-                    if (interaction.client.shard) {                        const results = await interaction.client.shard.broadcastEval(async (c, ctx) => {
+                    await config.save();
+                    let leftGuild = false;
+                    if (interaction.client.shard) {
+                        const results = await interaction.client.shard.broadcastEval(async (c, ctx) => {
                             const guild = c.guilds.cache.get(ctx.guildId);
                             if (guild) {
                                 await guild.leave();
@@ -46,7 +49,8 @@ module.exports = {
                             return false;
                         }, { context: { guildId } });
                         leftGuild = results.some(r => r === true);
-                    } else {                        const guild = interaction.client.guilds.cache.get(guildId);
+                    } else {
+                        const guild = interaction.client.guilds.cache.get(guildId);
                         if (guild) {
                             await guild.leave();
                             leftGuild = true;
@@ -73,7 +77,7 @@ module.exports = {
 
                     const embed = new EmbedBuilder()
                         .setColor('#00ff00')
-                        .setTitle('✅ Server Removed from Blacklist')
+                        .setTitle(`${emoji.status.success} Server Removed from Blacklist`)
                         .addFields({ name: 'Server ID', value: guildId })
                         .setTimestamp();
 
@@ -83,7 +87,7 @@ module.exports = {
                 case 'check': {
                     const embed = new EmbedBuilder()
                         .setColor(config.isBlacklisted ? '#ff0000' : '#00ff00')
-                        .setTitle(config.isBlacklisted ? '🚫 Server is Blacklisted' : '✅ Server is NOT Blacklisted')
+                        .setTitle(config.isBlacklisted ? '🚫 Server is Blacklisted' : `${emoji.status.success} Server is NOT Blacklisted`)
                         .addFields(
                             { name: 'Server ID', value: guildId, inline: true },
                             { name: 'Status', value: config.isBlacklisted ? 'Blacklisted' : 'Clear', inline: true }

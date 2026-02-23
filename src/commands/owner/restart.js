@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -66,7 +67,7 @@ module.exports = {
             if (shardId < 0 || shardId >= client.shard.count) {
                 const embed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle('❌ Invalid Shard ID')
+                    .setTitle(`${emoji.status.error} Invalid Shard ID`)
                     .setDescription(`Shard ID must be between **0** and **${client.shard.count - 1}**.`)
                     .addFields({
                         name: 'Current Shards',

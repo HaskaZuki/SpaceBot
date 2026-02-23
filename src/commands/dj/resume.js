@@ -13,7 +13,7 @@ module.exports = {
             if (playerState && playerState.player && playerState.player.paused) {
                 playerState.player.setPaused(false);
                 musicPlayer.updateDashboard(interaction.client, guildId);
-                await interaction.reply({ content: '▶️ Resumed the music.', flags: 64 });
+                await interaction.reply({ content: 'Resumed the music.', flags: 64 });
             } else {
                 await interaction.reply({ content: 'Music is not paused or not playing.', flags: 64 });
             }

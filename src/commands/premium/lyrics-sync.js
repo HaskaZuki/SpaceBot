@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const https = require('https');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -14,7 +15,7 @@ module.exports = {
         const playerState = musicPlayer.players.get(guildId);
 
         if (!playerState?.currentTrack) {
-            return interaction.reply({ content: '❌ No track is currently playing!', flags: 64 });
+            return interaction.reply({ content: `${emoji.status.error} No track is currently playing!`, flags: 64 });
         }
 
         await interaction.deferReply();
@@ -30,14 +31,14 @@ module.exports = {
 
             if (!lyricsData || !lyricsData.syncedLyrics) {
                 return interaction.editReply(
-                    `❌ No synced lyrics available for: **${track.info.title}**\n\n` +
+                    `${emoji.status.error} No synced lyrics available for: **${track.info.title}**\n\n` +
                     `Try \`/lyrics\` for plain lyrics instead.`
                 );
             }
 
             const lines = parseLRC(lyricsData.syncedLyrics);
             if (lines.length === 0) {
-                return interaction.editReply('❌ Synced lyrics could not be parsed.');
+                return interaction.editReply(`${emoji.status.error} Synced lyrics could not be parsed.`);
             }
 
             const currentLineIndex = findCurrentLine(lines, position);
@@ -47,7 +48,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#8B5CF6')
-                .setAuthor({ name: '🎤 Synced Lyrics' })
+                .setAuthor({ name: `${emoji.animated.notes} Synced Lyrics` })
                 .setTitle(lyricsData.trackName)
                 .setDescription(`${progressBar}\n\n${display}`)
                 .setFooter({ text: `${lyricsData.artistName} • Use this command again to refresh • Source: LRCLIB` })
@@ -60,7 +61,7 @@ module.exports = {
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
             console.error('Lyrics-sync error:', error);
-            await interaction.editReply('❌ Failed to fetch synced lyrics. Please try again.');
+            await interaction.editReply(`${emoji.status.error} Failed to fetch synced lyrics. Please try again.`);
         }
     },
 };
@@ -122,7 +123,7 @@ function buildSyncedDisplay(lines, currentIndex, contextLines = 7) {
     for (let i = start; i < end; i++) {
         const timestamp = formatTimestamp(lines[i].time);
         if (i === currentIndex) {
-            displayLines.push(`**▶ \`${timestamp}\` ${lines[i].text}**`);
+            displayLines.push(`**${emoji.controls.play} \`${timestamp}\` ${lines[i].text}**`);
         } else if (i < currentIndex) {
             displayLines.push(`ㅤ\`${timestamp}\` ~~${lines[i].text}~~`);
         } else {

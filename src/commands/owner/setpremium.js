@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const UserSettings = require('../../models/UserSettings');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 function parseDuration(durationStr) {
     if (!durationStr || durationStr === 'lifetime') return null;
@@ -74,7 +75,7 @@ module.exports = {
             if (durationStr && durationStr !== 'lifetime') {
                 durationMs = parseDuration(durationStr);
                 if (!durationMs) {
-                    return interaction.reply({ content: '❌ Invalid duration format! Use: 30d, 12h, 60m or "lifetime"', flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.error} Invalid duration format! Use: 30d, 12h, 60m or "lifetime"`, flags: 64 });
                 }
                 expiresAt = new Date(Date.now() + durationMs);
             }
@@ -93,7 +94,7 @@ module.exports = {
                     await user.save();
                     
                     const timeInfo = expiresAt ? `until <t:${Math.floor(expiresAt.getTime()/1000)}:F>` : '**Lifetime**';
-                    return interaction.reply({ content: `✅ **User Premium Activated** for <@${targetId}> (${targetId})\n📅 Duration: ${timeInfo}`, flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.success} **User Premium Activated** for <@${targetId}> (${targetId})\n📅 Duration: ${timeInfo}`, flags: 64 });
                 } else {
                     user.isPremium = false;
                     user.premiumExpiresAt = null;
@@ -113,7 +114,7 @@ module.exports = {
                     await guild.save();
 
                     const timeInfo = expiresAt ? `until <t:${Math.floor(expiresAt.getTime()/1000)}:F>` : '**Lifetime**';
-                    return interaction.reply({ content: `✅ **Server Premium Activated** for Guild ID: \`${targetId}\`\n📅 Duration: ${timeInfo}`, flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.success} **Server Premium Activated** for Guild ID: \`${targetId}\`\n📅 Duration: ${timeInfo}`, flags: 64 });
                 } else {
                     guild.isPremium = false;
                     guild.premiumExpiresAt = null;
@@ -127,7 +128,7 @@ module.exports = {
 
         } catch (error) {
             console.error(error);
-            return interaction.reply({ content: '❌ Database error occurred.', flags: 64 });
+            return interaction.reply({ content: `${emoji.status.error} Database error occurred.`, flags: 64 });
         }
     }
 };

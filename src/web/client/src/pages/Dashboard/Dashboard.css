@@ -164,6 +164,29 @@
   color: var(--text);
 }
 
+.empty-state p {
+  margin-bottom: 1.5rem;
+}
+
+.add-bot-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--accent);
+  color: white;
+  padding: 0.875rem 1.5rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.add-bot-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(250, 35, 59, 0.3);
+}
+
 .loading-container {
   display: flex;
   justify-content: center;

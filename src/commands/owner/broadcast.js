@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -78,7 +79,7 @@ module.exports = {
         }
 
         const shardInfo = client.shard ? ` (${client.shard.count} shards)` : '';
-        await interaction.editReply(`📢 **Announcement sent!${shardInfo}**\n✅ Sent: **${totalSent}**\n❌ Failed: **${totalFailed}**`);
+        await interaction.editReply(`📢 **Announcement sent!${shardInfo}**\n${emoji.status.success} Sent: **${totalSent}**\n${emoji.status.error} Failed: **${totalFailed}**`);
     },
 };
 

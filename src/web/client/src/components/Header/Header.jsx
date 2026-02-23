@@ -91,10 +91,6 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
   return (
     <header className="top-nav">
       <div className="nav-left">
-        <Link to="/dashboard" className="logo-container">
-          <div className="logo-icon">🚀</div>
-          <span className="logo-text">SpaceBot</span>
-        </Link>
         {showToggle && (
           <button className="toggle-btn" onClick={onToggleSidebar}>
             <i className="fas fa-bars" />

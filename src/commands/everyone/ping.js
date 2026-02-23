@@ -9,6 +9,6 @@ module.exports = {
         const { resource } = await interaction.reply({ content: 'Pinging...', withResponse: true, flags: MessageFlags.Ephemeral });
         const sent = resource.message;
         const latency = sent.createdTimestamp - interaction.createdTimestamp;
-        await interaction.editReply(`🏓 Pong! Latency: ${latency}ms. API Latency: ${Math.round(interaction.client.ws.ping)}ms`);
+        await interaction.editReply(`Pong! Latency: ${latency}ms. API Latency: ${Math.round(interaction.client.ws.ping)}ms`);
     },
 };

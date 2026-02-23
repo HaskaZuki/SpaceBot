@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -55,14 +56,14 @@ module.exports = {
             if (subcommand === 'unset') {
                 if (!config.djRoleId) {
                     return interaction.reply({ 
-                        content: '❌ No DJ role is currently set.', 
+                        content: `${emoji.status.error} No DJ role is currently set.`, 
                         flags: 64 
                     });
                 }
                 config.djRoleId = null;
                 await config.save();
                 return interaction.reply({ 
-                    content: '✅ DJ role has been removed. All administrators can now use DJ commands.', 
+                    content: `${emoji.status.success} DJ role has been removed. All administrators can now use DJ commands.`, 
                     ephemeral: false 
                 });
             }
@@ -86,14 +87,14 @@ module.exports = {
                 await config.save();
 
                 await interaction.reply({ 
-                    content: `✅ Successfully set the DJ role to ${role}.\n` +
+                    content: `${emoji.status.success} Successfully set the DJ role to ${role}.\n` +
                             `Users with this role can now use DJ commands.`, 
                     ephemeral: false 
                 });
             }
         } catch (error) {
             console.error('setdj error:', error);
-            await interaction.reply({ content: '❌ Failed to save DJ role configuration.', flags: 64 });
+            await interaction.reply({ content: `${emoji.status.error} Failed to save DJ role configuration.`, flags: 64 });
         }
     },
 };

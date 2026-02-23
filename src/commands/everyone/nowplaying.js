@@ -1,14 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
-
-const sourceIcons = {
-    youtube: '🔴',
-    soundcloud: '🟠',
-    spotify: '🟢',
-    applemusic: '🍎',
-    deezer: '🎵',
-    default: '🎶'
-};
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -22,7 +14,7 @@ module.exports = {
         const playerState = musicPlayer.players.get(guildId);
 
         if (!playerState || !playerState.currentTrack) {
-            return interaction.reply({ content: '❌ Nothing is currently playing!', flags: 64 });
+            return interaction.reply({ content: `${emoji.status.error} Nothing is currently playing!`, flags: 64 });
         }
 
         const track = playerState.currentTrack;
@@ -32,14 +24,14 @@ module.exports = {
         const isStream = track.info.isStream || false;
 
         const sourceName = track.info.sourceName || 'default';
-        const sourceIcon = sourceIcons[sourceName] || sourceIcons.default;
+        const sourceIcon = emoji.getSourceIcon(sourceName);
 
         const progressBar = isStream
             ? '🔴 LIVE STREAM'
             : `${musicPlayer.createProgressBar(position, duration)} \`${musicPlayer.formatTime(position)} / ${musicPlayer.formatTime(duration)}\``;
 
         const loopMode = playerState.loop || 'off';
-        const loopDisplay = { off: '▶️ Normal', track: '🔂 Track', queue: '🔁 Queue' };
+        const loopDisplay = emoji.getLoopDisplay(loopMode);
         const queueLength = playerState.queue?.length || 0;
 
         let requestedByText = track.requestedByName || null;
@@ -57,14 +49,14 @@ module.exports = {
 
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setAuthor({ name: '🎵 Now Playing' })
+            .setAuthor({ name: `${emoji.animated.disc} Now Playing` })
             .setTitle(track.info.title)
             .setURL(track.info.uri || null)
             .setDescription(
                 `${progressBar}\n\n` +
                 `**Artist:** ${track.info.author || 'Unknown'}\n` +
                 `**Source:** ${sourceIcon} ${sourceName.charAt(0).toUpperCase() + sourceName.slice(1)}\n` +
-                `**Loop:** ${loopDisplay[loopMode] || '▶️ Normal'}\n` +
+                `**Loop:** ${loopDisplay}\n` +
                 `**Queue:** ${queueLength} track${queueLength !== 1 ? 's' : ''} remaining`
             )
             .setFooter({

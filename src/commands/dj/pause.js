@@ -10,7 +10,7 @@ module.exports = {
         const guildId = interaction.guild.id;
         try {
             const isPaused = await musicPlayer.pauseResume(interaction.client, guildId);
-            await interaction.reply({ content: isPaused ? '⏸️ Paused the music.' : '▶️ Resumed the music.', flags: 64 });
+            await interaction.reply({ content: isPaused ? 'Paused the music.' : 'Resumed the music.', flags: 64 });
         } catch (error) {
             await interaction.reply({ content: 'Failed to pause/resume.', flags: 64 });
         }

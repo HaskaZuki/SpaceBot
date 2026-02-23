@@ -109,9 +109,22 @@ module.exports = (client) => {
             const userGuilds = req.user.guilds || [];
             const botGuilds = client.guilds.cache;
             
+            // Filter servers where user has admin permissions
             const adminGuilds = userGuilds.filter(g => {
                 const hasAdmin = (BigInt(g.permissions) & 0x8n) === 0x8n;
-                return hasAdmin && botGuilds.has(g.id);
+                return hasAdmin;
+            }).map(g => ({
+                id: g.id,
+                name: g.name,
+                icon: g.icon,
+                hasBot: botGuilds.has(g.id)
+            }));
+
+            // Sort: servers with bot first, then alphabetically
+            adminGuilds.sort((a, b) => {
+                if (a.hasBot && !b.hasBot) return -1;
+                if (!a.hasBot && b.hasBot) return 1;
+                return a.name.localeCompare(b.name);
             });
 
             res.json(adminGuilds);
