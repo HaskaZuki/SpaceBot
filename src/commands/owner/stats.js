@@ -115,7 +115,11 @@ module.exports = {
                 statsText.push(`${status} ${node.name}`);
                 statsText.push(`   Players: ${players} | Playing: ${playing}`);
                 if (node.stats) {
-                    statsText.push(`   CPU: ${node.stats.cpu.toFixed(1)}% | Memory: ${(node.stats.memory.used / 1024 / 1024).toFixed(0)}MB`);
+                    const cpuUsage = typeof node.stats.cpu === 'object' 
+                        ? (node.stats.cpu.systemLoad * 100).toFixed(1) 
+                        : (typeof node.stats.cpu === 'number' ? node.stats.cpu.toFixed(1) : '0.0');
+                    const memoryUsed = node.stats.memory ? (node.stats.memory.used / 1024 / 1024).toFixed(0) : '0';
+                    statsText.push(`   CPU: ${cpuUsage}% | Memory: ${memoryUsed}MB`);
                 }
             });
         } else {
