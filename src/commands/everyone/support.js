@@ -29,11 +29,17 @@ module.exports = {
                     inline: false
                 },
                 {
+                    name: 'Invite Bot',
+                    value: 'Invite Space Music to your server and enjoy music with high quality audio',
+                    inline: false
+                },
+                {
                     name: 'Links',
                     value: '```\n' +
-                        'Support Server: https://discord.gg/9m2TASRgJj\n' +
+                        'Support Server: https://discord.gg/q3aHaNhUgk\n' +
                         'Documentation: https://spacebot.me/docs\n' +
                         'Website: https://spacebot.me\n' +
+                        'Invite: https://discord.com/oauth2/authorize?client_id=710260223536922705&permissions=2482302544&integration_type=0&scope=bot\n' +
                         '```',
                     inline: false
                 }
@@ -44,7 +50,7 @@ module.exports = {
                 new ButtonBuilder()
                     .setLabel('Join Support Server')
                     .setStyle(ButtonStyle.Link)
-                    .setURL('https://discord.gg/9m2TASRgJj'),
+                    .setURL('https://discord.gg/q3aHaNhUgk'),
                 new ButtonBuilder()
                     .setLabel('Documentation')
                     .setStyle(ButtonStyle.Link)
@@ -52,7 +58,11 @@ module.exports = {
                 new ButtonBuilder()
                     .setLabel('Website')
                     .setStyle(ButtonStyle.Link)
-                    .setURL('https://spacebot.me')
+                    .setURL('https://spacebot.me'),
+                    new ButtonBuilder()
+                    .setLabel('Invite')
+                    .setStyle(ButtonStyle.Link)
+                    .setURL('https://discord.com/oauth2/authorize?client_id=710260223536922705&permissions=2482302544&integration_type=0&scope=bot')
             );
 
         await interaction.reply({ embeds: [embed], components: [row], flags: MessageFlags.Ephemeral });

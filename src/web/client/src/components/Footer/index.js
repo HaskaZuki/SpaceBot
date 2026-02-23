@@ -18,10 +18,10 @@ function Footer() {
             Lavalink support, and dashboard control.
           </p>
           <div className="footer-social">
-            <a href="https://discord.gg/spacebot" target="_blank" rel="noopener noreferrer" className="social-link" title="Discord">
+            <a href="https://discord.gg/q3aHaNhUgk" target="_blank" rel="noopener noreferrer" className="social-link" title="Discord">
               <i className="fab fa-discord"></i>
             </a>
-            <a href="https://github.com/spacebot" target="_blank" rel="noopener noreferrer" className="social-link" title="GitHub">
+            <a href="https://github.com/SpaceBot" target="_blank" rel="noopener noreferrer" className="social-link" title="GitHub">
               <i className="fab fa-github"></i>
             </a>
             <a href="https://twitter.com/spacebot" target="_blank" rel="noopener noreferrer" className="social-link" title="Twitter">
@@ -44,7 +44,7 @@ function Footer() {
           
           <div className="footer-section">
             <h4 className="footer-heading">Community</h4>
-            <a href="https://discord.gg/spacebot" target="_blank" rel="noopener noreferrer" className="footer-link">Discord Server</a>
+            <a href="https://discord.gg/q3aHaNhUgk" target="_blank" rel="noopener noreferrer" className="footer-link">Discord Server</a>
             <NavLink to="/leaderboard" className="footer-link">Leaderboard</NavLink>
             <NavLink to="/updates" className="footer-link">Changelog</NavLink>
             <a href="https://github.com/spacebot/issues" target="_blank" rel="noopener noreferrer" className="footer-link">Report Bug</a>

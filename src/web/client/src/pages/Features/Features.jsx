@@ -15,7 +15,7 @@ const featureCategories = [
         highlight: true
       },
       {
-        icon: 'fa-waveform-lines',
+        icon: 'fa-headphones',
         title: 'Crystal Clear Audio',
         desc: 'Powered by Lavalink technology for lag-free, high-quality audio streaming. No buffering, no delays — just pure music.'
       },
@@ -97,7 +97,7 @@ const featureCategories = [
       {
         icon: 'fa-display',
         title: 'Web Dashboard',
-        desc: 'Beautiful Web Dashboard to control your server. Search songs, control playback, manage playlists, and configure settings — all from your browser.',
+        desc: 'Web Dashboard to control your server. Search songs, control playback, manage playlists, and configure settings — all from your browser.',
         highlight: true
       },
       {
@@ -115,7 +115,7 @@ const featureCategories = [
         title: 'Play History',
         desc: 'Browse your complete listening history sorted by date. Rediscover that song you loved last week.',
         premium: true
-      }
+      },
     ]
   },
   {

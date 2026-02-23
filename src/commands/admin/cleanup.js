@@ -38,7 +38,7 @@ module.exports = {
         const shardInfo = client.shard ? ` (${client.shard.count} shards checked)` : '';
         
         await interaction.editReply({ 
-            content: `🧹 **Cleanup complete!${shardInfo}**\n${emoji.status.success} Player state reset\n🗑️ Cleaned up ${totalCleaned} inactive players`,
+            content: ` **Cleanup complete!${shardInfo}**\n${emoji.status.success} Player state reset\n🗑️ Cleaned up ${totalCleaned} inactive players`,
         });
     },
 };
