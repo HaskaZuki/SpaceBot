@@ -10,7 +10,7 @@ module.exports = {
             
             const member = interaction.member;
 
-            if (interaction.customId.startsWith('help_') || interaction.customId.startsWith('settings_')) {
+            if (interaction.customId.startsWith('help_') || interaction.customId.startsWith('settings_') || interaction.customId.startsWith('servers_')) {
                 return;
             }
 
