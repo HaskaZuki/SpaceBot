@@ -4,8 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import './Header.css';
 
-// Bot Logo URL
-const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png';
 
 function Header({ title, onToggleSidebar, showToggle = true }) {
   const { user, logout, getAvatarUrl } = useAuth();
@@ -99,10 +97,6 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
             <i className="fas fa-bars" />
           </button>
         )}
-        <Link to="/" className="logo-container">
-          <img src={BOT_LOGO} alt="SpaceBot" className="header-logo-img" />
-          <span className="header-logo-text">SpaceBot</span>
-        </Link>
         <h1 className="page-title">{title}</h1>
       </div>
 
@@ -190,7 +184,7 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
                   <i className="fas fa-cog" />
                   Settings
                 </Link>
-                <Link to="/pricing" className="user-dropdown-item" onClick={() => setDropdownOpen(false)}>
+                <Link to="/premium" className="user-dropdown-item" onClick={() => setDropdownOpen(false)}>
                   <i className="fas fa-crown" />
                   Premium
                 </Link>

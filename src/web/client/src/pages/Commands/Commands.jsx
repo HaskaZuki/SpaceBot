@@ -515,7 +515,7 @@ function Commands() {
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/features" className="nav-link">Features</Link>
             <Link to="/commands" className="nav-link active">Commands</Link>
-            <a href="/#pricing" className="nav-link premium"><i className="fas fa-crown" /> Pricing</a>
+            <Link to="/pricing" className="nav-link premium"><i className="fas fa-crown" /> Pricing</Link>
             <Link to="/dashboard" className="nav-btn"><i className="fab fa-discord" /> Dashboard</Link>
           </div>
         </div>

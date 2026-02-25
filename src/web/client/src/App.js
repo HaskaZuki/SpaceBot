@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Music from './pages/Music';
 import Playlists from './pages/Playlists';
 import Pricing from './pages/Pricing';
+import Premium from './pages/Pricing/Premium';
 import Settings from './pages/Settings';
 import Analytics from './pages/Analytics';
 import Commands from './pages/Commands';
@@ -101,6 +102,11 @@ function AnimatedRoutes() {
         <Route path="/pricing" element={
           <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
             <Pricing />
+          </motion.div>
+        } />
+        <Route path="/premium" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Premium />
           </motion.div>
         } />
         <Route path="/settings" element={

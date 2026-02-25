@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { Setup, Commands, Filters, Premium, Dashboard, Playlists, FAQ, Support } from './pages';
-import Footer from '../../components/Footer';
 import './Docs.css';
 
 // Introduction component inline
@@ -292,8 +291,6 @@ function Docs() {
           )}
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

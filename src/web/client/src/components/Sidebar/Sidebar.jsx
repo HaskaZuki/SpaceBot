@@ -17,7 +17,7 @@ const navItems = [
   { path: '/leaderboard', label: 'Leaderboard' },
   { path: '/updates', label: 'Updates' },
   { path: '/docs', label: 'Docs' },
-  { path: '/pricing', label: 'Premium' }
+  { path: '/premium', label: 'Premium' }
 ];
 
 function Sidebar({ collapsed, open, onToggle }) {
@@ -40,7 +40,7 @@ function Sidebar({ collapsed, open, onToggle }) {
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
           >
             {!collapsed && <span className="nav-text">{item.label}</span>}
-            {item.path === '/pricing' && isPremium && !collapsed && (
+            {item.path === '/premium' && isPremium && !collapsed && (
               <span className="premium-badge-mini">PRO</span>
             )}
           </NavLink>
