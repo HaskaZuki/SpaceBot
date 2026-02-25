@@ -1,6 +1,13 @@
 .status-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #0a0a0f 0%, #0f0318 50%, #10020a 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.status-page > .footer {
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .status-content {

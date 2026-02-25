@@ -9,9 +9,9 @@ module.exports = {
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setColor('#5865F2')
-            .setTitle(`${emoji.animated.rocket} SpaceBot — Migration to Slash Commands Complete`)
+            .setTitle('SpaceBot — Migration to Slash Commands Complete')
             .setDescription(
-                'SpaceBot has been fully migrated to **Discord Slash Commands**!\n\n' +
+                `${emoji.animated.notes} SpaceBot has been fully migrated to **Discord Slash Commands**!\n\n` +
                 'All legacy prefix-based commands (`!play`, `!skip`, etc.) have been removed.\n' +
                 'You now interact with SpaceBot exclusively through `/slash` commands.\n\n' +
                 '─────────────────────────'
@@ -27,7 +27,7 @@ module.exports = {
                         '• Dashboard prefix setting removed'
                 },
                 {
-                    name: '🎵 How to Use',
+                    name: `${emoji.status.notes} How to Use`,
                     value:
                         '• Type `/` in chat to see all commands\n' +
                         '• Use `/play <song>` to start playing music\n' +
@@ -35,7 +35,7 @@ module.exports = {
                         '• Mention the bot: `@SpaceBot play <song>`'
                 },
                 {
-                    name: '💎 Premium Features',
+                    name: `${emoji.status.premium} Premium Features`,
                     value:
                         '• Audio filters, 24/7 mode, favorites\n' +
                         '• Lyrics sync, listening history\n' +
@@ -43,7 +43,7 @@ module.exports = {
                         '• Use `/premiumstatus` to check your tier'
                 },
                 {
-                    name: '🔗 Links',
+                    name: `${emoji.status.link} Links`,
                     value:
                         '[Dashboard](https://spacebot.me/dashboard) • ' +
                         '[Support Server](https://discord.gg/spacebot) • ' +

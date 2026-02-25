@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import Footer from '../../components/Footer';
 import './Commands.css';
 
 const allCommands = [
@@ -657,6 +658,8 @@ function Commands() {
           )}
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }

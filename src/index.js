@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 const database = require('./database');
+const emoji = require('./utils/emojiConfig');
 
 // Discord Portal: only "Server Members Intent" enabled (no Message Content, no Presence)
 const client = new Client({
@@ -72,6 +73,13 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
                     
                     try {
                         const config = await GuildConfig.findOne({ guildId });
+                        
+                        // Check for 24/7 mode - don't leave if enabled
+                        if (config && config.alwaysOn) {
+                            console.log(`[VOICE] Staying in ${newState.guild.name} - 24/7 mode enabled`);
+                            return;
+                        }
+                        
                         let textChannel = null;
                         
                         const playerState = musicPlayer.getQueue(guildId);
@@ -88,7 +96,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
                         }
                         
                         if (textChannel) {
-                            await textChannel.send('👋 Left voice channel - no one was listening for 10 seconds.');
+                            await textChannel.send(`${emoji.status.success} Left voice channel - no one was listening for 10 seconds. Use \`/play\` to play music again!`);
                         }
                     } catch (error) {
                         console.error('Error sending disconnect message:', error);

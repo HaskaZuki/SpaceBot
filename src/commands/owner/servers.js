@@ -50,15 +50,15 @@ module.exports = {
 
             return new EmbedBuilder()
                 .setColor('#6366f1')
-                .setTitle(`📊 Server List (Page ${page + 1}/${totalPages})`)
-                .setDescription(description || 'No servers found.')
+                .setTitle(`Server List (Page ${page + 1}/${totalPages})`)
+                .setDescription(`${emoji.ui.charts} Bot server statistics\n\n${description || 'No servers found.'}`)
                 .addFields(
                     { name: 'Total Servers', value: allGuilds.length.toLocaleString(), inline: true },
                     { name: 'Total Members', value: totalMembers.toLocaleString(), inline: true },
                     { name: 'Average Size', value: allGuilds.length > 0 ? Math.round(totalMembers / allGuilds.length).toLocaleString() : '0', inline: true },
                     { name: 'Sharding', value: shardInfo, inline: false }
                 )
-                .setFooter({ text: `Page ${page + 1}/${totalPages} • Use ◀️ ▶️ to navigate` })
+                .setFooter({ text: `Page ${page + 1}/${totalPages} • Use buttons to navigate` })
                 .setTimestamp();
         }
 

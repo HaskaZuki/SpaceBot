@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const PlayHistory = require('../../models/PlayHistory');
 const { formatTime } = require('../../utils/validators');
+const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -65,8 +66,8 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#e74c3c')
-                .setTitle(`📊 ${interaction.user.username}'s Listening History`)
-                .setDescription(trackList)
+                .setTitle(`${interaction.user.username}'s Listening History`)
+                .setDescription(`${emoji.ui.charts} Your recent listening activity\n\n${trackList}`)
                 .setFooter({
                     text: `Total plays: ${totalStats?.totalPlays || 0} • Total listened: ${formatTime(totalStats?.totalDuration || 0)} • Showing last ${recentTracks.length}`
                 })

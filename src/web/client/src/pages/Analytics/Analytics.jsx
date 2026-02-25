@@ -67,7 +67,7 @@ function Analytics() {
   };
 
   return (
-    <DashboardLayout title="📊 Analytics">
+    <DashboardLayout title="Analytics">
       <div className="analytics-content">
         {loading ? (
           <div className="loading-container">

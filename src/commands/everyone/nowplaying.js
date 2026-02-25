@@ -27,7 +27,7 @@ module.exports = {
         const sourceIcon = emoji.getSourceIcon(sourceName);
 
         const progressBar = isStream
-            ? '🔴 LIVE STREAM'
+            ? '🔴 **LIVE STREAM**'
             : `${musicPlayer.createProgressBar(position, duration)} \`${musicPlayer.formatTime(position)} / ${musicPlayer.formatTime(duration)}\``;
 
         const loopMode = playerState.loop || 'off';
@@ -47,17 +47,21 @@ module.exports = {
         }
         if (!requestedByText) requestedByText = 'Someone';
 
+        // Build description with cleaner format - emoji in description works!
+        const description = 
+            `${emoji.animated.disc} **Now Playing**\n\n` +
+            `**Duration**\n${progressBar}\n\n` +
+            `**Artist**\n${track.info.author || 'Unknown'}\n\n` +
+            `**Source**\n${sourceIcon} ${sourceName.charAt(0).toUpperCase() + sourceName.slice(1)}`;
+
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setAuthor({ name: `${emoji.animated.disc} Now Playing` })
             .setTitle(track.info.title)
             .setURL(track.info.uri || null)
-            .setDescription(
-                `${progressBar}\n\n` +
-                `**Artist:** ${track.info.author || 'Unknown'}\n` +
-                `**Source:** ${sourceIcon} ${sourceName.charAt(0).toUpperCase() + sourceName.slice(1)}\n` +
-                `**Loop:** ${loopDisplay}\n` +
-                `**Queue:** ${queueLength} track${queueLength !== 1 ? 's' : ''} remaining`
+            .setDescription(description)
+            .addFields(
+                { name: 'Loop Mode', value: loopDisplay, inline: true },
+                { name: 'Queue', value: `${queueLength} track${queueLength !== 1 ? 's' : ''} remaining`, inline: true }
             )
             .setFooter({
                 text: `Requested by ${requestedByText}`,

@@ -545,13 +545,13 @@ async function showCommandDetail(interaction, cmdName) {
 
     const embed = new EmbedBuilder()
         .setColor(cat.color)
-        .setTitle(`${cat.emoji} /${cmdName}`)
-        .setDescription(cmd.description)
+        .setTitle(`/${cmdName}`)
+        .setDescription(`${cat.emoji} ${cmd.description}`)
         .addFields(
-            { name: '📋 Usage', value: `\`${cmd.usage}\``, inline: true },
-            { name: '📂 Category', value: `${cat.emoji} ${cat.label}`, inline: true },
-            { name: '🔑 Permission', value: cat.permission, inline: true },
-            { name: '⚙️ Options', value: optionsText }
+            { name: 'Usage', value: `\`${cmd.usage}\``, inline: true },
+            { name: 'Category', value: `${cat.emoji} ${cat.label}`, inline: true },
+            { name: 'Permission', value: cat.permission, inline: true },
+            { name: 'Options', value: optionsText }
         );
 
     if (cmd.examples && cmd.examples.length > 0) {
@@ -576,8 +576,8 @@ function buildCategoryEmbed(catKey, categories) {
 
     const embed = new EmbedBuilder()
         .setColor(cat.color)
-        .setTitle(`${cat.emoji} ${cat.label} Commands`)
-        .setDescription(`**Permission:** ${cat.permission}\n\n`);
+        .setTitle(`${cat.label} Commands`)
+        .setDescription(`${cat.emoji} **Permission:** ${cat.permission}\n\n`);
 
     const fields = cmds.map(cmdName => {
         const cmd = commandDetails[cmdName];
@@ -623,9 +623,9 @@ async function showOverview(interaction) {
 
     const mainEmbed = new EmbedBuilder()
         .setColor('#7C3AED')
-        .setTitle('📖 Space Music — Command Guide')
+        .setTitle('Space Music — Command Guide')
         .setDescription(
-            `**${totalCmds}** commands across **${totalCats}** categories\n\n` +
+            `${emoji.animated.notes} **${totalCmds}** commands across **${totalCats}** categories\n\n` +
             categoryOrder.map(catKey => {
                 const cat = categoryConfig[catKey];
                 const count = (categories[catKey] || []).length;

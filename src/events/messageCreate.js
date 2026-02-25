@@ -1,5 +1,6 @@
 const musicPlayer = require('../utils/musicPlayer');
 const GuildConfig = require('../models/GuildConfig');
+const emoji = require('../utils/emojiConfig');
 
 module.exports = {
     name: 'messageCreate',
@@ -18,7 +19,7 @@ module.exports = {
 
                 if (!commandName) {
                     await message.reply({
-                        content: '👋 Hey! Use `/help` to see all commands, or mention me with a command like `@SpaceBot play <song>`.'
+                        content: `${emoji.animated.disc} Hey! Use \`/help\` to see all commands, or mention me with a command like \`@SpaceBot play <song>\`.`
                     });
                     return;
                 }
@@ -27,7 +28,7 @@ module.exports = {
 
                 if (!command) {
                     await message.reply({
-                        content: `❌ Unknown command: \`${commandName}\`. Use \`/help\` for a list of commands.`
+                        content: `${emoji.status.error} Unknown command: \`${commandName}\`. Use \`/help\` for a list of commands.`
                     });
                     return;
                 }
@@ -111,7 +112,7 @@ module.exports = {
                 } catch (error) {
                     console.error(`Mention command error [${commandName}]:`, error);
                     if (!fakeInteraction.replied) {
-                        await message.reply({ content: '❌ An error occurred while executing that command.' }).catch(() => {});
+                        await message.reply({ content: `${emoji.status.error} An error occurred while executing that command.` }).catch(() => {});
                     }
                 }
                 return;
@@ -129,7 +130,7 @@ module.exports = {
 
                 const member = message.member;
                 if (!member.voice.channel) {
-                    const reply = await message.reply('❌ You must be in a voice channel to queue songs!');
+                    const reply = await message.reply(`${emoji.status.error} You must be in a voice channel to queue songs!`);
                     setTimeout(() => {
                         message.delete().catch(() => {});
                         reply.delete().catch(() => {});
@@ -150,14 +151,14 @@ module.exports = {
                     );
 
                     if (result && result.error) {
-                        const errorMsg = await message.channel.send(`❌ ${result.error}`);
+                        const errorMsg = await message.channel.send(`${emoji.status.error} ${result.error}`);
                         setTimeout(() => errorMsg.delete().catch(() => {}), 5000);
                     } else if (result && result.track) {
                         console.log(`[HYDRA] Added to queue: ${result.track.info.title}`);
                     }
                 } catch (error) {
                     console.error('[HYDRA] Error adding song:', error);
-                    const errorMsg = await message.channel.send('❌ Failed to add song to queue.');
+                    const errorMsg = await message.channel.send(`${emoji.status.error} Failed to add song to queue.`);
                     setTimeout(() => errorMsg.delete().catch(() => {}), 5000);
                 }
             }

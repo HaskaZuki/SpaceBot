@@ -32,10 +32,11 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#00ff00')
-                .setTitle(`${emoji.status.success} Eval Result`)
+                .setTitle('Eval Result')
+                .setDescription(`${emoji.status.success} Code executed successfully`)
                 .addFields(
-                    { name: '📥 Input', value: `\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\`` },
-                    { name: '📤 Output', value: `\`\`\`js\n${output}\n\`\`\`` }
+                    { name: 'Input', value: `\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\`` },
+                    { name: 'Output', value: `\`\`\`js\n${output}\n\`\`\`` }
                 )
                 .setTimestamp();
 
@@ -43,10 +44,11 @@ module.exports = {
         } catch (error) {
             const embed = new EmbedBuilder()
                 .setColor('#ff0000')
-                .setTitle(`${emoji.status.error} Eval Error`)
+                .setTitle('Eval Error')
+                .setDescription(`${emoji.status.error} An error occurred`)
                 .addFields(
-                    { name: '📥 Input', value: `\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\`` },
-                    { name: `${emoji.status.error} Error`, value: `\`\`\`\n${error.message}\n\`\`\`` }
+                    { name: 'Input', value: `\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\`` },
+                    { name: 'Error', value: `\`\`\`\n${error.message}\n\`\`\`` }
                 )
                 .setTimestamp();
 

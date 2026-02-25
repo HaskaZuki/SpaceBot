@@ -1,6 +1,7 @@
 const { createMusicEmbed } = require('./embedBuilder');
 const GuildConfig = require('../models/GuildConfig');
 const PlayHistory = require('../models/PlayHistory');
+const emoji = require('./emojiConfig');
 const players = new Map();
 
 const isNodeReady = (node) => {
@@ -27,12 +28,43 @@ const extractTracks = (result) => {
     return [];
 };
 
+// Helper function to check if bot is alone in voice channel
+const isBotAloneInVC = async (client, guildId, voiceChannelId) => {
+    try {
+        const guild = client.guilds.cache.get(guildId);
+        if (!guild) return true;
+        
+        const channel = guild.channels.cache.get(voiceChannelId);
+        if (!channel) return true;
+        
+        // Check how many non-bot members are in the channel
+        const members = channel.members.filter(m => !m.user.bot);
+        return members.size === 0;
+    } catch (error) {
+        console.error('Error checking if bot is alone:', error);
+        return false;
+    }
+};
+
+// Helper function to send message to text channel
+const sendToTextChannel = async (client, guildId, textChannelId, message) => {
+    try {
+        if (!textChannelId) return;
+        const channel = client.channels.cache.get(textChannelId);
+        if (channel) {
+            await channel.send(message);
+        }
+    } catch (error) {
+        console.error('Error sending message to text channel:', error);
+    }
+};
+
 module.exports = {
     players,
     
     getQueue: (guildId) => {
         if (!players.has(guildId)) {
-            players.set(guildId, { queue: [], loop: 'off', textChannelId: null });
+            players.set(guildId, { queue: [], loop: 'off', textChannelId: null, voiceChannelId: null });
         }
         return players.get(guildId);
     },
@@ -54,6 +86,8 @@ module.exports = {
         if (textChannel) {
             playerState.textChannelId = textChannel.id;
         }
+        // Store voice channel ID for later use
+        playerState.voiceChannelId = voiceChannelId;
         let result;
         if (query.startsWith('http')) {
             console.log(`[DEBUG] Direct URL: ${query}`);
@@ -107,7 +141,9 @@ module.exports = {
             return { error: 'No track found' };
         }
         let player = client.shoukaku.players.get(guildId);
-        if (!player) {
+        const needsNewConnection = !player || !player.connection;
+        
+        if (needsNewConnection) {
             try {
                 player = await client.shoukaku.joinVoiceChannel({
                     guildId: guildId,
@@ -122,29 +158,43 @@ module.exports = {
                 return { error: 'Failed to join voice channel' };
             }
             playerState.player = player;
-            player.removeAllListeners('end');
-            player.removeAllListeners('exception');
-            player.removeAllListeners('stuck');
-            player.on('end', async (data) => {
-                if (data?.reason === 'replaced') return;
-
-                if (playerState.loop === 'track' && playerState.currentTrack) {
-                    player.playTrack({ track: playerState.currentTrack.track });
-                } else if (playerState.loop === 'queue') {
-                   playerState.queue.push(playerState.currentTrack);
-                   module.exports.playNext(client, guildId);
-                } else {
-                   module.exports.playNext(client, guildId);
-                }
-            });
         }
+        
+        // Always ensure event listeners are attached
+        player.removeAllListeners('end');
+        player.removeAllListeners('exception');
+        player.removeAllListeners('stuck');
+        player.on('end', async (data) => {
+            if (data?.reason === 'replaced') return;
+
+            if (playerState.loop === 'track' && playerState.currentTrack) {
+                player.playTrack({ track: playerState.currentTrack.track });
+            } else if (playerState.loop === 'queue') {
+               playerState.queue.push(playerState.currentTrack);
+               await module.exports.playNext(client, guildId);
+            } else {
+               await module.exports.playNext(client, guildId);
+            }
+        });
+        
+        player.on('exception', async (data) => {
+            console.error('❌ Playback exception:', data);
+            await module.exports.playNext(client, guildId);
+        });
+        
+        player.on('stuck', (data) => {
+            console.error('Track stuck:', data);
+            module.exports.playNext(client, guildId);
+        });
 
         track.requestedBy = requestedBy;
         playerState.queue.push(track);
-        if (!playerState.currentTrack && playerState.queue.length === 1) {
-            module.exports.playNext(client, guildId);
+        
+        // Play immediately if nothing is currently playing
+        if (!playerState.currentTrack) {
+            await module.exports.playNext(client, guildId);
         } else {
-             module.exports.updateDashboard(client, guildId);
+            module.exports.updateDashboard(client, guildId);
         }
         
         return { track };
@@ -243,17 +293,21 @@ module.exports = {
 
     playNext: async (client, guildId) => {
         const playerState = players.get(guildId);
-        if (!playerState || !playerState.player) {
+        if (!playerState) {
             console.log(`No player state found for guild ${guildId}`);
             return;
         }
 
         const track = playerState.queue.shift();
-        playerState.currentTrack = track;
+        playerState.currentTrack = track || null;
 
         if (track) {
             try {
-                playerState.player.playTrack({ track: { encoded: track.encoded || track.track } });
+                if (!playerState.player) {
+                    console.error('No player available for playback');
+                    return;
+                }
+                await playerState.player.playTrack({ track: { encoded: track.encoded || track.track } });
                 PlayHistory.create({
                     userId: track.requestedBy || 'unknown',
                     guildId,
@@ -265,16 +319,26 @@ module.exports = {
                 }).catch(err => console.error('PlayHistory save error:', err.message));
             } catch (error) {
                 console.error('Error playing track:', error.message);
-                module.exports.playNext(client, guildId);
+                // Try next track if this one fails
+                if (playerState.queue.length > 0) {
+                    await module.exports.playNext(client, guildId);
+                }
                 return;
             }
         } else {
+            // Queue is empty - stop and cleanup
+            console.log(`[DEBUG] Queue empty for guild ${guildId}`);
+            playerState.currentTrack = null;
+            
             try {
-                playerState.player.stopTrack();
+                if (playerState.player) {
+                    playerState.player.stopTrack();
+                }
             } catch (error) {
                 console.error('Error stopping track:', error.message);
             }
-            playerState.currentTrack = null;
+            
+            // Check for 24/7 mode
             const GuildConfig = require('../models/GuildConfig');
             let config;
             try {
@@ -283,12 +347,49 @@ module.exports = {
                 console.error('Error fetching guild config:', error.message);
             }
             
-            if (!config || !config.alwaysOn) {
-                setTimeout(() => {
+            // Skip if 24/7 mode is enabled
+            if (config && config.alwaysOn) {
+                module.exports.updateDashboard(client, guildId);
+                return;
+            }
+            
+            // Check if bot is alone in VC
+            const voiceChannelId = playerState.voiceChannelId;
+            const textChannelId = playerState.textChannelId;
+            const isAlone = await isBotAloneInVC(client, guildId, voiceChannelId);
+            
+            if (isAlone) {
+                // Bot is alone - leave in 10 seconds
+                setTimeout(async () => {
                     const state = players.get(guildId);
                     if (state && !state.currentTrack && state.queue.length === 0) {
+                        // Send message before leaving
+                        await sendToTextChannel(client, guildId, textChannelId, 
+                            `${emoji.status.success} Leaving voice channel because I'm alone. Use \`/play\` to play music again!`);
+                        
                         try {
-                            if (state.player) {
+                            if (state.player && state.player.connection) {
+                                state.player.connection.disconnect();
+                            }
+                        } catch (error) {
+                            console.error('Error disconnecting player:', error.message);
+                        }
+                        players.delete(guildId);
+                        console.log(`Disconnected from guild ${guildId} - bot was alone`);
+                        module.exports.updateDashboard(client, guildId);
+                    }
+                }, 10000);
+            } else {
+                // There are people in VC - leave in 30 seconds
+                setTimeout(async () => {
+                    const state = players.get(guildId);
+                    if (state && !state.currentTrack && state.queue.length === 0) {
+                        // Send message before leaving
+                        await sendToTextChannel(client, guildId, textChannelId, 
+                            `${emoji.status.success} Leaving voice channel due to inactivity. Use \`/play\` to play music again!`);
+                        
+                        try {
+                            if (state.player && state.player.connection) {
                                 state.player.connection.disconnect();
                             }
                         } catch (error) {
@@ -296,8 +397,9 @@ module.exports = {
                         }
                         players.delete(guildId);
                         console.log(`Disconnected from guild ${guildId} due to inactivity`);
+                        module.exports.updateDashboard(client, guildId);
                     }
-                }, 120000);
+                }, 30000);
             }
         }
         

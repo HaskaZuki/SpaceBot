@@ -21,18 +21,18 @@ module.exports = {
         
         const embed = new EmbedBuilder()
             .setColor('#ffd700')
-            .setTitle(`${emoji.premium.diamond} Premium Status Check`)
-            .setDescription('Current Premium status for you and this server.')
+            .setTitle('Premium Status Check')
+            .setDescription(`${emoji.premium.diamond} Current Premium status for you and this server.`)
             .addFields(
                 { 
-                    name: `👤 User Status (${interaction.user.username})`, 
+                    name: `User Status (${interaction.user.username})`, 
                     value: isUserPrem 
                         ? `${emoji.status.success} **Premium Active**\nExpires: ${userSettings.premiumExpiresAt ? new Date(userSettings.premiumExpiresAt).toDateString() : '**Lifetime**'}`
                         : `${emoji.status.error} **Free Plan**`,
                     inline: false 
                 },
                 { 
-                    name: `🏰 Server Status (${interaction.guild.name})`, 
+                    name: `Server Status (${interaction.guild.name})`, 
                     value: isServerPrem 
                         ? `${emoji.status.success} **Premium Active**\nExpires: ${guildConfig.premiumExpiresAt ? new Date(guildConfig.premiumExpiresAt).toDateString() : '**Lifetime**'}`
                         : `${emoji.status.error} **Free Plan**`,

@@ -1,5 +1,6 @@
 const musicPlayer = require('../utils/musicPlayer');
 const GuildConfig = require('../models/GuildConfig');
+const emoji = require('../utils/emojiConfig');
 
 module.exports = {
     name: 'interactionCreate',
@@ -18,7 +19,7 @@ module.exports = {
                 await interaction.deferUpdate().catch(() => {});
 
                 if (!member.voice?.channel) {
-                    return interaction.followUp({ content: '❌ You must be in a voice channel!', flags: 64 }).catch(() => {});
+                    return interaction.followUp({ content: `${emoji.status.error} You must be in a voice channel!`, flags: 64 }).catch(() => {});
                 }
 
                 switch (interaction.customId) {
@@ -33,11 +34,11 @@ module.exports = {
                         break;
                     case 'loop':
                         const mode = await musicPlayer.setLoop(interaction.client, guildId);
-                        await interaction.followUp({ content: `🔁 Loop mode set to: **${mode}**`, flags: 64 }).catch(() => {});
+                        await interaction.followUp({ content: `${emoji.controls.loopQueue} Loop mode set to: **${mode}**`, flags: 64 }).catch(() => {});
                         break;
                     case 'shuffle':
                         await musicPlayer.shuffleQueue(interaction.client, guildId);
-                        await interaction.followUp({ content: '🔀 Queue shuffled!', flags: 64 }).catch(() => {});
+                        await interaction.followUp({ content: `${emoji.controls.shuffle} Queue shuffled!`, flags: 64 }).catch(() => {});
                         break;
                 }
             } catch (error) {
@@ -51,19 +52,19 @@ module.exports = {
                 const userId = interaction.customId.replace('search_select_', '');
                 
                 if (userId !== interaction.user.id) {
-                    return interaction.reply({ content: '❌ This search was initiated by someone else!', flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.error} This search was initiated by someone else!`, flags: 64 });
                 }
 
                 const searchData = global.searchCache?.[userId];
                 if (!searchData) {
-                    return interaction.reply({ content: '❌ Search results expired! Please search again.', flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.error} Search results expired! Please search again.`, flags: 64 });
                 }
 
                 const selectedIndex = parseInt(interaction.values[0]);
                 const selectedTrack = searchData.tracks[selectedIndex];
 
                 if (!selectedTrack) {
-                    return interaction.reply({ content: '❌ Invalid selection!', flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.error} Invalid selection!`, flags: 64 });
                 }
 
                 await interaction.deferUpdate();
@@ -80,13 +81,13 @@ module.exports = {
                     delete global.searchCache[userId];
 
                     await interaction.followUp({
-                        content: `✅ Added to queue: **${selectedTrack.info.title}** by ${selectedTrack.info.author}`,
+                        content: `${emoji.status.success} Added to queue: **${selectedTrack.info.title}** by ${selectedTrack.info.author}`,
                         flags: 64
                     });
                 } catch (error) {
                     console.error('Play from search error:', error);
                     await interaction.followUp({
-                        content: '❌ Failed to add track to queue.',
+                        content: `${emoji.status.error} Failed to add track to queue.`,
                         flags: 64
                     });
                 }
@@ -158,7 +159,7 @@ module.exports = {
                 const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
                 if (!config || !config.isPremium) {
                     return interaction.reply({ 
-                        content: `🚫 This server must be **Premium** to use this command!\n💎 Contact the bot owner to upgrade to Premium.`, 
+                        content: `${emoji.status.error} This server must be **Premium** to use this command!\n${emoji.premium.diamond} Contact the bot owner to upgrade to Premium.`, 
                         flags: 64 
                     });
                 }
@@ -170,9 +171,9 @@ module.exports = {
                 console.error('Command execution error:', error);
                 try {
                     if (interaction.replied || interaction.deferred) {
-                        await interaction.followUp({ content: '❌ There was an error executing this command!', flags: 64 });
+                        await interaction.followUp({ content: `${emoji.status.error} There was an error executing this command!`, flags: 64 });
                     } else {
-                        await interaction.reply({ content: '❌ There was an error executing this command!', flags: 64 });
+                        await interaction.reply({ content: `${emoji.status.error} There was an error executing this command!`, flags: 64 });
                     }
                 } catch (replyError) {
                     console.error('Failed to send error reply:', replyError.message);

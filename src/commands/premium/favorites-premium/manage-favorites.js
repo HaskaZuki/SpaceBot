@@ -63,8 +63,9 @@ module.exports = {
 
                     return new EmbedBuilder()
                         .setColor('#FFD700')
-                        .setTitle(`${emoji.premium.star} Your Favorites (${favorites.length} tracks)`)
+                        .setTitle(`Your Favorites (${favorites.length} tracks)`)
                         .setDescription(
+                            `${emoji.premium.star} Your saved favorite tracks\n\n` +
                             pageFavorites.map((fav, idx) => 
                                 `**${startIdx + idx + 1}.** [${fav.info.title}](${fav.info.uri})\n` +
                                 `└ ${fav.info.author} • ${formatTime(fav.info.length)}`

@@ -33,6 +33,19 @@
   text-decoration: none;
 }
 
+.header-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.header-logo-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
 .logo-icon {
   width: 36px;
   height: 36px;
@@ -48,6 +61,10 @@
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--text);
+}
+
+.nav-spacer {
+  flex: 1;
 }
 
 .toggle-btn {

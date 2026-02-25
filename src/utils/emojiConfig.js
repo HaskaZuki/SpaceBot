@@ -12,6 +12,7 @@ module.exports = {
         disc: '<a:disc:1475168869105795132>',
         notes: '<a:notes:1475168921169428622>',
         premium: '<a:premium:1475168695130128394>',
+        rocket: '<a:disc:1475168869105795132>', // using disc as fallback
     },
 
     // Status Emojis

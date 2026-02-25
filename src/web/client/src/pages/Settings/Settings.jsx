@@ -144,7 +144,7 @@ function Settings() {
   const getStatusText = (status) => status ? 'Operational' : 'Down';
 
   return (
-    <DashboardLayout title="⚙️ Settings">
+    <DashboardLayout title="Settings">
       <div className="settings-content">
         <div className="settings-tabs">
           {tabs.map(tab => (

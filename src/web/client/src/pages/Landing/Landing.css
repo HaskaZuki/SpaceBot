@@ -13,6 +13,16 @@
   flex-shrink: 0;
 }
 
+/* Push footer to bottom */
+.landing > section:last-of-type:not(.footer) {
+  flex: 1 0 auto;
+}
+
+.landing > .footer {
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
 /* Navigation */
 .landing-nav {
   position: fixed;

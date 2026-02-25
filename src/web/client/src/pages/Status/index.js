@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config';
+import Footer from '../../components/Footer';
 import './Status.css';
 
 function Status() {
@@ -264,6 +265,8 @@ function Status() {
           </div>
         )}
       </div>
+
+      <Footer />
     </div>
   );
 }

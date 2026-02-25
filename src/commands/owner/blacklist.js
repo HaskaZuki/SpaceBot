@@ -59,7 +59,8 @@ module.exports = {
 
                     const embed = new EmbedBuilder()
                         .setColor('#ff0000')
-                        .setTitle('🚫 Server Blacklisted')
+                        .setTitle('Server Blacklisted')
+                        .setDescription(`${emoji.status.error} Server has been added to blacklist`)
                         .addFields(
                             { name: 'Server ID', value: guildId, inline: true },
                             { name: 'Reason', value: reason, inline: true },
@@ -77,7 +78,8 @@ module.exports = {
 
                     const embed = new EmbedBuilder()
                         .setColor('#00ff00')
-                        .setTitle(`${emoji.status.success} Server Removed from Blacklist`)
+                        .setTitle('Server Removed from Blacklist')
+                        .setDescription(`${emoji.status.success} Server has been removed from blacklist`)
                         .addFields({ name: 'Server ID', value: guildId })
                         .setTimestamp();
 
@@ -87,7 +89,8 @@ module.exports = {
                 case 'check': {
                     const embed = new EmbedBuilder()
                         .setColor(config.isBlacklisted ? '#ff0000' : '#00ff00')
-                        .setTitle(config.isBlacklisted ? '🚫 Server is Blacklisted' : `${emoji.status.success} Server is NOT Blacklisted`)
+                        .setTitle(config.isBlacklisted ? 'Server is Blacklisted' : 'Server is NOT Blacklisted')
+                        .setDescription(config.isBlacklisted ? `${emoji.status.error} This server is blacklisted` : `${emoji.status.success} This server is not blacklisted`)
                         .addFields(
                             { name: 'Server ID', value: guildId, inline: true },
                             { name: 'Status', value: config.isBlacklisted ? 'Blacklisted' : 'Clear', inline: true }

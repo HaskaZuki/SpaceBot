@@ -86,7 +86,7 @@ function Playlists() {
   const canCreateMore = playlists.length < maxPlaylists;
 
   return (
-    <DashboardLayout title="📝 My Playlists">
+    <DashboardLayout title="My Playlists">
       <div className="playlists-content">
         <div className="playlists-header">
           <div>

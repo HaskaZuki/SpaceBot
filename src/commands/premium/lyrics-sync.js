@@ -48,9 +48,8 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#8B5CF6')
-                .setAuthor({ name: `${emoji.animated.notes} Synced Lyrics` })
                 .setTitle(lyricsData.trackName)
-                .setDescription(`${progressBar}\n\n${display}`)
+                .setDescription(`${emoji.animated.notes} **Synced Lyrics**\n\n${progressBar}\n\n${display}`)
                 .setFooter({ text: `${lyricsData.artistName} • Use this command again to refresh • Source: LRCLIB` })
                 .setTimestamp();
 

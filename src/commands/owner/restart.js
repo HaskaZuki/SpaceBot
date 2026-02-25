@@ -23,7 +23,7 @@ module.exports = {
         if (!client.shard) {
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
-                .setTitle('⚠️ Not Running in Sharded Mode')
+                .setTitle('Not Running in Sharded Mode')
                 .setDescription('The bot is not running with sharding. Use `/shutdown` instead.')
                 .addFields({
                     name: 'Tip',
@@ -37,7 +37,7 @@ module.exports = {
         if (subcommand === 'all') {
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
-                .setTitle('🔄 Restarting All Shards...')
+                .setTitle('Restarting All Shards...')
                 .setDescription(`Restarting all **${client.shard.count}** shards. This may take a moment.`)
                 .addFields(
                     { name: 'Initiated By', value: interaction.user.tag, inline: true },
@@ -67,8 +67,8 @@ module.exports = {
             if (shardId < 0 || shardId >= client.shard.count) {
                 const embed = new EmbedBuilder()
                     .setColor('#ff0000')
-                    .setTitle(`${emoji.status.error} Invalid Shard ID`)
-                    .setDescription(`Shard ID must be between **0** and **${client.shard.count - 1}**.`)
+                    .setTitle('Invalid Shard ID')
+                    .setDescription(`${emoji.status.error} Shard ID must be between **0** and **${client.shard.count - 1}**.`)
                     .addFields({
                         name: 'Current Shards',
                         value: `Total: ${client.shard.count} (IDs: 0-${client.shard.count - 1})`
@@ -80,7 +80,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
-                .setTitle(`🔄 Restarting Shard ${shardId}...`)
+                .setTitle(`Restarting Shard ${shardId}...`)
                 .setDescription(`Restarting shard **${shardId}** of **${client.shard.count}**.`)
                 .addFields(
                     { name: 'Initiated By', value: interaction.user.tag, inline: true },
