@@ -114,8 +114,6 @@ const chartData = [
 
 function Landing() {
   const [stats, setStats] = useState({ servers: '--', users: '--', commands: '--', uptime: '--' });
-  const [botStatus, setBotStatus] = useState({ online: false, ping: '--', players: 0, playing: '--' });
-  const [shardData, setShardData] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Scroll animation refs
@@ -136,40 +134,10 @@ function Landing() {
           commands: data.commands ? `${data.commands}+` : '--',
           uptime: formatUptime(data.uptime)
         });
-        setBotStatus({
-          online: data.online ?? true,
-          ping: data.ping ? `${data.ping}ms` : '--',
-          players: data.players || 0,
-          playing: data.playing || '--'
-        });
       })
       .catch(() => {
         // Set default values if API fails
-        setBotStatus({
-          online: true,
-          ping: '45ms',
-          players: 128,
-          playing: 'Never Gonna Give You Up'
-        });
       });
-  }, []);
-
-  // Fetch shard data
-  useEffect(() => {
-    const fetchShardData = () => {
-      fetch(`${config.apiUrl}/api/shards`)
-        .then(res => res.json())
-        .then(data => {
-          setShardData(data);
-        })
-        .catch(err => {
-          console.error('Failed to fetch shard data:', err);
-        });
-    };
-
-    fetchShardData();
-    const interval = setInterval(fetchShardData, 30000); // Update every 30 seconds
-    return () => clearInterval(interval);
   }, []);
 
   const formatUptime = (ms) => {
@@ -177,18 +145,6 @@ function Landing() {
     const days = Math.floor(ms / 86400000);
     const hours = Math.floor(ms / 3600000) % 24;
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
-  };
-
-  const getShardStatusColor = (shard) => {
-    if (!shard.ready) return '#ef4444'; // Red - offline/disconnected
-    if (shard.ping > 200) return '#f59e0b'; // Orange - high latency
-    return '#22c55e'; // Green - healthy
-  };
-
-  const getShardStatusText = (shard) => {
-    if (!shard.ready) return 'Offline';
-    if (shard.ping > 200) return 'Degraded';
-    return 'Online';
   };
 
   const maxPlays = Math.max(...chartData.map(d => d.plays));
@@ -202,6 +158,7 @@ function Landing() {
             <Link to="/features" className="nav-link">Features</Link>
             <Link to="/commands" className="nav-link">Commands</Link>
             <Link to="/docs" className="nav-link">Docs</Link>
+            <Link to="/status" className="nav-link">Status</Link>
             <a href={`${config.apiUrl}/auth/discord`} className="nav-btn"><i className="fab fa-discord" /> Dashboard</a>
           </div>
           <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
@@ -247,41 +204,6 @@ function Landing() {
               <div className="stat-num">{stats.uptime}</div>
               <div className="stat-label">Uptime</div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Bot Status Section */}
-      <section className="status-section">
-        <div className="status-container">
-          <div className="status-card">
-            <div className="status-header">
-              <div className="status-indicator">
-                <span className={`status-dot ${botStatus.online ? 'online' : 'offline'}`}></span>
-                <span className="status-text">{botStatus.online ? 'Online' : 'Offline'}</span>
-              </div>
-              <span className="status-label">Bot Status</span>
-            </div>
-            <div className="status-details">
-              <div className="status-item">
-                <i className="fas fa-signal"></i>
-                <span className="status-item-label">Latency</span>
-                <span className="status-item-value">{botStatus.ping}</span>
-              </div>
-              <div className="status-item">
-                <i className="fas fa-headphones"></i>
-                <span className="status-item-label">Active Players</span>
-                <span className="status-item-value">{botStatus.players}</span>
-              </div>
-              <div className="status-item">
-                <i className="fas fa-music"></i>
-                <span className="status-item-label">Now Playing</span>
-                <span className="status-item-value now-playing">{botStatus.playing}</span>
-              </div>
-            </div>
-            <Link to="/status" className="status-link">
-              View Full Status <i className="fas fa-arrow-right"></i>
-            </Link>
           </div>
         </div>
       </section>
