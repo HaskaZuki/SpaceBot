@@ -1,6 +1,16 @@
 .landing {
   min-height: 100vh;
   overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.landing > *:not(.footer) {
+  flex-shrink: 0;
+}
+
+.landing > section {
+  flex-shrink: 0;
 }
 
 /* Navigation */
@@ -792,6 +802,229 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--accent);
+}
+
+/* Shard Status Section */
+.shard-status-section {
+  padding: 3rem 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.shard-status-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+}
+
+.shard-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.shard-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.shard-header p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.shard-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.shard-summary-item {
+  text-align: center;
+  padding: 1rem;
+  background: var(--surface);
+  border-radius: 12px;
+}
+
+.shard-summary-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.25rem;
+}
+
+.shard-summary-value.online {
+  color: var(--green);
+}
+
+.shard-summary-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.shard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.shard-box {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--surface);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.shard-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--shard-color), transparent);
+  opacity: 0.15;
+}
+
+.shard-box:hover {
+  transform: scale(1.1);
+  border-color: var(--shard-color);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.shard-box-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+.shard-id {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.shard-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.shard-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 15, 20, 0.98);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  min-width: 160px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 100;
+  pointer-events: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.shard-box:hover .shard-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+.shard-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+  font-size: 0.8rem;
+}
+
+.shard-tooltip-row span:first-child {
+  color: var(--text-muted);
+}
+
+.shard-tooltip-row span:last-child {
+  font-weight: 600;
+}
+
+.shard-legend {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.shard-loading {
+  text-align: center;
+  padding: 2rem;
+}
+
+.shard-skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.shard-skeleton {
+  aspect-ratio: 1;
+  background: linear-gradient(90deg, var(--surface) 25%, var(--hover) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (max-width: 768px) {
+  .shard-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .shard-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  .shard-legend {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
 }
 
 /* Discord Widget Section */

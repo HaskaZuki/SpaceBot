@@ -5,7 +5,7 @@ import './Footer.css';
 // ============================================
 // LOGO CONFIGURATION - Ganti dengan URL logo bot Anda
 // ============================================
-const BOT_LOGO = 'https://cdn.discordapp.com/embed/avatars/0.png'; // Ganti dengan logo bot Anda
+const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
 // ============================================
 
 function Footer() {

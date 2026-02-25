@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config';
+import Footer from '../../components/Footer';
 import './Landing.css';
 
 // ============================================
@@ -114,6 +115,7 @@ const chartData = [
 function Landing() {
   const [stats, setStats] = useState({ servers: '--', users: '--', commands: '--', uptime: '--' });
   const [botStatus, setBotStatus] = useState({ online: false, ping: '--', players: 0, playing: '--' });
+  const [shardData, setShardData] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Scroll animation refs
@@ -152,11 +154,41 @@ function Landing() {
       });
   }, []);
 
+  // Fetch shard data
+  useEffect(() => {
+    const fetchShardData = () => {
+      fetch(`${config.apiUrl}/api/shards`)
+        .then(res => res.json())
+        .then(data => {
+          setShardData(data);
+        })
+        .catch(err => {
+          console.error('Failed to fetch shard data:', err);
+        });
+    };
+
+    fetchShardData();
+    const interval = setInterval(fetchShardData, 30000); // Update every 30 seconds
+    return () => clearInterval(interval);
+  }, []);
+
   const formatUptime = (ms) => {
     if (!ms) return '--';
     const days = Math.floor(ms / 86400000);
     const hours = Math.floor(ms / 3600000) % 24;
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
+  };
+
+  const getShardStatusColor = (shard) => {
+    if (!shard.ready) return '#ef4444'; // Red - offline/disconnected
+    if (shard.ping > 200) return '#f59e0b'; // Orange - high latency
+    return '#22c55e'; // Green - healthy
+  };
+
+  const getShardStatusText = (shard) => {
+    if (!shard.ready) return 'Offline';
+    if (shard.ping > 200) return 'Degraded';
+    return 'Online';
   };
 
   const maxPlays = Math.max(...chartData.map(d => d.plays));
@@ -247,6 +279,9 @@ function Landing() {
                 <span className="status-item-value now-playing">{botStatus.playing}</span>
               </div>
             </div>
+            <Link to="/status" className="status-link">
+              View Full Status <i className="fas fa-arrow-right"></i>
+            </Link>
           </div>
         </div>
       </section>
@@ -453,6 +488,9 @@ function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

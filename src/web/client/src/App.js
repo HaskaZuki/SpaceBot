@@ -13,10 +13,8 @@ import Features from './pages/Features';
 import Docs from './pages/Docs';
 import Leaderboard from './pages/Leaderboard';
 import Updates from './pages/Updates';
-import DashboardCommands from './pages/DashboardCommands';
-import DashboardFeatures from './pages/DashboardFeatures';
+import Status from './pages/Status';
 import PersistentPlayer from './components/PersistentPlayer';
-import Footer from './components/Footer';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import './styles/global.css';
@@ -65,7 +63,7 @@ function AnimatedRoutes() {
             <Features />
           </motion.div>
         } />
-        <Route path="/docs" element={
+        <Route path="/docs/*" element={
           <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
             <Docs />
           </motion.div>
@@ -78,6 +76,11 @@ function AnimatedRoutes() {
         <Route path="/updates" element={
           <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
             <Updates />
+          </motion.div>
+        } />
+        <Route path="/status" element={
+          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
+            <Status />
           </motion.div>
         } />
         <Route path="/dashboard" element={
@@ -110,16 +113,6 @@ function AnimatedRoutes() {
             <Analytics />
           </motion.div>
         } />
-        <Route path="/dashboard/commands" element={
-          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
-            <DashboardCommands />
-          </motion.div>
-        } />
-        <Route path="/dashboard/features" element={
-          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
-            <DashboardFeatures />
-          </motion.div>
-        } />
       </Routes>
     </AnimatePresence>
   );
@@ -133,7 +126,6 @@ function App() {
           <div className="app-container">
             <AnimatedRoutes />
             <PersistentPlayer />
-            <Footer />
           </div>
         </Router>
       </SocketProvider>

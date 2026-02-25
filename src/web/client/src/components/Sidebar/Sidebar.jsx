@@ -6,7 +6,7 @@ import './Sidebar.css';
 // ============================================
 // LOGO CONFIGURATION - Ganti dengan URL logo bot Anda
 // ============================================
-const BOT_LOGO = 'https://cdn.discordapp.com/embed/avatars/0.png'; // Ganti dengan logo bot Anda
+const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
 // ============================================
 
 const navItems = [
@@ -14,11 +14,9 @@ const navItems = [
   { path: '/music', label: 'Music Player' },
   { path: '/playlists', label: 'Playlists' },
   { path: '/analytics', label: 'Analytics' },
-  { path: '/dashboard/commands', label: 'Commands' },
   { path: '/leaderboard', label: 'Leaderboard' },
   { path: '/updates', label: 'Updates' },
   { path: '/docs', label: 'Docs' },
-  { path: '/dashboard/features', label: 'Features' },
   { path: '/pricing', label: 'Premium' }
 ];
 

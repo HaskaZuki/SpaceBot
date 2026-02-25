@@ -87,6 +87,79 @@ module.exports = (client) => {
         }
     });
 
+    // Shard status endpoint for real-time shard monitoring
+    router.get('/shards', async (req, res) => {
+        try {
+            let shards = [];
+            
+            if (client.shard) {
+                // Get shard info from all shards
+                const shardResults = await client.shard.broadcastEval(async (c, context) => {
+                    return {
+                        id: c.shard.ids[0],
+                        guilds: c.guilds.cache.size,
+                        users: c.guilds.cache.reduce((acc, g) => acc + g.memberCount, 0),
+                        ping: c.ws.ping,
+                        uptime: c.uptime,
+                        status: c.ws.status,
+                        ready: c.isReady ? c.isReady() : c.ws.status === 0
+                    };
+                });
+                
+                shards = shardResults;
+            } else {
+                // Single shard (no sharding)
+                shards = [{
+                    id: 0,
+                    guilds: client.guilds.cache.size,
+                    users: client.guilds.cache.reduce((acc, g) => acc + g.memberCount, 0),
+                    ping: client.ws.ping,
+                    uptime: client.uptime,
+                    status: client.ws.status,
+                    ready: client.ws.status === 0
+                }];
+            }
+            
+            const totalShards = client.shard ? client.shard.count : 1;
+            const onlineShards = shards.filter(s => s.ready).length;
+            const totalGuilds = shards.reduce((acc, s) => acc + s.guilds, 0);
+            const totalUsers = shards.reduce((acc, s) => acc + s.users, 0);
+            const avgPing = shards.reduce((acc, s) => acc + (s.ping || 0), 0) / shards.length;
+            
+            res.json({
+                totalShards,
+                onlineShards,
+                totalGuilds,
+                totalUsers,
+                avgPing: Math.round(avgPing),
+                shards,
+                lavalink: client.manager?.nodes?.some(n => n.connected) || false,
+                database: mongoose.connection.readyState === 1
+            });
+        } catch (err) {
+            console.error('Shard status error:', err);
+            res.json({
+                totalShards: 1,
+                onlineShards: client.ws.status === 0 ? 1 : 0,
+                totalGuilds: client.guilds.cache.size,
+                totalUsers: client.guilds.cache.reduce((acc, g) => acc + g.memberCount, 0),
+                avgPing: client.ws.ping || 0,
+                shards: [{
+                    id: 0,
+                    guilds: client.guilds.cache.size,
+                    users: client.guilds.cache.reduce((acc, g) => acc + g.memberCount, 0),
+                    ping: client.ws.ping || 0,
+                    uptime: client.uptime || 0,
+                    status: client.ws.status,
+                    ready: client.ws.status === 0
+                }],
+                lavalink: false,
+                database: false,
+                error: err.message
+            });
+        }
+    });
+
     router.get('/guilds', checkAuth, async (req, res) => {
         try {
             const userGuilds = req.user.guilds || [];

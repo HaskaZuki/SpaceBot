@@ -1,6 +1,8 @@
 .commands-page {
   background: linear-gradient(135deg, #10020a 0%, #1c0410 25%, #0a0a0a 50%, #0f0318 75%, #10020a 100%);
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .commands-hero {

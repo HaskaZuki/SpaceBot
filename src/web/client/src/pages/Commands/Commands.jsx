@@ -657,16 +657,6 @@ function Commands() {
           )}
         </div>
       </section>
-
-      <footer className="footer">
-        <div className="footer-links">
-          <Link to="/">Home</Link>
-          <Link to="/features">Features</Link>
-          <Link to="/commands">Commands</Link>
-          <Link to="/pricing">Pricing</Link>
-        </div>
-        <p className="footer-copy">SpaceBot Music © 2026. Built with ❤️ for Discord communities.</p>
-      </footer>
     </div>
   );
 }

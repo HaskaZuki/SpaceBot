@@ -1,7 +1,8 @@
 .features-page {
   background: linear-gradient(135deg, #10020a 0%, #1c0410 25%, #0a0a0a 50%, #0f0318 75%, #10020a 100%);
-  min-height: auto;
-  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .features-hero {
@@ -71,13 +72,16 @@
 
 .feature-category {
   position: relative;
+  width: 100%;
 }
 
 .category-header {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .category-icon {

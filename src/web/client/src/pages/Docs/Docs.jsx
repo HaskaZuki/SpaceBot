@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { Setup, Commands, Filters, Premium, Dashboard, Playlists, FAQ, Support } from './pages';
 import './Docs.css';
 
@@ -234,15 +234,15 @@ function Docs() {
 
             {/* Page Content */}
             <Routes>
-              <Route path="/" element={<Introduction />} />
-              <Route path="/setup" element={<Setup />} />
-              <Route path="/commands" element={<Commands />} />
-              <Route path="/filters" element={<Filters />} />
-              <Route path="/premium" element={<Premium />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/playlists" element={<Playlists />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/support" element={<Support />} />
+              <Route index element={<Introduction />} />
+              <Route path="setup" element={<Setup />} />
+              <Route path="commands" element={<Commands />} />
+              <Route path="filters" element={<Filters />} />
+              <Route path="premium" element={<Premium />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="playlists" element={<Playlists />} />
+              <Route path="faq" element={<FAQ />} />
+              <Route path="support" element={<Support />} />
             </Routes>
 
             {/* Footer Navigation */}

@@ -64,6 +64,21 @@ body {
   flex: 1;
 }
 
+/* Ensure landing page takes full height */
+.landing {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.landing > *:not(.footer) {
+  flex: 0 0 auto;
+}
+
+.landing > section:last-of-type {
+  flex: 1;
+}
+
 body::before {
   content: '';
   position: fixed;

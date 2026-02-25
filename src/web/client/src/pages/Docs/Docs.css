@@ -1,8 +1,8 @@
 /* Docs Page Layout */
 .docs-page {
   display: flex;
-  min-height: auto;
-  flex: 1;
+  min-height: 100vh;
+  width: 100%;
   background: #0a0a0f;
 }
 
@@ -166,8 +166,9 @@
 .docs-main {
   flex: 1;
   margin-left: 240px;
-  min-height: auto;
+  min-height: 100vh;
   width: calc(100% - 240px);
+  display: flex;
 }
 
 .docs-content-wrapper {
@@ -175,6 +176,7 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
+  flex: 1;
 }
 
 .docs-content {
@@ -182,6 +184,7 @@
   padding: 48px 64px;
   max-width: 100%;
   min-width: 0;
+  width: 100%;
 }
 
 /* Breadcrumb */
@@ -353,8 +356,8 @@
 
 /* Right Sidebar - Table of Contents */
 .docs-toc {
-  width: 220px;
-  min-width: 220px;
+  width: 200px;
+  min-width: 200px;
   padding: 48px 24px;
   position: sticky;
   top: 0;
@@ -362,6 +365,7 @@
   overflow-y: auto;
   border-left: 1px solid #1f1f2e;
   background: #0d0d14;
+  flex-shrink: 0;
 }
 
 .docs-toc-title {
@@ -466,6 +470,10 @@
   .docs-toc {
     display: none;
   }
+  
+  .docs-content {
+    padding: 48px 32px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -486,6 +494,7 @@
 
   .docs-main {
     margin-left: 0;
+    width: 100%;
   }
 
   .docs-content {
