@@ -159,6 +159,7 @@ function Landing() {
             <Link to="/commands" className="nav-link">Commands</Link>
             <Link to="/docs" className="nav-link">Docs</Link>
             <Link to="/status" className="nav-link">Status</Link>
+            <Link to="/pricing" className="nav-link">Pricing</Link>
             <a href={`${config.apiUrl}/auth/discord`} className="nav-btn"><i className="fab fa-discord" /> Dashboard</a>
           </div>
           <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
