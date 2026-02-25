@@ -20,6 +20,13 @@ module.exports = {
         error: '<:no:1475169601955430430>',
     },
 
+    // Premium Emojis
+    premium: {
+        diamond: '<:diamond:1475168766200574042>',
+        star: '<:star:1475169167457955901>',
+        crown: '<:crown:1475169336399384616>',
+    },
+
     // Source Icons
     sources: {
         youtube: '<:youtube:1475168468746637566>',
