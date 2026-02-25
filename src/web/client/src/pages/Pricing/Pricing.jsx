@@ -14,52 +14,37 @@ const plans = [
       { name: 'Basic Music Playback', included: true },
       { name: 'Up to 3 Playlists', included: true },
       { name: '50 Songs Queue', included: true },
-      { name: 'Normal Audio (64kbps)', included: true },
+      { name: 'Standard Audio Quality', included: true },
       { name: 'Basic Support', included: true },
       { name: '24/7 Mode', included: false },
       { name: 'Auto-Play', included: false },
-      { name: 'Audio Filters', included: false },
-      { name: 'Volume Control (200%)', included: false },
-      { name: 'HD Audio Quality', included: false }
+      { name: 'Audio Filters (Bassboost, Nightcore, etc)', included: false },
+      { name: 'Volume Control up to 200%', included: false },
+      { name: 'Unlimited Favorites', included: false },
+      { name: 'Listening History', included: false },
+      { name: 'Synchronized Lyrics', included: false }
     ]
   },
   {
-    name: 'Pro',
+    name: 'Premium',
     price: '$4.99',
     period: '/month',
-    icon: 'fa-gem',
-    color: '#6366f1',
+    icon: 'fa-crown',
+    color: '#f59e0b',
     popular: true,
     features: [
       { name: 'Everything in Free', included: true },
       { name: 'Up to 100 Playlists', included: true },
       { name: '500 Songs Queue', included: true },
-      { name: 'HD Audio (128kbps)', included: true },
-      { name: '24/7 Mode', included: true },
-      { name: 'Auto-Play', included: true },
-      { name: 'Audio Filters', included: true },
-      { name: 'Volume Up to 200%', included: true },
-      { name: 'Priority Support', included: true },
-      { name: 'Ultra HD Audio', included: false }
-    ]
-  },
-  {
-    name: 'Pro Plus',
-    price: '$9.99',
-    period: '/month',
-    icon: 'fa-crown',
-    color: '#f59e0b',
-    features: [
-      { name: 'Everything in Pro', included: true },
-      { name: 'Unlimited Playlists', included: true },
-      { name: 'Unlimited Queue', included: true },
-      { name: 'Ultra HD Audio (256kbps)', included: true },
-      { name: 'Custom Bot Name', included: true },
-      { name: 'Custom Bot Avatar', included: true },
-      { name: 'Early Access Features', included: true },
-      { name: 'Dedicated Support', included: true },
-      { name: 'Multi-Server Premium', included: true },
-      { name: 'Advanced Analytics', included: true }
+      { name: '24/7 Mode (Stay in VC forever)', included: true },
+      { name: 'Auto-Play (Auto queue similar songs)', included: true },
+      { name: 'Audio Filters (Bassboost, Nightcore, Vaporwave, etc)', included: true },
+      { name: 'Volume Control up to 200%', included: true },
+      { name: 'Unlimited Favorites', included: true },
+      { name: 'Full Listening History', included: true },
+      { name: 'Synchronized Lyrics', included: true },
+      { name: 'Skip to Position in Queue', included: true },
+      { name: 'Priority Support', included: true }
     ]
   }
 ];
@@ -69,20 +54,20 @@ function Pricing() {
 
   const getUserPlan = () => {
     if (!isPremium) return 'Free';
-    return 'Pro';
+    return 'Premium';
   };
 
   const currentPlan = getUserPlan();
 
   return (
-    <DashboardLayout title="💎 Premium Plans">
+    <DashboardLayout title="Premium Plans">
       <div className="pricing-content">
         <div className="pricing-hero">
           <h1>Upgrade Your Experience</h1>
           <p>Unlock premium features and take your music to the next level</p>
           {isPremium && (
             <div className="current-plan-badge">
-              <i className="fas fa-gem" />
+              <i className="fas fa-crown" />
               You're on the <strong>{currentPlan}</strong> plan
             </div>
           )}
@@ -139,19 +124,19 @@ function Pricing() {
           <div className="faq-grid">
             <div className="faq-item">
               <h3><i className="fas fa-question-circle" /> How do I activate Premium?</h3>
-              <p>Contact us on Discord or use the /premium command in any server.</p>
+              <p>Contact us on Discord or use the /premiumstatus command to check your status.</p>
             </div>
             <div className="faq-item">
               <h3><i className="fas fa-question-circle" /> Can I cancel anytime?</h3>
-              <p>Yes! Downgrade at any time. Your premium features remain active until the end of the billing period.</p>
+              <p>Yes! Your premium features remain active until the end of the billing period.</p>
             </div>
             <div className="faq-item">
               <h3><i className="fas fa-question-circle" /> Does premium apply to all servers?</h3>
-              <p>Pro covers one server. Pro Plus includes multi-server premium support.</p>
+              <p>Premium is tied to your Discord account, so you can use premium features in any server where SpaceBot is installed.</p>
             </div>
             <div className="faq-item">
               <h3><i className="fas fa-question-circle" /> What payment methods do you accept?</h3>
-              <p>We currently accept payments via Discord or direct transfer. More options coming soon!</p>
+              <p>We currently accept payments via Discord or direct transfer. Contact us for more info!</p>
             </div>
           </div>
         </div>

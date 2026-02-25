@@ -265,36 +265,172 @@ function Settings() {
 
           {activeTab === 'audio' && (
             <div className="tab-content">
-              <div className="settings-group">
-                <h3 className="group-title">Audio Quality</h3>
-
-                <div className="setting-item">
-                  <div><strong>Stream Quality</strong><p className="setting-desc">Higher quality uses more bandwidth</p></div>
-                  <select
-                    value={settings.audioQuality || '64'}
-                    onChange={(e) => saveSettings({ audioQuality: e.target.value })}
-                  >
-                    <option value="64">Normal (64kbps)</option>
-                    <option value="128" disabled={!isPremium}>
-                      HD (128kbps) {!isPremium ? '🔒 Premium' : ''}
-                    </option>
-                    <option value="256" disabled={!isPremium}>
-                      Ultra HD (256kbps) {!isPremium ? '🔒 Premium' : ''}
-                    </option>
-                  </select>
+              {/* Audio Visualizer Header */}
+              <div className="audio-visualizer-header">
+                <div className="audio-wave-container">
+                  <div className="audio-wave">
+                    {[...Array(20)].map((_, i) => (
+                      <div 
+                        key={i} 
+                        className="wave-bar"
+                        style={{ 
+                          animationDelay: `${i * 0.1}s`,
+                          height: `${Math.random() * 60 + 20}%`
+                        }}
+                      />
+                    ))}
+                  </div>
                 </div>
+                <div className="audio-header-content">
+                  <div className="audio-icon-pulse">
+                    <i className="fas fa-headphones" />
+                  </div>
+                  <h2>Audio Settings</h2>
+                  <p>Customize your listening experience</p>
+                </div>
+              </div>
 
-                <div className="setting-item">
-                  <div>
-                    <strong>Notifications</strong>
-                    <p className="setting-desc">Song change notifications</p>
-                  </div>
-                  <div
-                    className={`toggle-switch ${settings.notifications?.songChanges ? 'active' : ''}`}
-                    onClick={() => saveSettings({ notifications: { ...settings.notifications, songChanges: !settings.notifications?.songChanges } })}
+              {/* Audio Quality Cards */}
+              <div className="audio-quality-section">
+                <h3 className="group-title">Stream Quality</h3>
+                <div className="quality-cards">
+                  <div 
+                    className={`quality-card ${settings.audioQuality === '64' ? 'selected' : ''} ${settings.audioQuality === '64' ? '' : 'clickable'}`}
+                    onClick={() => saveSettings({ audioQuality: '64' })}
                   >
-                    <div className="toggle-slider" />
+                    <div className="quality-icon normal">
+                      <i className="fas fa-music" />
+                    </div>
+                    <div className="quality-info">
+                      <h4>Normal</h4>
+                      <span className="quality-bitrate">64 kbps</span>
+                      <p className="quality-desc">Standard quality, uses less data</p>
+                    </div>
+                    <div className="quality-check">
+                      {settings.audioQuality === '64' && <i className="fas fa-check-circle" />}
+                    </div>
                   </div>
+
+                  <div 
+                    className={`quality-card ${settings.audioQuality === '128' ? 'selected' : ''} ${isPremium ? 'clickable' : 'locked'}`}
+                    onClick={() => isPremium && saveSettings({ audioQuality: '128' })}
+                  >
+                    {!isPremium && <div className="premium-lock"><i className="fas fa-crown" /></div>}
+                    <div className="quality-icon hd">
+                      <i className="fas fa-headphones-alt" />
+                    </div>
+                    <div className="quality-info">
+                      <h4>HD</h4>
+                      <span className="quality-bitrate">128 kbps</span>
+                      <p className="quality-desc">High quality audio experience</p>
+                    </div>
+                    <div className="quality-check">
+                      {settings.audioQuality === '128' && <i className="fas fa-check-circle" />}
+                    </div>
+                  </div>
+
+                  <div 
+                    className={`quality-card ${settings.audioQuality === '256' ? 'selected' : ''} ${isPremium ? 'clickable' : 'locked'}`}
+                    onClick={() => isPremium && saveSettings({ audioQuality: '256' })}
+                  >
+                    {!isPremium && <div className="premium-lock"><i className="fas fa-crown" /></div>}
+                    <div className="quality-icon ultra">
+                      <i className="fas fa-gem" />
+                    </div>
+                    <div className="quality-info">
+                      <h4>Ultra HD</h4>
+                      <span className="quality-bitrate">256 kbps</span>
+                      <p className="quality-desc">Studio quality, best experience</p>
+                    </div>
+                    <div className="quality-check">
+                      {settings.audioQuality === '256' && <i className="fas fa-check-circle" />}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Audio Features Grid */}
+              <div className="audio-features-section">
+                <h3 className="group-title">Audio Features</h3>
+                <div className="audio-features-grid">
+                  <div className="audio-feature-card">
+                    <div className="feature-icon-wrapper">
+                      <i className="fas fa-bell" />
+                    </div>
+                    <div className="feature-content">
+                      <h4>Song Notifications</h4>
+                      <p>Get notified when songs change</p>
+                    </div>
+                    <div
+                      className={`toggle-switch ${settings.notifications?.songChanges ? 'active' : ''}`}
+                      onClick={() => saveSettings({ notifications: { ...settings.notifications, songChanges: !settings.notifications?.songChanges } })}
+                    >
+                      <div className="toggle-slider" />
+                    </div>
+                  </div>
+
+                  <div className="audio-feature-card">
+                    <div className="feature-icon-wrapper">
+                      <i className="fas fa-volume-up" />
+                    </div>
+                    <div className="feature-content">
+                      <h4>Volume Boost</h4>
+                      <p>{isPremium ? 'Up to 200% volume' : 'Upgrade for 200%'}</p>
+                    </div>
+                    <span className={`feature-badge ${isPremium ? 'active' : 'locked'}`}>
+                      {isPremium ? '200%' : '🔒 Premium'}
+                    </span>
+                  </div>
+
+                  <div className="audio-feature-card">
+                    <div className="feature-icon-wrapper">
+                      <i className="fas fa-sliders-h" />
+                    </div>
+                    <div className="feature-content">
+                      <h4>Audio Filters</h4>
+                      <p>Bassboost, Nightcore, etc</p>
+                    </div>
+                    <span className={`feature-badge ${isPremium ? 'active' : 'locked'}`}>
+                      {isPremium ? '12 Filters' : '🔒 Premium'}
+                    </span>
+                  </div>
+
+                  <div className="audio-feature-card">
+                    <div className="feature-icon-wrapper">
+                      <i className="fas fa-infinity" />
+                    </div>
+                    <div className="feature-content">
+                      <h4>24/7 Mode</h4>
+                      <p>Stay in voice channel forever</p>
+                    </div>
+                    <span className={`feature-badge ${isPremium ? 'active' : 'locked'}`}>
+                      {isPremium ? 'Active' : '🔒 Premium'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Equalizer Preview */}
+              <div className="equalizer-section">
+                <h3 className="group-title">Equalizer Preview</h3>
+                <div className="equalizer-visual">
+                  <div className="eq-bars">
+                    {['60Hz', '150Hz', '400Hz', '1kHz', '2.4kHz', '6kHz', '15kHz'].map((freq, i) => (
+                      <div key={freq} className="eq-bar-wrapper">
+                        <div 
+                          className="eq-bar"
+                          style={{ 
+                            height: `${[70, 85, 60, 75, 90, 65, 80][i]}%`
+                          }}
+                        />
+                        <span className="eq-label">{freq}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="eq-note">
+                    <i className="fas fa-info-circle" />
+                    Equalizer presets available via /filter command in Discord
+                  </p>
                 </div>
               </div>
             </div>
