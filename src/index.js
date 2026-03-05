@@ -4,7 +4,9 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 const database = require('./database');
-const emoji = require('./utils/emojiConfig');const client = new Client({
+const emoji = require('./utils/emojiConfig');
+const { saveAllSessions } = require('./utils/sessionManager');
+const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
@@ -62,7 +64,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
                     const musicPlayer = require('./utils/musicPlayer');
                     const GuildConfig = require('./models/GuildConfig');
                     try {
-                        const config = await GuildConfig.findOne({ guildId });                        if (config && config.alwaysOn) {
+                        const config = await GuildConfig.findOne({ guildId });                        if (config && config.alwaysOn) {
                             console.log(`[VOICE] Staying in ${newState.guild.name} - 24/7 mode enabled`);
                             return;
                         }
@@ -146,3 +148,19 @@ for (const file of eventFiles) {
     require('./web/server')(client);
     client.login(process.env.DISCORD_TOKEN);
 })();
+
+// ─── Graceful Shutdown ────────────────────────────────────────────────────────
+const gracefulShutdown = async (signal) => {
+    console.log(`\n[Shutdown] Received ${signal}. Saving sessions...`);
+    try {
+        const { players } = require('./utils/musicPlayer');
+        await saveAllSessions(players);
+    } catch (err) {
+        console.error('[Shutdown] Error saving sessions:', err.message);
+    }
+    console.log('[Shutdown] Sessions saved. Exiting.');
+    process.exit(0);
+};
+
+process.on('SIGINT',  () => gracefulShutdown('SIGINT'));
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
