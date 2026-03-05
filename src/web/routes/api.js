@@ -39,25 +39,57 @@ module.exports = (client) => {
     };
     router.get('/stats', async (req, res) => {
         try {
-            const promises = [
-                client.shard.fetchClientValues('guilds.cache.size'),
-                client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
-            ];
-            const [guilds, users] = await Promise.all(promises);
-            const totalGuilds = guilds.reduce((acc, guildCount) => acc + guildCount, 0);
-            const totalUsers = users.reduce((acc, userCount) => acc + userCount, 0);
+            let servers = 0;
+            let users = 0;
+            let voiceConnections = 0;
+            let shardCount = 1;
+            let ping = client.ws.ping;
+
+            if (client.shard) {
+                const [guilds, members, voices, pings] = await Promise.all([
+                    client.shard.fetchClientValues('guilds.cache.size'),
+                    client.shard.broadcastEval(c => c.guilds.cache.reduce((acc, g) => acc + g.memberCount, 0)),
+                    client.shard.broadcastEval(c => c.shoukaku?.players?.size || 0),
+                    client.shard.fetchClientValues('ws.ping'),
+                ]);
+                servers = guilds.reduce((a, n) => a + n, 0);
+                users   = members.reduce((a, n) => a + n, 0);
+                voiceConnections = voices.reduce((a, n) => a + n, 0);
+                ping    = Math.round(pings.reduce((a, n) => a + n, 0) / pings.length);
+                shardCount = client.shard.count;
+            } else {
+                servers = client.guilds.cache.size;
+                users   = client.guilds.cache.reduce((a, g) => a + g.memberCount, 0);
+                voiceConnections = client.shoukaku?.players?.size || 0;
+                shardCount = 1;
+            }
+
+            const nodes = client.shoukaku ? [...client.shoukaku.nodes.values()] : [];
+            const lavalinkOnline = nodes.some(n => n.state === 2 || n.state === 1);
+            const dbOnline = require('mongoose').connection.readyState === 1;
+
             res.json({
-                servers: totalGuilds,
-                users: totalUsers,
+                servers,
+                users,
                 commands: client.commands.size,
-                uptime: client.uptime
+                uptime: client.uptime,
+                ping,
+                shards: shardCount,
+                voiceConnections,
+                lavalink: lavalinkOnline,
+                database: dbOnline,
             });
         } catch (err) {
             res.json({
                 servers: client.guilds.cache.size,
                 users: client.guilds.cache.reduce((a, g) => a + g.memberCount, 0),
                 commands: client.commands.size,
-                uptime: client.uptime
+                uptime: client.uptime,
+                ping: client.ws.ping,
+                shards: 1,
+                voiceConnections: client.shoukaku?.players?.size || 0,
+                lavalink: false,
+                database: false,
             });
         }
     });
@@ -77,10 +109,12 @@ module.exports = (client) => {
         } catch (err) {
             res.json({ api: true, database: false, lavalink: false });
         }
-    });    router.get('/shards', async (req, res) => {
+    });
+    router.get('/shards', async (req, res) => {
         try {
             let shards = [];
-            if (client.shard) {                const shardResults = await client.shard.broadcastEval(async (c, context) => {
+            if (client.shard) {
+                const shardResults = await client.shard.broadcastEval(async (c, context) => {
                     return {
                         id: c.shard.ids[0],
                         guilds: c.guilds.cache.size,
@@ -92,7 +126,8 @@ module.exports = (client) => {
                     };
                 });
                 shards = shardResults;
-            } else {                shards = [{
+            } else {
+                shards = [{
                     id: 0,
                     guilds: client.guilds.cache.size,
                     users: client.guilds.cache.reduce((acc, g) => acc + g.memberCount, 0),
@@ -157,7 +192,8 @@ module.exports = (client) => {
     router.get('/user/servers', checkAuth, async (req, res) => {
         try {
             const userGuilds = req.user.guilds || [];
-            const botGuilds = client.guilds.cache;            const adminGuilds = userGuilds.filter(g => {
+            const botGuilds = client.guilds.cache;
+            const adminGuilds = userGuilds.filter(g => {
                 const hasAdmin = (BigInt(g.permissions) & 0x8n) === 0x8n;
                 return hasAdmin;
             }).map(g => ({
@@ -165,7 +201,8 @@ module.exports = (client) => {
                 name: g.name,
                 icon: g.icon,
                 hasBot: botGuilds.has(g.id)
-            }));            adminGuilds.sort((a, b) => {
+            }));
+            adminGuilds.sort((a, b) => {
                 if (a.hasBot && !b.hasBot) return -1;
                 if (!a.hasBot && b.hasBot) return 1;
                 return a.name.localeCompare(b.name);
