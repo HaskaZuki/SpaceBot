@@ -369,12 +369,18 @@ module.exports = {
             if (config && config.musicChannelId && config.musicMessageId) {
                 const channel = client.channels.cache.get(config.musicChannelId);
                 if (channel) {
-                    const message = await channel.messages.fetch(config.musicMessageId);
-                    if (message) {
-                        const playerState = players.get(guildId);
-                        const status = playerState && playerState.currentTrack ? 'Playing' : 'Idle';
-                        const { embeds, components } = createMusicEmbed(config, playerState?.currentTrack, playerState?.queue || [], status);
-                        await message.edit({ embeds, components });
+                    try {
+                        const message = await channel.messages.fetch(config.musicMessageId);
+                        if (message) {
+                            const playerState = players.get(guildId);
+                            const status = playerState && playerState.currentTrack ? 'Playing' : 'Idle';
+                            const { embeds, components } = createMusicEmbed(config, playerState?.currentTrack, playerState?.queue || [], status);
+                            await message.edit({ embeds, components });
+                        }
+                    } catch (msgErr) {
+                        if (msgErr.code === 10008) {
+                            await GuildConfig.updateOne({ guildId }, { $unset: { musicMessageId: '' } });
+                        }
                     }
                 }
             }
