@@ -108,7 +108,7 @@ module.exports = {
                     }
                     console.log(`⚠️ No results from ${source.name}, trying next...`);
                 } catch (e) {
-                    console.log(`❌ ${source.name} error: ${e.message}, trying next...`);
+                    console.log(`❌ ${source.name} error: ${e.message || e.error || e.toString()}, trying next...`);
                     continue;
                 }
             }

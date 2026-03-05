@@ -47,8 +47,14 @@ module.exports = {
             const selectedSource = sourceConfig[source] || sourceConfig.youtube;
             let searchQuery = `${selectedSource.prefix}:${query}`;
             console.log(`[SEARCH] Trying ${selectedSource.emoji}: ${searchQuery}`);
-            let result = await node.rest.resolve(searchQuery);
-            if (!result || result.loadType === 'empty' || result.loadType === 'error') {
+            let result;
+            try {
+                result = await node.rest.resolve(searchQuery);
+            } catch (e) {
+                console.log(`[SEARCH] First resolve failed for ${selectedSource.prefix}:`, e.message || e.error || e.toString());
+                result = null;
+            }
+            if (!result || result.loadType === 'empty' || result.loadType === 'error' || result.loadType === 'NO_MATCHES') {
                 const fallbackSources = ['scsearch', 'ytmsearch', 'ytsearch', 'spsearch']
                     .filter(s => s !== selectedSource.prefix);
                 for (const fallbackPrefix of fallbackSources) {
