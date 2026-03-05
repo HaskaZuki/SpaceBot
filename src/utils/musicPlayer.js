@@ -141,6 +141,8 @@ module.exports = {
                 return { error: 'Failed to join voice channel' };
             }
             playerState.player = player;
+        } else {
+            playerState.player = player;
         }
 
         player.removeAllListeners('end');
@@ -272,7 +274,14 @@ module.exports = {
                     console.error('No player available for playback');
                     return;
                 }
-                await playerState.player.playTrack({ track: { encoded: track.encoded || track.track } });
+                const encoded = track.encoded || track.track;
+                console.log(`[DEBUG] playNext: encoded=${encoded ? encoded.substring(0, 20) + '...' : 'MISSING'}, title=${track.info?.title}`);
+                if (!encoded) {
+                    console.error('[ERROR] Track has no encoded field! Skipping.');
+                    if (playerState.queue.length > 0) await module.exports.playNext(client, guildId);
+                    return;
+                }
+                await playerState.player.playTrack({ track: { encoded } });
                 PlayHistory.create({
                     userId: track.requestedBy || 'unknown',
                     guildId,

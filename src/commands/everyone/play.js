@@ -53,7 +53,12 @@ module.exports = {
             if (result && result.error) {
                 await interaction.editReply({ content: `${emoji.status.error} ${result.error}` });
             } else if (result && result.track) {
-                const msg = `${emoji.status.success} Added to queue: **${result.track.info?.title || query}**`;
+                const playerState = musicPlayer.getQueue(guildId);
+                const isPlaying = !!playerState?.currentTrack;
+                const title = result.track.info?.title || query;
+                const msg = isPlaying
+                    ? `${emoji.status.success} Added to queue: **${title}**`
+                    : `${emoji.animated.disc} Now Playing: **${title}**`;
                 await interaction.editReply({ content: msg });
             } else {
                 await interaction.editReply({ content: `${emoji.status.error} No results found.` });
