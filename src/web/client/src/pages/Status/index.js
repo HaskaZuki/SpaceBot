@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config';
 import Footer from '../../components/Footer';
+import PublicNav from '../../components/PublicNav/PublicNav';
 import './Status.css';
 
 function Status() {
@@ -83,18 +84,7 @@ function Status() {
 
   return (
     <div className="status-page">
-      <nav className="landing-nav">
-        <div className="nav-container">
-          <Link to="/" className="nav-logo"><span>SpaceBot</span></Link>
-          <div className="nav-links">
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/features" className="nav-link">Features</Link>
-            <Link to="/commands" className="nav-link">Commands</Link>
-            <Link to="/status" className="nav-link active">Status</Link>
-            <a href={`${config.apiUrl}/auth/discord`} className="nav-btn"><i className="fab fa-discord" /> Dashboard</a>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
 
       <div className="status-content">
         <div className="status-header">

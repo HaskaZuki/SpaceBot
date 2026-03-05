@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
+import PublicNav from '../../components/PublicNav/PublicNav';
 import './Features.css';
 const featureCategories = [
   {
@@ -149,18 +150,7 @@ const featureCategories = [
 function Features() {
   return (
     <div className="landing features-page">
-      <nav className="landing-nav">
-        <div className="nav-container">
-          <Link to="/" className="nav-logo"><span>SpaceBot</span></Link>
-          <div className="nav-links">
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/features" className="nav-link active">Features</Link>
-            <Link to="/commands" className="nav-link">Commands</Link>
-            <Link to="/pricing" className="nav-link premium"><i className="fas fa-crown" /> Pricing</Link>
-            <Link to="/dashboard" className="nav-btn"><i className="fab fa-discord" /> Dashboard</Link>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
       <section className="features-hero">
         <div className="features-hero-content">
           <div className="features-badge">

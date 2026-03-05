@@ -28,7 +28,7 @@ module.exports = {
             return interaction.reply({ content: `${emoji.status.error} You must be in a voice channel!`, flags: 64 });
         }
         const nodes = [...interaction.client.shoukaku.nodes.values()];
-        const node = nodes.find(n => n.state === 2 || n.state === 1);
+        const node = nodes.find(n => n.state === 1);
         if (!node || nodes.length === 0) {
             console.log(`[SEARCH] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}`).join(', ')}`);
             return interaction.reply({ 

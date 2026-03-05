@@ -28,7 +28,7 @@ module.exports = {
             });
         }
         const nodes = [...interaction.client.shoukaku.nodes.values()];
-        const node = nodes.find(n => n.state === 2 || n.state === 1);
+        const node = nodes.find(n => n.state === 1);
         if (!node || nodes.length === 0) {
             console.log(`[PLAY] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}`).join(', ')}`);
             return interaction.reply({ 
@@ -36,7 +36,8 @@ module.exports = {
                 flags: 64 
             });
         }
-        try {            await interaction.reply({ content: `${emoji.animated.loading} Searching for \`${query}\`...` });
+        try {
+            await interaction.reply({ content: `${emoji.animated.loading} Searching for \`${query}\`...` });
         } catch (e) {
             return;
         }

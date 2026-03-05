@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config';
 import Footer from '../../components/Footer';
+import PublicNav from '../../components/PublicNav/PublicNav';
 import './Landing.css';
 const IMAGES = {
   crystalAudio: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
@@ -95,7 +96,6 @@ const chartData = [
 ];
 function Landing() {
   const [stats, setStats] = useState({ servers: '--', users: '--', commands: '--', ping: '--', shards: '--' });
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [featuresRef, featuresVisible] = useScrollAnimation();
   const [commandsRef, commandsVisible] = useScrollAnimation();
   const [analyticsRef, analyticsVisible] = useScrollAnimation();
@@ -124,22 +124,7 @@ function Landing() {
   const maxPlays = Math.max(...chartData.map(d => d.plays));
   return (
     <div className="landing">
-      <nav className="landing-nav">
-        <div className="nav-container">
-          <Link to="/" className="nav-logo"><span>SpaceBot</span></Link>
-          <div className={`nav-links ${mobileMenuOpen ? 'show' : ''}`}>
-            <Link to="/features" className="nav-link">Features</Link>
-            <Link to="/commands" className="nav-link">Commands</Link>
-            <Link to="/docs" className="nav-link">Docs</Link>
-            <Link to="/status" className="nav-link">Status</Link>
-            <Link to="/pricing" className="nav-link">Pricing</Link>
-            <a href={`${config.apiUrl}/auth/discord`} className="nav-btn"><i className="fab fa-discord" /> Dashboard</a>
-          </div>
-          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <i className="fas fa-bars" />
-          </button>
-        </div>
-      </nav>
+      <PublicNav />
       {}
       <section className="hero">
         <div className="hero-content">
@@ -341,7 +326,7 @@ function Landing() {
               <li><i className="fas fa-check"></i> Community events</li>
               <li><i className="fas fa-check"></i> Premium giveaways</li>
             </ul>
-            <a href="https://discord.gg/spacebot" className="discord-join-btn" target="_blank" rel="noopener noreferrer">
+            <a href={config.supportUrl} className="discord-join-btn" target="_blank" rel="noopener noreferrer">
               <i className="fab fa-discord"></i> Join Server
             </a>
           </div>
@@ -364,7 +349,7 @@ function Landing() {
           <h2>Ready to elevate your server?</h2>
           <p>Join thousands of servers already using SpaceBot.</p>
           <div className="cta-buttons">
-            <a href={`${config.apiUrl}/auth/discord`} className="cta-primary">
+            <a href={config.inviteUrl} target="_blank" rel="noopener noreferrer" className="cta-primary">
               <i className="fas fa-rocket" /> Add to Discord
             </a>
             <Link to="/pricing" className="cta-secondary">

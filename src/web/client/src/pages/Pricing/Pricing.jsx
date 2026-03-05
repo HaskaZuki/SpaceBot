@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import config from '../../config';
+import PublicNav from '../../components/PublicNav/PublicNav';
 import './Pricing.css';
 const comparisonFeatures = [
   { category: 'Music Playback', features: [
@@ -32,24 +33,9 @@ function FeatureValue({ value, isPremium }) {
   return <span className={`feat-label ${isPremium ? 'feat-label-premium' : ''}`}>{value}</span>;
 }
 function Pricing() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <div className="landing pricing-public-page">
-      <nav className="landing-nav">
-        <div className="nav-container">
-          <Link to="/" className="nav-logo"><span>SpaceBot</span></Link>
-          <div className={`nav-links ${mobileMenuOpen ? 'show' : ''}`}>
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/features" className="nav-link">Features</Link>
-            <Link to="/commands" className="nav-link">Commands</Link>
-            <Link to="/pricing" className="nav-link active">Pricing</Link>
-            <a href={`${config.apiUrl}/auth/discord`} className="nav-btn"><i className="fab fa-discord" /> Dashboard</a>
-          </div>
-          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            <i className="fas fa-bars" />
-          </button>
-        </div>
-      </nav>
+      <PublicNav />
       <div className="pricing-page-body">
         <div className="pricing-content">
           {}
@@ -118,7 +104,7 @@ function Pricing() {
                 <li><i className="fas fa-check" /> Priority Support</li>
               </ul>
               <div className="plan-action">
-                <a href="https://discord.gg/spacebot" target="_blank" rel="noopener noreferrer" className="btn btn-premium">
+                <a href={config.supportUrl} target="_blank" rel="noopener noreferrer" className="btn btn-premium">
                   <i className="fas fa-rocket" /> Get Premium
                 </a>
               </div>

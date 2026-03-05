@@ -24,7 +24,7 @@ module.exports = {
         }
         try {
             const nodes = [...interaction.client.shoukaku.nodes.values()];
-            const node = nodes.find(n => n.state === 2 || n.state === 1 || n.state === 'CONNECTED');
+            const node = nodes.find(n => n.state === 1);
             if (!node) {
                 return interaction.reply({
                     content: `${emoji.status.error} No music nodes are available right now.`,

@@ -1,6 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import './Footer.css';const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
+import './Footer.css';
+const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
+
 function Footer() {
   const currentYear = new Date().getFullYear();
   return (
@@ -16,7 +18,7 @@ function Footer() {
             Lavalink support, and dashboard control.
           </p>
           <div className="footer-social">
-            <a href="https://discord.gg/q3aHaNhUgk" target="_blank" rel="noopener noreferrer" className="social-link" title="Discord">
+            <a href="https://discord.gg/CFRKf8mXe4" target="_blank" rel="noopener noreferrer" className="social-link" title="Discord">
               <i className="fab fa-discord"></i>
             </a>
             <a href="https://github.com/SpaceBot" target="_blank" rel="noopener noreferrer" className="social-link" title="GitHub">
@@ -40,7 +42,7 @@ function Footer() {
           </div>
           <div className="footer-section">
             <h4 className="footer-heading">Community</h4>
-            <a href="https://discord.gg/q3aHaNhUgk" target="_blank" rel="noopener noreferrer" className="footer-link">Discord Server</a>
+            <a href="https://discord.gg/CFRKf8mXe4" target="_blank" rel="noopener noreferrer" className="footer-link">Discord Server</a>
             <NavLink to="/leaderboard" className="footer-link">Leaderboard</NavLink>
             <NavLink to="/updates" className="footer-link">Changelog</NavLink>
             <a href="https://github.com/spacebot/issues" target="_blank" rel="noopener noreferrer" className="footer-link">Report Bug</a>

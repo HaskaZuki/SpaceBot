@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
+import PublicNav from '../../components/PublicNav/PublicNav';
 import './Commands.css';
 const allCommands = [
   {
@@ -501,18 +502,7 @@ function Commands() {
   };
   return (
     <div className="landing commands-page">
-      <nav className="landing-nav">
-        <div className="nav-container">
-          <Link to="/" className="nav-logo"><span>SpaceBot</span></Link>
-          <div className="nav-links">
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/features" className="nav-link">Features</Link>
-            <Link to="/commands" className="nav-link active">Commands</Link>
-            <Link to="/pricing" className="nav-link premium"><i className="fas fa-crown" /> Pricing</Link>
-            <Link to="/dashboard" className="nav-btn"><i className="fab fa-discord" /> Dashboard</Link>
-          </div>
-        </div>
-      </nav>
+      <PublicNav />
       <section className="commands-hero">
         <div className="commands-hero-content">
           <div className="commands-badge">
