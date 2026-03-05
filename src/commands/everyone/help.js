@@ -1,675 +1,266 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
-const commandDetails = {
-    play: {
-        description: 'Play a song from YouTube, SoundCloud, Spotify, or a direct URL',
-        usage: '/play <song>',
-        options: [
-            { name: 'song', type: 'String', required: true, desc: 'Song name, URL, or playlist link' }
-        ],
-        examples: ['/play never gonna give you up', '/play https://open.spotify.com/track/...'],
-        category: 'everyone',
-        cooldown: '3s'
-    },
-    search: {
-        description: 'Search for a song across multiple sources and pick from results',
-        usage: '/search <query> [source]',
-        options: [
-            { name: 'query', type: 'String', required: true, desc: 'Song name to search' },
-            { name: 'source', type: 'String', required: false, desc: 'Music source: YouTube, YouTube Music, SoundCloud, Spotify' }
-        ],
-        examples: ['/search lofi beats', '/search chill vibes source:soundcloud'],
-        category: 'everyone',
-        cooldown: '5s'
-    },
-    nowplaying: {
-        description: 'Show the currently playing track with a visual progress bar, source, requester, and queue info',
-        usage: '/nowplaying',
-        options: [],
-        examples: ['/nowplaying'],
-        category: 'everyone'
-    },
-    queue: {
-        description: 'View the current music queue with track list and total duration',
-        usage: '/queue',
-        options: [],
-        examples: ['/queue'],
-        category: 'everyone'
-    },
-    lyrics: {
-        description: 'Fetch and display lyrics for the current song or a custom search query',
-        usage: '/lyrics [query]',
-        options: [
-            { name: 'query', type: 'String', required: false, desc: 'Song name (uses current song if empty)' }
-        ],
-        examples: ['/lyrics', '/lyrics imagine dragons believer'],
-        category: 'everyone'
-    },
-    grab: {
-        description: 'Save the currently playing song info to your DMs for later',
-        usage: '/grab',
-        options: [],
-        examples: ['/grab'],
-        category: 'everyone'
-    },
-    leaderboard: {
-        description: 'View the top 10 listeners in the server ranked by total plays',
-        usage: '/leaderboard [period]',
-        options: [
-            { name: 'period', type: 'String', required: false, desc: 'Time period: Today, This Week, This Month, All Time' }
-        ],
-        examples: ['/leaderboard', '/leaderboard period:This Week'],
-        category: 'everyone'
-    },
-    songinfo: {
-        description: 'Get detailed information about the currently playing track',
-        usage: '/songinfo',
-        options: [],
-        examples: ['/songinfo'],
-        category: 'everyone'
-    },
-    voteskip: {
-        description: 'Start a vote to skip the current track (requires 50% of voice channel)',
-        usage: '/voteskip',
-        options: [],
-        examples: ['/voteskip'],
-        category: 'everyone'
-    },
-    playlist: {
-        description: 'Create, view, load, and manage your personal playlists',
-        usage: '/playlist <action> [name]',
-        options: [
-            { name: 'action', type: 'String', required: true, desc: 'create, view, load, delete, add, remove, list' },
-            { name: 'name', type: 'String', required: false, desc: 'Playlist name' }
-        ],
-        examples: ['/playlist create My Vibes', '/playlist load My Vibes', '/playlist list'],
-        category: 'everyone'
-    },
-    'export-playlist': {
-        description: 'Export a playlist to a shareable text file',
-        usage: '/export-playlist <name>',
-        options: [
-            { name: 'name', type: 'String', required: true, desc: 'Playlist name to export' }
-        ],
-        examples: ['/export-playlist My Vibes'],
-        category: 'everyone'
-    },
-    playerstats: {
-        description: 'View listening statistics for yourself or another user',
-        usage: '/playerstats [user]',
-        options: [
-            { name: 'user', type: 'User', required: false, desc: 'User to check stats for (defaults to you)' }
-        ],
-        examples: ['/playerstats', '/playerstats @username'],
-        category: 'everyone'
-    },
-    premiumstatus: {
-        description: 'Check the premium status of the current server',
-        usage: '/premiumstatus',
-        options: [],
-        examples: ['/premiumstatus'],
-        category: 'everyone'
-    },
-    ping: {
-        description: 'Check the bot\'s latency and API response time',
-        usage: '/ping',
-        options: [],
-        examples: ['/ping'],
-        category: 'everyone'
-    },
-    updates: {
-        description: 'View the latest bot updates and changelog',
-        usage: '/updates',
-        options: [],
-        examples: ['/updates'],
-        category: 'everyone'
-    },
-    pause: {
-        description: 'Pause the current track playback',
-        usage: '/pause',
-        options: [],
-        examples: ['/pause'],
-        category: 'dj'
-    },
-    resume: {
-        description: 'Resume paused track playback',
-        usage: '/resume',
-        options: [],
-        examples: ['/resume'],
-        category: 'dj'
-    },
-    skip: {
-        description: 'Skip the current track and play the next one in queue',
-        usage: '/skip',
-        options: [],
-        examples: ['/skip'],
-        category: 'dj'
-    },
-    stop: {
-        description: 'Stop playback completely and clear the queue',
-        usage: '/stop',
-        options: [],
-        examples: ['/stop'],
-        category: 'dj'
-    },
-    shuffle: {
-        description: 'Randomly shuffle all tracks in the queue',
-        usage: '/shuffle',
-        options: [],
-        examples: ['/shuffle'],
-        category: 'dj'
-    },
-    loop: {
-        description: 'Set the loop mode for playback',
-        usage: '/loop <mode>',
-        options: [
-            { name: 'mode', type: 'String', required: true, desc: 'off, track, or queue' }
-        ],
-        examples: ['/loop track', '/loop queue', '/loop off'],
-        category: 'dj'
-    },
-    seek: {
-        description: 'Jump to a specific timestamp in the current track',
-        usage: '/seek <time>',
-        options: [
-            { name: 'time', type: 'String', required: true, desc: 'Timestamp (e.g. 1:30, 0:45)' }
-        ],
-        examples: ['/seek 1:30', '/seek 2:00'],
-        category: 'dj'
-    },
-    clear: {
-        description: 'Clear the entire music queue without stopping the current track',
-        usage: '/clear',
-        options: [],
-        examples: ['/clear'],
-        category: 'dj'
-    },
-    move: {
-        description: 'Move a track from one queue position to another',
-        usage: '/move <from> <to>',
-        options: [
-            { name: 'from', type: 'Integer', required: true, desc: 'Current position' },
-            { name: 'to', type: 'Integer', required: true, desc: 'New position' }
-        ],
-        examples: ['/move 5 1'],
-        category: 'dj'
-    },
-    remove: {
-        description: 'Remove a specific track from the queue by position',
-        usage: '/remove <position>',
-        options: [
-            { name: 'position', type: 'Integer', required: true, desc: 'Queue position to remove' }
-        ],
-        examples: ['/remove 3'],
-        category: 'dj'
-    },
-    replay: {
-        description: 'Restart the currently playing track from the beginning',
-        usage: '/replay',
-        options: [],
-        examples: ['/replay'],
-        category: 'dj'
-    },
-    leave: {
-        description: 'Disconnect the bot from the voice channel',
-        usage: '/leave',
-        options: [],
-        examples: ['/leave'],
-        category: 'dj'
-    },
-    forceskip: {
-        description: 'Force-skip the current track immediately, bypassing any active voteskip',
-        usage: '/forceskip',
-        options: [],
-        examples: ['/forceskip'],
-        category: 'dj'
-    },
-    connect: {
-        description: 'Join your voice channel without playing anything (useful for pre-loading)',
-        usage: '/connect',
-        options: [],
-        examples: ['/connect'],
-        category: 'dj'
-    },
-    forward: {
-        description: 'Fast forward the current track by a specified amount',
-        usage: '/forward <seconds>',
-        options: [
-            { name: 'seconds', type: 'Integer', required: true, desc: 'Seconds to skip forward' }
-        ],
-        examples: ['/forward 10', '/forward 30'],
-        category: 'playback'
-    },
-    rewind: {
-        description: 'Rewind the current track by a specified amount',
-        usage: '/rewind <seconds>',
-        options: [
-            { name: 'seconds', type: 'Integer', required: true, desc: 'Seconds to rewind' }
-        ],
-        examples: ['/rewind 10'],
-        category: 'playback'
-    },
-    jump: {
-        description: 'Jump to a specific position in the queue and play it',
-        usage: '/jump <position>',
-        options: [
-            { name: 'position', type: 'Integer', required: true, desc: 'Queue position to jump to' }
-        ],
-        examples: ['/jump 5'],
-        category: 'playback'
-    },
-    previous: {
-        description: 'Play the previous track from history',
-        usage: '/previous',
-        options: [],
-        examples: ['/previous'],
-        category: 'playback'
-    },
-    volume: {
-        description: 'Adjust the playback volume (1-200%)',
-        usage: '/volume <level>',
-        options: [
-            { name: 'level', type: 'Integer', required: true, desc: 'Volume level (1-200)' }
-        ],
-        examples: ['/volume 80', '/volume 150'],
-        category: 'premium'
-    },
-    filter: {
-        description: 'Apply audio filters to the playback',
-        usage: '/filter <type>',
-        options: [
-            { name: 'type', type: 'String', required: true, desc: 'Filter type to apply' }
-        ],
-        examples: ['/filter bassboost', '/filter nightcore'],
-        category: 'premium'
-    },
-    bassboost: {
-        description: 'Toggle bass boost effect on the current playback',
-        usage: '/bassboost',
-        options: [],
-        examples: ['/bassboost'],
-        category: 'premium'
-    },
-    nightcore: {
-        description: 'Toggle nightcore effect (faster + higher pitch)',
-        usage: '/nightcore',
-        options: [],
-        examples: ['/nightcore'],
-        category: 'premium'
-    },
-    vaporwave: {
-        description: 'Toggle vaporwave effect (slower + lower pitch)',
-        usage: '/vaporwave',
-        options: [],
-        examples: ['/vaporwave'],
-        category: 'premium'
-    },
-    demon: {
-        description: 'Toggle demon voice effect (deep pitch shift)',
-        usage: '/demon',
-        options: [],
-        examples: ['/demon'],
-        category: 'premium'
-    },
-    speed: {
-        description: 'Adjust the playback speed of the current track',
-        usage: '/speed <rate>',
-        options: [
-            { name: 'rate', type: 'Number', required: true, desc: 'Speed multiplier (0.5-2.0)' }
-        ],
-        examples: ['/speed 1.5', '/speed 0.75'],
-        category: 'premium'
-    },
-    '247': {
-        description: 'Toggle 24/7 mode — bot stays in voice channel even when idle',
-        usage: '/247',
-        options: [],
-        examples: ['/247'],
-        category: 'premium'
-    },
-    autoplay: {
-        description: 'Toggle autoplay — automatically plays similar tracks when queue is empty',
-        usage: '/autoplay',
-        options: [],
-        examples: ['/autoplay'],
-        category: 'premium'
-    },
-    'add-favorite': {
-        description: 'Save the currently playing track to your favorites',
-        usage: '/add-favorite',
-        options: [],
-        examples: ['/add-favorite'],
-        category: 'premium'
-    },
-    'manage-favorites': {
-        description: 'View, play, or remove tracks from your favorites list',
-        usage: '/manage-favorites <action>',
-        options: [
-            { name: 'action', type: 'String', required: true, desc: 'list, play, remove' }
-        ],
-        examples: ['/manage-favorites list', '/manage-favorites play'],
-        category: 'premium'
-    },
-    history: {
-        description: 'View your recent listening history in this server',
-        usage: '/history',
-        options: [],
-        examples: ['/history'],
-        category: 'premium'
-    },
-    'lyrics-sync': {
-        description: 'View synchronized lyrics that highlight the current line being played',
-        usage: '/lyrics-sync',
-        options: [],
-        examples: ['/lyrics-sync'],
-        category: 'premium'
-    },
-    skipto: {
-        description: 'Skip to a specific position in the queue, removing all tracks before it',
-        usage: '/skipto <position>',
-        options: [
-            { name: 'position', type: 'Integer', required: true, desc: 'Queue position to skip to' }
-        ],
-        examples: ['/skipto 5', '/skipto 3'],
-        category: 'premium'
-    },
-    settings: {
-        description: 'View or modify server bot settings',
-        usage: '/settings <action>',
-        options: [
-            { name: 'action', type: 'String', required: true, desc: 'view, reset, or specific setting' }
-        ],
-        examples: ['/settings view', '/settings reset'],
-        category: 'admin'
-    },
-    setup: {
-        description: 'Setup a dedicated music channel with player embed and controls',
-        usage: '/setup',
-        options: [],
-        examples: ['/setup'],
-        category: 'admin'
-    },
-    setdj: {
-        description: 'Set or remove the DJ role for music controls',
-        usage: '/setdj <role>',
-        options: [
-            { name: 'role', type: 'Role', required: true, desc: 'Role to set as DJ' }
-        ],
-        examples: ['/setdj @DJ'],
-        category: 'admin'
-    },
-    setvc: {
-        description: 'Restrict bot to specific voice channels',
-        usage: '/setvc <action> [channel]',
-        options: [
-            { name: 'action', type: 'String', required: true, desc: 'add, remove, list, clear' },
-            { name: 'channel', type: 'Channel', required: false, desc: 'Voice channel to add/remove' }
-        ],
-        examples: ['/setvc add #music-vc', '/setvc list'],
-        category: 'admin'
-    },
-    language: {
-        description: 'Change the bot language for this server',
-        usage: '/language <lang>',
-        options: [
-            { name: 'lang', type: 'String', required: true, desc: 'Language code (en, id, ja, ko, etc.)' }
-        ],
-        examples: ['/language id', '/language en'],
-        category: 'admin'
-    },
-    announce: {
-        description: 'Toggle song announcement messages when a new track starts',
-        usage: '/announce',
-        options: [],
-        examples: ['/announce'],
-        category: 'admin'
-    },
-    limit: {
-        description: 'Set maximum queue size for this server',
-        usage: '/limit <number>',
-        options: [
-            { name: 'number', type: 'Integer', required: true, desc: 'Max queue size (0 = unlimited)' }
-        ],
-        examples: ['/limit 50', '/limit 0'],
-        category: 'admin'
-    },
-    requester: {
-        description: 'Toggle showing who requested each song in the queue',
-        usage: '/requester',
-        options: [],
-        examples: ['/requester'],
-        category: 'admin'
-    },
-    ban: {
-        description: 'Ban a user from using music commands in this server',
-        usage: '/ban <user>',
-        options: [
-            { name: 'user', type: 'User', required: true, desc: 'User to ban' }
-        ],
-        examples: ['/ban @username'],
-        category: 'admin'
-    },
-    unban: {
-        description: 'Unban a previously banned user from music commands',
-        usage: '/unban <user>',
-        options: [
-            { name: 'user', type: 'User', required: true, desc: 'User to unban' }
-        ],
-        examples: ['/unban @username'],
-        category: 'admin'
-    },
-    cleanup: {
-        description: 'Clean up bot messages in the current channel',
-        usage: '/cleanup [amount]',
-        options: [
-            { name: 'amount', type: 'Integer', required: false, desc: 'Number of messages to clean (default: 50)' }
-        ],
-        examples: ['/cleanup', '/cleanup 100'],
-        category: 'admin'
-    },
-    fix: {
-        description: 'Fix common bot issues (stuck player, broken queue)',
-        usage: '/fix',
-        options: [],
-        examples: ['/fix'],
-        category: 'admin'
-    },
-    support: {
-        description: 'Get support server invite link and help resources',
-        usage: '/support',
-        options: [],
-        examples: ['/support'],
-        category: 'everyone'
-    },
-    removedupes: {
-        description: 'Remove duplicate tracks from the current queue',
-        usage: '/removedupes',
-        options: [],
-        examples: ['/removedupes'],
-        category: 'everyone'
-    },
-    'setcommandchannel': {
-        description: 'Restrict all bot commands to one specific text channel (whitelist mode)',
-        usage: '/setcommandchannel <set|clear|status> [channel]',
-        options: [
-            { name: 'subcommand', type: 'String', required: true, desc: 'set, clear, or status' },
-            { name: 'channel', type: 'Channel', required: false, desc: 'Channel to restrict to (for set)' }
-        ],
-        examples: ['/setcommandchannel set #bot-commands', '/setcommandchannel clear', '/setcommandchannel status'],
-        category: 'admin'
-    }
+
+// ─── Command Data ────────────────────────────────────────────────────────────
+
+const COMMANDS = {
+    // Everyone
+    play:              { desc: 'Play a song from YouTube, Spotify, or SoundCloud',  usage: '/play <song>',            cat: 'music' },
+    search:            { desc: 'Search and pick from a list of results',             usage: '/search <query>',         cat: 'music' },
+    nowplaying:        { desc: 'Show the currently playing track',                  usage: '/nowplaying',             cat: 'music' },
+    queue:             { desc: 'View the current music queue',                       usage: '/queue',                  cat: 'music' },
+    lyrics:            { desc: 'Get lyrics for the current or any song',             usage: '/lyrics [query]',         cat: 'music' },
+    grab:              { desc: 'Save the current song to your DMs',                  usage: '/grab',                   cat: 'music' },
+    songinfo:          { desc: 'Get detailed info about the current track',          usage: '/songinfo',               cat: 'music' },
+    voteskip:          { desc: 'Vote to skip the current track',                     usage: '/voteskip',               cat: 'music' },
+    leaderboard:       { desc: 'View the top 10 listeners in this server',           usage: '/leaderboard [period]',   cat: 'music' },
+    playerstats:       { desc: 'View listening stats for yourself or a user',        usage: '/playerstats [user]',     cat: 'music' },
+    playlist:          { desc: 'Create, load, and manage playlists',                 usage: '/playlist <action>',      cat: 'music' },
+    'export-playlist': { desc: 'Export a playlist to a shareable file',              usage: '/export-playlist <name>', cat: 'music' },
+    removedupes:       { desc: 'Remove duplicate tracks from the queue',             usage: '/removedupes',            cat: 'music' },
+    premiumstatus:     { desc: 'Check the premium status of this server',            usage: '/premiumstatus',          cat: 'music' },
+    support:           { desc: 'Get the support server invite link',                 usage: '/support',                cat: 'music' },
+    ping:              { desc: "Check the bot's latency",                            usage: '/ping',                   cat: 'music' },
+    updates:           { desc: 'View the latest bot updates',                        usage: '/updates',                cat: 'music' },
+    // DJ
+    pause:             { desc: 'Pause the current track',                            usage: '/pause',                  cat: 'dj' },
+    resume:            { desc: 'Resume paused playback',                             usage: '/resume',                 cat: 'dj' },
+    skip:              { desc: 'Skip to the next track',                             usage: '/skip',                   cat: 'dj' },
+    forceskip:         { desc: 'Force-skip bypassing any active voteskip',           usage: '/forceskip',              cat: 'dj' },
+    stop:              { desc: 'Stop playback and clear the queue',                  usage: '/stop',                   cat: 'dj' },
+    shuffle:           { desc: 'Shuffle all tracks in the queue',                    usage: '/shuffle',                cat: 'dj' },
+    loop:              { desc: 'Set loop mode (off / track / queue)',                usage: '/loop <mode>',            cat: 'dj' },
+    seek:              { desc: 'Jump to a timestamp in the current track',           usage: '/seek <time>',            cat: 'dj' },
+    clear:             { desc: 'Clear the queue without stopping playback',          usage: '/clear',                  cat: 'dj' },
+    move:              { desc: 'Move a track to a new position',                     usage: '/move <from> <to>',       cat: 'dj' },
+    remove:            { desc: 'Remove a track from the queue',                      usage: '/remove <position>',      cat: 'dj' },
+    replay:            { desc: 'Restart the current track',                          usage: '/replay',                 cat: 'dj' },
+    leave:             { desc: 'Disconnect the bot from voice',                      usage: '/leave',                  cat: 'dj' },
+    connect:           { desc: 'Join your voice channel',                            usage: '/connect',                cat: 'dj' },
+    // Playback
+    forward:           { desc: 'Fast forward by N seconds',                          usage: '/forward <seconds>',      cat: 'playback' },
+    rewind:            { desc: 'Rewind by N seconds',                                usage: '/rewind <seconds>',       cat: 'playback' },
+    jump:              { desc: 'Jump to a queue position',                           usage: '/jump <position>',        cat: 'playback' },
+    previous:          { desc: 'Play the previous track',                            usage: '/previous',               cat: 'playback' },
+    // Premium
+    volume:            { desc: 'Set playback volume (1–200%)',                       usage: '/volume <level>',         cat: 'premium' },
+    filter:            { desc: 'Apply an audio filter',                              usage: '/filter <type>',          cat: 'premium' },
+    bassboost:         { desc: 'Toggle bass boost effect',                           usage: '/bassboost',              cat: 'premium' },
+    nightcore:         { desc: 'Toggle nightcore effect',                            usage: '/nightcore',              cat: 'premium' },
+    vaporwave:         { desc: 'Toggle vaporwave effect',                            usage: '/vaporwave',              cat: 'premium' },
+    demon:             { desc: 'Toggle demon voice effect',                          usage: '/demon',                  cat: 'premium' },
+    speed:             { desc: 'Adjust playback speed (0.5–2.0×)',                   usage: '/speed <rate>',           cat: 'premium' },
+    '247':             { desc: 'Toggle 24/7 — stay in VC when idle',                 usage: '/247',                    cat: 'premium' },
+    autoplay:          { desc: 'Toggle auto-play when queue ends',                   usage: '/autoplay',               cat: 'premium' },
+    'add-favorite':    { desc: 'Save current track to your favorites',               usage: '/add-favorite',           cat: 'premium' },
+    'manage-favorites':{ desc: 'View, play, or remove favorites',                    usage: '/manage-favorites',       cat: 'premium' },
+    history:           { desc: 'View your listening history',                        usage: '/history',                cat: 'premium' },
+    'lyrics-sync':     { desc: 'Synchronized karaoke-style lyrics',                  usage: '/lyrics-sync',            cat: 'premium' },
+    skipto:            { desc: 'Skip to any position in the queue',                  usage: '/skipto <position>',      cat: 'premium' },
+    // Admin
+    settings:          { desc: 'View or change server settings',                     usage: '/settings <action>',      cat: 'admin' },
+    setup:             { desc: 'Set up a dedicated music channel',                   usage: '/setup',                  cat: 'admin' },
+    setdj:             { desc: 'Set the DJ role for this server',                    usage: '/setdj <role>',           cat: 'admin' },
+    setvc:             { desc: 'Restrict bot to specific voice channels',             usage: '/setvc <action>',         cat: 'admin' },
+    setcommandchannel: { desc: 'Lock commands to one text channel',                  usage: '/setcommandchannel',      cat: 'admin' },
+    language:          { desc: 'Change the bot language',                            usage: '/language <code>',        cat: 'admin' },
+    announce:          { desc: 'Toggle song announcement messages',                  usage: '/announce',               cat: 'admin' },
+    limit:             { desc: 'Set the max queue size',                             usage: '/limit <number>',         cat: 'admin' },
+    requester:         { desc: 'Toggle displaying who requested each track',          usage: '/requester',              cat: 'admin' },
+    ban:               { desc: 'Ban a user from music commands',                     usage: '/ban <user>',             cat: 'admin' },
+    unban:             { desc: 'Unban a user from music commands',                   usage: '/unban <user>',           cat: 'admin' },
+    cleanup:           { desc: 'Clean up bot messages in this channel',              usage: '/cleanup [amount]',       cat: 'admin' },
+    fix:               { desc: 'Fix common bot issues',                              usage: '/fix',                    cat: 'admin' },
 };
-const categoryConfig = {
-    everyone: { emoji: emoji.animated.notes, label: 'Music', color: '#e91e63', permission: 'Everyone' },
-    dj: { emoji: '🎚️', label: 'DJ Controls', color: '#9c27b0', permission: 'DJ Role / Admin' },
-    playback: { emoji: `${emoji.controls.play}`, label: 'Playback', color: '#3F51B5', permission: 'DJ Role / Admin' },
-    premium: { emoji: emoji.animated.premium, label: 'Premium', color: '#f1c40f', permission: 'Premium Server' },
-    admin: { emoji: emoji.ui.gear, label: 'Admin', color: '#95a5a6', permission: 'Administrator' }
+
+const CATS = {
+    music:   { label: 'Music',    icon: emoji.animated.notes,   color: 0xE91E63, perm: 'Everyone' },
+    dj:      { label: 'DJ',       icon: '🎚️',                   color: 0x9C27B0, perm: 'DJ Role / Admin' },
+    playback:{ label: 'Playback', icon: '▶️',                    color: 0x3F51B5, perm: 'DJ Role / Admin' },
+    premium: { label: 'Premium',  icon: emoji.animated.premium, color: 0xF1C40F, perm: 'Premium' },
+    admin:   { label: 'Admin',    icon: emoji.ui.gear,          color: 0x95A5A6, perm: 'Administrator' },
 };
-const categoryOrder = ['everyone', 'dj', 'playback', 'premium', 'admin'];
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('help')
-        .setDescription('View all commands or get detailed info about a specific command')
-        .addStringOption(option =>
-            option.setName('command')
-                .setDescription('Get detailed info about a specific command')
-                .setRequired(false)
-                .setAutocomplete(true)),
-    category: 'everyone',
-    async autocomplete(interaction) {
-        const focused = interaction.options.getFocused().toLowerCase();
-        const choices = Object.keys(commandDetails)
-            .filter(cmd => cmd.toLowerCase().includes(focused))
-            .slice(0, 25)
-            .map(cmd => ({
-                name: `/${cmd} — ${commandDetails[cmd].description.slice(0, 70)}`,
-                value: cmd
-            }));
-        await interaction.respond(choices);
-    },
-    async execute(interaction) {
-        const specificCommand = interaction.options.getString('command');
-        if (specificCommand) {
-            return showCommandDetail(interaction, specificCommand.toLowerCase());
-        }
-        return showOverview(interaction);
-    },
-};
-async function showCommandDetail(interaction, cmdName) {
-    const cmd = commandDetails[cmdName];
-    if (!cmd) {
-        const suggestions = Object.keys(commandDetails)
-            .filter(c => c.includes(cmdName) || cmdName.includes(c))
-            .slice(0, 5);
-        const suggestionText = suggestions.length > 0
-            ? `\n\nDid you mean: ${suggestions.map(s => `\`/${s}\``).join(', ')}?`
-            : '';
-        return interaction.reply({ 
-            content: `${emoji.status.error} Command \`/${cmdName}\` not found.${suggestionText}`, 
-            flags: MessageFlags.Ephemeral
-        });
+
+const CAT_ORDER = ['music', 'dj', 'playback', 'premium', 'admin'];
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function grouped() {
+    const g = {};
+    for (const [name, cmd] of Object.entries(COMMANDS)) {
+        if (!g[cmd.cat]) g[cmd.cat] = [];
+        g[cmd.cat].push(name);
     }
-    const cat = categoryConfig[cmd.category] || categoryConfig.everyone;
-    let optionsText = '*No options*';
-    if (cmd.options && cmd.options.length > 0) {
-        optionsText = cmd.options.map(opt => {
-            const reqTag = opt.required ? '`REQUIRED`' : '`optional`';
-            return `> \`${opt.name}\` (${opt.type}) ${reqTag}\n> ${opt.desc}`;
-        }).join('\n\n');
-    }
-    const embed = new EmbedBuilder()
-        .setColor(cat.color)
-        .setTitle(`/${cmdName}`)
-        .setDescription(`${cat.emoji} ${cmd.description}`)
-        .addFields(
-            { name: 'Usage', value: `\`${cmd.usage}\``, inline: true },
-            { name: 'Category', value: `${cat.emoji} ${cat.label}`, inline: true },
-            { name: 'Permission', value: cat.permission, inline: true },
-            { name: 'Options', value: optionsText }
-        );
-    if (cmd.examples && cmd.examples.length > 0) {
-        embed.addFields({
-            name: '💡 Examples',
-            value: cmd.examples.map(e => `\`${e}\``).join('\n')
-        });
-    }
-    if (cmd.cooldown) {
-        embed.addFields({ name: '⏰ Cooldown', value: cmd.cooldown, inline: true });
-    }
-    embed.setFooter({ text: 'Use /help to see all commands' });
-    await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+    return g;
 }
-function buildCategoryEmbed(catKey, categories) {
-    const cat = categoryConfig[catKey];
-    const cmds = categories[catKey] || [];
-    const embed = new EmbedBuilder()
-        .setColor(cat.color)
-        .setTitle(`${cat.label} Commands`)
-        .setDescription(`${cat.emoji} **Permission:** ${cat.permission}\n\n`);
-    const fields = cmds.map(cmdName => {
-        const cmd = commandDetails[cmdName];
-        return {
-            name: `\`${cmd.usage}\``,
-            value: cmd.description.length > 80 ? cmd.description.slice(0, 77) + '...' : cmd.description,
-            inline: true
-        };
+
+// Overview embed — clean list layout like Aero
+function buildOverview() {
+    const g = grouped();
+    const total = Object.keys(COMMANDS).length;
+
+    const lines = CAT_ORDER.map(cat => {
+        const c = CATS[cat];
+        const count = (g[cat] || []).length;
+        return `${c.icon}  **${c.label}** — ${count} commands  ·  *${c.perm}*`;
     });
+
+    return new EmbedBuilder()
+        .setColor(0x5865F2)
+        .setAuthor({ name: 'SpaceBot — Command Help', iconURL: 'https://cdn.discordapp.com/emojis/1475168921169428622.gif' })
+        .setDescription(
+            `Use the buttons below to browse each category.\n` +
+            `Type \`/help command:<name>\` for full details on any command.\n\n` +
+            lines.join('\n')
+        )
+        .setFooter({ text: `${total} total commands  ·  Buttons expire in 3 min` });
+}
+
+// Category embed — compact two-column inline fields
+function buildCategory(catKey) {
+    const c = CATS[catKey];
+    const g = grouped();
+    const names = g[catKey] || [];
+
+    const embed = new EmbedBuilder()
+        .setColor(c.color)
+        .setAuthor({ name: `${c.label} Commands  ·  ${c.perm}` })
+        .setDescription(`*Click a button to switch category. Use \`/help command:<name>\` for details.*\n\u200b`);
+
+    const fields = names.map(name => ({
+        name: `\`/${name}\``,
+        value: COMMANDS[name].desc,
+        inline: true,
+    }));
+
+    // Discord max 25 fields — split into chunks
     for (let i = 0; i < fields.length; i += 25) {
-        embed.setFields(fields.slice(i, i + 25));
+        embed.setFields(fields.slice(i, Math.min(i + 25, fields.length)));
     }
-    embed.setFooter({ text: `${cmds.length} commands • /help command:<name> for details` });
+
+    embed.setFooter({ text: `${names.length} commands in this category` });
     return embed;
 }
-function buildNavButtons(userId, currentCat) {
+
+// Command detail embed — focused, single-command
+function buildDetail(name) {
+    const cmd = COMMANDS[name];
+    const c = CATS[cmd.cat];
+
+    return new EmbedBuilder()
+        .setColor(c.color)
+        .setAuthor({ name: `/${name}` })
+        .setDescription(`${cmd.desc}\n\u200b`)
+        .addFields(
+            { name: 'Usage',      value: `\`${cmd.usage}\``,  inline: true },
+            { name: 'Category',   value: `${c.icon} ${c.label}`, inline: true },
+            { name: 'Permission', value: c.perm,              inline: true },
+        )
+        .setFooter({ text: 'Use /help to see all commands' });
+}
+
+// Navigation buttons row
+function buildButtons(userId, activeCat) {
     const row = new ActionRowBuilder();
-    for (const catKey of categoryOrder) {
-        const cat = categoryConfig[catKey];
+    for (const cat of CAT_ORDER) {
+        const c = CATS[cat];
         row.addComponents(
             new ButtonBuilder()
-                .setCustomId(`help_cat_${userId}_${catKey}`)
-                .setEmoji(cat.emoji)
-                .setStyle(catKey === currentCat ? ButtonStyle.Primary : ButtonStyle.Secondary)
-                .setLabel(cat.label)
+                .setCustomId(`help:${userId}:${cat}`)
+                .setEmoji(c.icon)
+                .setLabel(c.label)
+                .setStyle(cat === activeCat ? ButtonStyle.Primary : ButtonStyle.Secondary)
         );
     }
     return row;
 }
-async function showOverview(interaction) {
-    const categories = {};
-    for (const [name, cmd] of Object.entries(commandDetails)) {
-        if (!categories[cmd.category]) categories[cmd.category] = [];
-        categories[cmd.category].push(name);
+
+function buildDisabledButtons() {
+    const row = new ActionRowBuilder();
+    for (const cat of CAT_ORDER) {
+        const c = CATS[cat];
+        row.addComponents(
+            new ButtonBuilder()
+                .setCustomId(`help:expired:${cat}`)
+                .setEmoji(c.icon)
+                .setLabel(c.label)
+                .setStyle(ButtonStyle.Secondary)
+                .setDisabled(true)
+        );
     }
-    const totalCmds = Object.keys(commandDetails).length;
-    const totalCats = Object.keys(categoryConfig).length;
-    const mainEmbed = new EmbedBuilder()
-        .setColor('#7C3AED')
-        .setTitle('Space Music — Command Guide')
-        .setDescription(
-            `${emoji.animated.notes} **${totalCmds}** commands across **${totalCats}** categories\n\n` +
-            categoryOrder.map(catKey => {
-                const cat = categoryConfig[catKey];
-                const count = (categories[catKey] || []).length;
-                return `${cat.emoji} **${cat.label}** — ${count} commands`;
-            }).join('\n') +
-            '\n\n*Click a button below to browse a category*\n*Use `/help command:<name>` for command details*'
-        )
-        .setFooter({ text: 'Buttons expire after 3 minutes' });
-    const row = buildNavButtons(interaction.user.id, null);
-    const reply = await interaction.reply({ 
-        embeds: [mainEmbed], 
-        components: [row], 
-        flags: MessageFlags.Ephemeral
-    });
-    const collector = reply.createMessageComponentCollector({ 
-        time: 180_000
-    });
-    collector.on('collect', async (btnInteraction) => {
-        if (btnInteraction.user.id !== interaction.user.id) {
-            return btnInteraction.reply({ content: `${emoji.status.error} This menu is not for you!`, flags: MessageFlags.Ephemeral });
-        }
-        const parts = btnInteraction.customId.split('_');
-        const selectedCategory = parts[parts.length - 1];
-        const detailEmbed = buildCategoryEmbed(selectedCategory, categories);
-        const newRow = buildNavButtons(interaction.user.id, selectedCategory);
-        await btnInteraction.update({ embeds: [detailEmbed], components: [newRow] });
-    });
-    collector.on('end', async () => {
-        try {
-            const disabledRow = new ActionRowBuilder();
-            for (const catKey of categoryOrder) {
-                const cat = categoryConfig[catKey];
-                disabledRow.addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(`help_cat_expired_${catKey}`)
-                        .setEmoji(cat.emoji)
-                        .setLabel(cat.label)
-                        .setStyle(ButtonStyle.Secondary)
-                        .setDisabled(true)
-                );
-            }
-            await interaction.editReply({ components: [disabledRow] });
-        } catch {        }
-    });
+    return row;
 }
+
+// ─── Module ──────────────────────────────────────────────────────────────────
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('help')
+        .setDescription('View all SpaceBot commands or get details about a specific one')
+        .addStringOption(opt =>
+            opt.setName('command')
+                .setDescription('Get details about a specific command')
+                .setRequired(false)
+                .setAutocomplete(true)
+        ),
+
+    category: 'everyone',
+
+    async autocomplete(interaction) {
+        const query = interaction.options.getFocused().toLowerCase();
+        const results = Object.keys(COMMANDS)
+            .filter(name => name.includes(query) || COMMANDS[name].desc.toLowerCase().includes(query))
+            .slice(0, 25)
+            .map(name => ({
+                name: `/${name}  —  ${COMMANDS[name].desc.slice(0, 60)}`,
+                value: name,
+            }));
+        await interaction.respond(results);
+    },
+
+    async execute(interaction) {
+        const cmdName = interaction.options.getString('command')?.toLowerCase();
+
+        // ── Specific command detail ──────────────────────────────────────────
+        if (cmdName) {
+            if (!COMMANDS[cmdName]) {
+                const suggestions = Object.keys(COMMANDS)
+                    .filter(n => n.includes(cmdName))
+                    .slice(0, 4)
+                    .map(n => `\`/${n}\``);
+                return interaction.reply({
+                    content: `${emoji.status.error} Command \`/${cmdName}\` not found.` +
+                        (suggestions.length ? `\n\nDid you mean: ${suggestions.join(', ')}?` : ''),
+                    flags: MessageFlags.Ephemeral,
+                });
+            }
+            return interaction.reply({ embeds: [buildDetail(cmdName)], flags: MessageFlags.Ephemeral });
+        }
+
+        // ── Overview with category buttons ───────────────────────────────────
+        const reply = await interaction.reply({
+            embeds: [buildOverview()],
+            components: [buildButtons(interaction.user.id, null)],
+            flags: MessageFlags.Ephemeral,
+        });
+
+        const collector = reply.createMessageComponentCollector({ time: 180_000 });
+
+        collector.on('collect', async btn => {
+            if (btn.user.id !== interaction.user.id) {
+                return btn.reply({ content: `${emoji.status.error} This menu isn't yours.`, flags: MessageFlags.Ephemeral });
+            }
+            const [, , cat] = btn.customId.split(':');
+            await btn.update({
+                embeds: [buildCategory(cat)],
+                components: [buildButtons(interaction.user.id, cat)],
+            });
+        });
+
+        collector.on('end', async () => {
+            try {
+                await interaction.editReply({ components: [buildDisabledButtons()] });
+            } catch { /* message deleted */ }
+        });
+    },
+};
