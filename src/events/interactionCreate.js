@@ -27,10 +27,11 @@ module.exports = {
                     case 'skip':
                         await musicPlayer.skipTrack(interaction.client, guildId);
                         break;
-                    case 'loop':
+                    case 'loop': {
                         const mode = await musicPlayer.setLoop(interaction.client, guildId);
                         await interaction.followUp({ content: `${emoji.controls.loopQueue} Loop mode set to: **${mode}**`, flags: 64 }).catch(() => {});
                         break;
+                    }
                     case 'shuffle':
                         await musicPlayer.shuffleQueue(interaction.client, guildId);
                         await interaction.followUp({ content: `${emoji.controls.shuffle} Queue shuffled!`, flags: 64 }).catch(() => {});

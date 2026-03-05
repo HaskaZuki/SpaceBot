@@ -149,7 +149,8 @@ module.exports = {
         player.on('end', async (data) => {
             if (data?.reason === 'replaced') return;
             if (playerState.loop === 'track' && playerState.currentTrack) {
-                player.playTrack({ track: playerState.currentTrack.track });
+                const t = playerState.currentTrack;
+                player.playTrack({ track: { encoded: t.encoded || t.track } });
             } else if (playerState.loop === 'queue') {
                playerState.queue.push(playerState.currentTrack);
                await module.exports.playNext(client, guildId);
@@ -202,7 +203,8 @@ module.exports = {
             player.on('end', async (data) => {
                 if (data?.reason === 'replaced') return;
                 if (playerState.loop === 'track' && playerState.currentTrack) {
-                    player.playTrack({ track: playerState.currentTrack.track });
+                    const t = playerState.currentTrack;
+                    player.playTrack({ track: { encoded: t.encoded || t.track } });
                 } else if (playerState.loop === 'queue') {
                    playerState.queue.push(playerState.currentTrack);
                    await module.exports.playNext(client, guildId);
@@ -248,8 +250,9 @@ module.exports = {
             });
         }
         playerState.queue.push(track);
+        console.log(`[DEBUG] Queue length after push: ${playerState.queue.length}, currentTrack: ${!!playerState.currentTrack}`);
         if (!playerState.currentTrack && playerState.queue.length === 1) {
-            module.exports.playNext(client, guildId);
+            await module.exports.playNext(client, guildId);
         } else {
              module.exports.updateDashboard(client, guildId);
         }

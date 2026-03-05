@@ -34,9 +34,10 @@ module.exports = {
                     requestedByText = user.displayName || user.username;
                     requestedByIcon = user.displayAvatarURL({ size: 32 });
                 }
-            } catch (_) {  }
+            } catch (_) { }
         }
-        if (!requestedByText) requestedByText = 'Someone';        const description = 
+        if (!requestedByText) requestedByText = 'Someone';
+        const description =
             `${emoji.animated.disc} **Now Playing**\n\n` +
             `**Duration**\n${progressBar}\n\n` +
             `**Artist**\n${track.info.author || 'Unknown'}\n\n` +

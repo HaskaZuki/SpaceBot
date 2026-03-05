@@ -158,7 +158,8 @@ async function restoreAllSessions(client) {
             player.on('end', async (data) => {
                 if (data?.reason === 'replaced') return;
                 if (playerState.loop === 'track' && playerState.currentTrack) {
-                    player.playTrack({ track: playerState.currentTrack.track });
+                    const t = playerState.currentTrack;
+                    player.playTrack({ track: { encoded: t.encoded || t.track } });
                 } else if (playerState.loop === 'queue') {
                     playerState.queue.push(playerState.currentTrack);
                     await musicPlayer.playNext(client, guildId);

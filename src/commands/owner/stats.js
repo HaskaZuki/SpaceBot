@@ -25,16 +25,18 @@ module.exports = {
         const totalChannels = client.channels.cache.size;
         const shardInfo = getShardInfo(client);
         const shoukaku = client.shoukaku;
-        const lavalinkNodes = shoukaku ? [...shoukaku.nodes.values()] : [];        const cpus = os.cpus();
+        const lavalinkNodes = shoukaku ? [...shoukaku.nodes.values()] : [];
+        const cpus = os.cpus();
         let cpuUsage = 0;
         cpus.forEach(cpu => {
             const total = Object.values(cpu.times).reduce((acc, t) => acc + t, 0);
             const usage = ((cpu.times.user / total) * 100);
             cpuUsage += usage;
         });
-        const avgCpu = (cpuUsage / cpus.length).toFixed(2);        const processUptime = process.uptime();
+        const avgCpu = (cpuUsage / cpus.length).toFixed(2);
         const nodeVersion = process.version;
-        const v8Version = process.versions.v8;        const networkInterfaces = os.networkInterfaces();
+        const v8Version = process.versions.v8;
+        const networkInterfaces = os.networkInterfaces();
         let internalIP = 'N/A';
         for (const name of Object.keys(networkInterfaces)) {
             for (const iface of networkInterfaces[name]) {
@@ -43,7 +45,8 @@ module.exports = {
                     break;
                 }
             }
-        }        const statsText = [
+        }
+        const statsText = [
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             'BOT STATISTICS',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
@@ -58,7 +61,7 @@ module.exports = {
             `Total Servers: ${totalGuilds.toLocaleString()}`,
             `Total Users: ${totalUsers.toLocaleString()}`,
             `Voice Connections: ${totalVoiceConnections.toLocaleString()}`,
-            `Total Channels: ${client.channels.cache.size.toLocaleString()}`,
+            `Total Channels: ${totalChannels.toLocaleString()}`,
             `Total Emojis: ${client.emojis.cache.size.toLocaleString()}`,
             '',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
@@ -73,7 +76,7 @@ module.exports = {
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             `Platform: ${os.platform()} ${os.arch()}`,
             `System RAM: ${systemFreeMemMB}GB / ${systemMemMB}GB (Free)`,
-            `Bot Memory: ${memUsedMB}MB / ${memTotalMB}MB (Heap)`, 
+            `Bot Memory: ${memUsedMB}MB / ${memTotalMB}MB (Heap)`,
             `CPU Usage: ${avgCpu}% (Average)`,
             `CPU Cores: ${cpus.length}`,
             `Internal IP: ${internalIP}`,
@@ -84,23 +87,24 @@ module.exports = {
             `Node.js: ${nodeVersion}`,
             `V8 Engine: v${v8Version}`,
             `Discord.js: v${djsVersion}`,
-        ];        if (lavalinkNodes.length > 0) {
+        ];
+        if (lavalinkNodes.length > 0) {
             statsText.push('');
             statsText.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             statsText.push('LAVALINK NODES');
             statsText.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             lavalinkNodes.forEach(node => {
-                const status = node.state === 2 ? 'Online' : 'Offline';
+                const status = node.state === 1 ? 'Online' : 'Offline';
                 const players = node.stats ? node.stats.players : 0;
                 const playing = node.stats ? node.stats.playingPlayers : 0;
                 statsText.push(`${status} ${node.name}`);
                 statsText.push(`   Players: ${players} | Playing: ${playing}`);
                 if (node.stats) {
-                    const cpuUsage = typeof node.stats.cpu === 'object' 
-                        ? (node.stats.cpu.systemLoad * 100).toFixed(1) 
+                    const cpuLoad = typeof node.stats.cpu === 'object'
+                        ? (node.stats.cpu.systemLoad * 100).toFixed(1)
                         : (typeof node.stats.cpu === 'number' ? node.stats.cpu.toFixed(1) : '0.0');
                     const memoryUsed = node.stats.memory ? (node.stats.memory.used / 1024 / 1024).toFixed(0) : '0';
-                    statsText.push(`   CPU: ${cpuUsage}% | Memory: ${memoryUsed}MB`);
+                    statsText.push(`   CPU: ${cpuLoad}% | Memory: ${memoryUsed}MB`);
                 }
             });
         } else {
