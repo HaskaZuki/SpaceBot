@@ -2,11 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config';
 import Footer from '../../components/Footer';
-import './Landing.css';const IMAGES = {  crystalAudio: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
+import './Landing.css';
+const IMAGES = {
+  crystalAudio: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
   audioFilters: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop',
   smartQueue: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&h=400&fit=crop',
-  webDashboard: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',  defaultAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-};function useScrollAnimation() {
+  webDashboard: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
+  defaultAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+};
+function useScrollAnimation() {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
   useEffect(() => {
@@ -90,23 +94,26 @@ const chartData = [
   { day: 'Sun', plays: 310 }
 ];
 function Landing() {
-  const [stats, setStats] = useState({ servers: '--', users: '--', commands: '--', uptime: '--' });
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);  const [featuresRef, featuresVisible] = useScrollAnimation();
+  const [stats, setStats] = useState({ servers: '--', users: '--', commands: '--', ping: '--', shards: '--' });
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [featuresRef, featuresVisible] = useScrollAnimation();
   const [commandsRef, commandsVisible] = useScrollAnimation();
   const [analyticsRef, analyticsVisible] = useScrollAnimation();
   const [leaderboardRef, leaderboardVisible] = useScrollAnimation();
   const [discordRef, discordVisible] = useScrollAnimation();
-  useEffect(() => {    fetch(`${config.apiUrl}/api/stats`)
+  useEffect(() => {
+    fetch(`${config.apiUrl}/api/stats`)
       .then(res => res.json())
       .then(data => {
         setStats({
-          servers: data.servers?.toLocaleString() || '--',
-          users: data.users?.toLocaleString() || '--',
+          servers:  data.servers?.toLocaleString() || '--',
+          users:    data.users?.toLocaleString() || '--',
           commands: data.commands ? `${data.commands}+` : '--',
-          uptime: formatUptime(data.uptime)
+          ping:     data.ping ? `${data.ping}ms` : '--',
+          shards:   data.shards ?? '--',
         });
       })
-      .catch(() => {      });
+      .catch(() => {});
   }, []);
   const formatUptime = (ms) => {
     if (!ms) return '--';
@@ -167,12 +174,17 @@ function Landing() {
               <div className="stat-label">Commands</div>
             </div>
             <div className="stat">
-              <div className="stat-num">{stats.uptime}</div>
-              <div className="stat-label">Uptime</div>
+              <div className="stat-num">{stats.ping}</div>
+              <div className="stat-label">Latency</div>
+            </div>
+            <div className="stat">
+              <div className="stat-num">{stats.shards}</div>
+              <div className="stat-label">Shards</div>
             </div>
           </div>
         </div>
       </section>
+
       {}
       <section id="features" className="features-section" ref={featuresRef}>
         <div className="section-header">

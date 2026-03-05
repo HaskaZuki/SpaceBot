@@ -142,14 +142,29 @@ module.exports = (client) => {
             const totalGuilds = shards.reduce((acc, s) => acc + s.guilds, 0);
             const totalUsers = shards.reduce((acc, s) => acc + s.users, 0);
             const avgPing = shards.reduce((acc, s) => acc + (s.ping || 0), 0) / shards.length;
+
+            let totalVoice = 0;
+            try {
+                if (client.shard) {
+                    const voices = await client.shard.broadcastEval(c => c.shoukaku?.players?.size || 0);
+                    totalVoice = voices.reduce((a, n) => a + n, 0);
+                } else {
+                    totalVoice = client.shoukaku?.players?.size || 0;
+                }
+            } catch (_) { totalVoice = 0; }
+
+            const nodes = client.shoukaku ? [...client.shoukaku.nodes.values()] : [];
+            const lavalinkOnline = nodes.some(n => n.state === 2 || n.state === 1);
+
             res.json({
                 totalShards,
                 onlineShards,
                 totalGuilds,
                 totalUsers,
+                totalVoice,
                 avgPing: Math.round(avgPing),
                 shards,
-                lavalink: client.manager?.nodes?.some(n => n.connected) || false,
+                lavalink: lavalinkOnline,
                 database: mongoose.connection.readyState === 1
             });
         } catch (err) {
