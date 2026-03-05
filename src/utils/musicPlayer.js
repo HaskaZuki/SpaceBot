@@ -170,13 +170,13 @@ module.exports = {
         });
         track.requestedBy = requestedBy;
         playerState.queue.push(track);
-
-        if (!playerState.currentTrack) {
+        const isFirst = !playerState.currentTrack;
+        if (isFirst) {
             await module.exports.playNext(client, guildId);
         } else {
             module.exports.updateDashboard(client, guildId);
         }
-        return { track };
+        return { track, isFirst };
     },
     playTrackDirect: async (client, guildId, voiceChannelId, track, textChannel) => {
         const nodes = [...client.shoukaku.nodes.values()];
