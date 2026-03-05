@@ -8,7 +8,8 @@ module.exports = {
             const guildId = interaction.guild?.id;
             if (!guildId) return;
             const member = interaction.member;
-            if (interaction.customId.startsWith('help_') || interaction.customId.startsWith('settings_') || interaction.customId.startsWith('servers_')) {
+            const NON_MUSIC_PREFIXES = ['help_', 'help:', 'settings_', 'servers_', 'queue_', 'fav_'];
+            if (NON_MUSIC_PREFIXES.some(prefix => interaction.customId.startsWith(prefix))) {
                 return;
             }
             try {
