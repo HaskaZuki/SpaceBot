@@ -2,10 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import './Leaderboard.css';
-
 function Leaderboard() {
   const navigate = useNavigate();
-
   return (
     <DashboardLayout>
       <div className="leaderboard-page">
@@ -16,7 +14,6 @@ function Leaderboard() {
           </h1>
           <p className="page-subtitle">Top listeners in your server</p>
         </div>
-
         <div className="leaderboard-redirect">
           <div className="redirect-card">
             <div className="redirect-icon">
@@ -37,5 +34,4 @@ function Leaderboard() {
     </DashboardLayout>
   );
 }
-
 export default Leaderboard;

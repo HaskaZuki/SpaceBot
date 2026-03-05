@@ -2,12 +2,10 @@ const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 const { REST, Routes } = require('discord.js');
 const fs = require('fs');
-
 const globalCommands = [];
 const ownerCommands = [];
 const commandsPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(commandsPath);
-
 function loadCommandFiles(dirPath) {
     const files = [];
     const items = fs.readdirSync(dirPath, { withFileTypes: true });
@@ -21,7 +19,6 @@ function loadCommandFiles(dirPath) {
     }
     return files;
 }
-
 for (const folder of commandFolders) {
     const folderPath = path.join(commandsPath, folder);
     if (fs.existsSync(folderPath) && fs.statSync(folderPath).isDirectory()) {
@@ -48,21 +45,14 @@ for (const folder of commandFolders) {
         }
     }
 }
-
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
-
 (async () => {
-    try {
-        // Deploy global commands (visible to everyone)
-        console.log(`Started refreshing ${globalCommands.length} global commands.`);
+    try {        console.log(`Started refreshing ${globalCommands.length} global commands.`);
         const globalData = await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),
             { body: globalCommands },
         );
-        console.log(`Successfully reloaded ${globalData.length} global commands.`);
-
-        // Deploy owner commands to owner's guild only (hidden from other servers)
-        if (process.env.OWNER_GUILD_ID) {
+        console.log(`Successfully reloaded ${globalData.length} global commands.`);        if (process.env.OWNER_GUILD_ID) {
             console.log(`Registering ${ownerCommands.length} owner commands to guild ${process.env.OWNER_GUILD_ID}...`);
             const ownerData = await rest.put(
                 Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.OWNER_GUILD_ID),
@@ -70,9 +60,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
             );
             console.log(`Successfully reloaded ${ownerData.length} owner-only guild commands.`);
             console.log('Owner commands are only visible in the owner guild and protected by OWNER_ID check.');
-        } else {
-            // Fallback: deploy owner commands globally but they are still protected by OWNER_ID check
-            console.warn('[WARNING] OWNER_GUILD_ID not set in .env');
+        } else {            console.warn('[WARNING] OWNER_GUILD_ID not set in .env');
             console.warn('Deploying owner commands globally (they are still protected by OWNER_ID check in the bot).');
             const allData = await rest.put(
                 Routes.applicationCommands(process.env.CLIENT_ID),

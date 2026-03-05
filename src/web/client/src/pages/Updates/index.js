@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import './Updates.css';
-
 function Updates() {
   const [selectedVersion, setSelectedVersion] = useState('v1.0.0');
-  
   const updates = [
     {
       version: 'v1.0.0',
@@ -85,7 +83,6 @@ function Updates() {
       ]
     }
   ];
-
   const getTypeIcon = (type) => {
     switch(type) {
       case 'new': return 'fa-star';
@@ -94,7 +91,6 @@ function Updates() {
       default: return 'fa-circle';
     }
   };
-
   const getTypeClass = (type) => {
     switch(type) {
       case 'new': return 'type-new';
@@ -103,7 +99,6 @@ function Updates() {
       default: return '';
     }
   };
-
   return (
     <DashboardLayout>
       <div className="updates-page">
@@ -114,7 +109,6 @@ function Updates() {
           </h1>
           <p className="page-subtitle">Latest updates and improvements to SpaceBot</p>
         </div>
-
         <div className="updates-content">
           <div className="version-list">
             {updates.map((update) => (
@@ -128,7 +122,6 @@ function Updates() {
               </button>
             ))}
           </div>
-
           <div className="version-details">
             {updates.filter(u => u.version === selectedVersion).map((update) => (
               <div key={update.version} className="changelog-card">
@@ -149,7 +142,6 @@ function Updates() {
             ))}
           </div>
         </div>
-
         <div className="updates-footer">
           <p>More updates coming soon! Follow our <a href="https://discord.gg/spacebot">Discord</a> for announcements.</p>
         </div>
@@ -157,5 +149,4 @@ function Updates() {
     </DashboardLayout>
   );
 }
-
 export default Updates;

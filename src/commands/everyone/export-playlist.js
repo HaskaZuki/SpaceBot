@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const GuildConfig = require('../../models/GuildConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('export-playlist')
@@ -20,12 +19,9 @@ module.exports = {
                     { name: '📺 YouTube Music', value: 'youtube' },
                     { name: '🍎 Apple Music', value: 'apple' }
                 )),
-    
     async execute(interaction) {
-        
         const playlistName = interaction.options.getString('playlist');
         const platform = interaction.options.getString('platform');
-        
         await interaction.reply({
             content: `📤 **Export Playlist**\n\n` +
                     `Playlist: **${playlistName}**\n` +
@@ -40,20 +36,16 @@ module.exports = {
             flags: MessageFlags.Ephemeral
         });
     },
-    
     async autocomplete(interaction) {
         const userId = interaction.user.id;
         const storage = require('../../utils/storage');
         const userPlaylists = await storage.getUser('playlists', userId);
-        
         if (!userPlaylists) return interaction.respond([]);
-        
         const focused = interaction.options.getFocused().toLowerCase();
         const choices = userPlaylists.playlists
             .filter(p => p.name.toLowerCase().includes(focused))
             .slice(0, 25)
             .map(p => ({ name: p.name, value: p.name }));
-        
         await interaction.respond(choices);
     }
 };

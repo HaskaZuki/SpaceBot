@@ -1,11 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('updates')
         .setDescription('View the latest SpaceBot updates and changelog'),
-
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setColor('#5865F2')
@@ -52,7 +50,6 @@ module.exports = {
             )
             .setFooter({ text: 'SpaceBot — Slash Commands Edition' })
             .setTimestamp();
-
         await interaction.reply({ embeds: [embed] });
     },
 };

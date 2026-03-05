@@ -1,7 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import './DashboardCommands.css';
-
 const commandCategories = [
   {
     name: 'Music',
@@ -77,7 +76,6 @@ const commandCategories = [
     ]
   }
 ];
-
 function DashboardCommands() {
   return (
     <DashboardLayout>
@@ -86,12 +84,10 @@ function DashboardCommands() {
           <h1>Commands</h1>
           <p>All available commands for SpaceBot</p>
         </div>
-
         <div className="commands-search">
           <i className="fas fa-search"></i>
           <input type="text" placeholder="Search commands..." />
         </div>
-
         <div className="commands-categories">
           {commandCategories.map((category, idx) => (
             <div key={idx} className="command-category">
@@ -101,7 +97,6 @@ function DashboardCommands() {
                 </div>
                 <h2>{category.name}</h2>
               </div>
-              
               <div className="category-commands">
                 {category.commands.map((cmd, cmdIdx) => (
                   <div key={cmdIdx} className="command-item">
@@ -125,5 +120,4 @@ function DashboardCommands() {
     </DashboardLayout>
   );
 }
-
 export default DashboardCommands;

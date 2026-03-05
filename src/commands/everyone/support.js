@@ -1,12 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('support')
         .setDescription('Get help and support resources'),
-    
     category: 'everyone',
-
     async execute(interaction) {
         const embed = new EmbedBuilder()
             .setColor('#5865F2')
@@ -44,7 +41,6 @@ module.exports = {
                     inline: false
                 }
             );
-
         const row = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
@@ -64,7 +60,6 @@ module.exports = {
                     .setStyle(ButtonStyle.Link)
                     .setURL('https://discord.com/oauth2/authorize?client_id=710260223536922705&permissions=2482302544&integration_type=0&scope=bot')
             );
-
         await interaction.reply({ embeds: [embed], components: [row], flags: MessageFlags.Ephemeral });
     },
 };

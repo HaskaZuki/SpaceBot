@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setvc')
@@ -24,17 +23,14 @@ module.exports = {
                 .setName('view')
                 .setDescription('View current voice channel restriction'))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
         const guildId = interaction.guild.id;
-        
         try {
             let config = await GuildConfig.findOne({ guildId });
             if (!config) {
                 config = await GuildConfig.create({ guildId });
             }
-
             if (subcommand === 'view') {
                 if (!config.allowedVoiceChannels || config.allowedVoiceChannels.length === 0) {
                     return interaction.reply({ 
@@ -55,7 +51,6 @@ module.exports = {
                     flags: 64 
                 });
             }
-
             if (subcommand === 'unset') {
                 if (!config.allowedVoiceChannels || config.allowedVoiceChannels.length === 0) {
                     return interaction.reply({ 
@@ -70,7 +65,6 @@ module.exports = {
                     ephemeral: false 
                 });
             }
-
             if (subcommand === 'set') {
                 const channel = interaction.options.getChannel('channel');
                 if (config.allowedVoiceChannels && config.allowedVoiceChannels.length > 0) {
@@ -87,10 +81,8 @@ module.exports = {
                         });
                     }
                 }
-                
                 config.allowedVoiceChannels = [channel.id];
                 await config.save();
-                
                 await interaction.reply({ 
                     content: `${emoji.status.success} Bot restricted to voice channel: ${channel}\n` +
                             `The bot will only join this voice channel.`, 

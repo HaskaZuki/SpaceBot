@@ -1,38 +1,28 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import './PersistentPlayer.css';
-
 function PersistentPlayer() {
   const { playerState, playPause, skip, setVolume, toggleLoop, connected } = useSocket();
   const [expanded, setExpanded] = useState(false);
   const [visible, setVisible] = useState(false);
-  const progressRef = useRef(null);
-
-  // Track current track from playerState
-  const track = playerState?.currentTrack;
+  const progressRef = useRef(null);  const track = playerState?.currentTrack;
   const isPlaying = playerState?.isPlaying;
   const volume = playerState?.volume || 100;
   const queue = playerState?.queue || [];
   const progress = playerState?.progress || 0;
   const duration = playerState?.duration || 0;
-
-  useEffect(() => {
-    // Show player when connected and has a track
-    if (connected && track) {
+  useEffect(() => {    if (connected && track) {
       setVisible(true);
     } else {
       setVisible(false);
     }
   }, [connected, track]);
-
   if (!visible) return null;
-
   const isLooping = playerState?.loop;
-
   return (
     <div className={`persistent-player ${expanded ? 'expanded' : ''}`}>
       <div className="player-main" onClick={() => setExpanded(!expanded)}>
-        {/* Track Info */}
+        {}
         <div className="player-track-info">
           {track?.artwork ? (
             <img src={track.artwork} alt={track.title} className="player-artwork" />
@@ -44,8 +34,7 @@ function PersistentPlayer() {
             <span className="player-track-artist">{track?.artist || 'Unknown artist'}</span>
           </div>
         </div>
-
-        {/* Controls */}
+        {}
         <div className="player-controls">
           <button className="player-btn" onClick={(e) => { e.stopPropagation(); playPause(); }}>
             {isPlaying ? '⏸️' : '▶️'}
@@ -54,8 +43,7 @@ function PersistentPlayer() {
             ⏭️
           </button>
         </div>
-
-        {/* Volume & Extra */}
+        {}
         <div className="player-extras">
           <button 
             className={`player-btn ${isLooping ? 'active' : ''}`} 
@@ -74,8 +62,7 @@ function PersistentPlayer() {
           />
         </div>
       </div>
-
-      {/* Expanded Queue View */}
+      {}
       {expanded && (
         <div className="player-expanded">
           <div className="queue-header">
@@ -97,5 +84,4 @@ function PersistentPlayer() {
     </div>
   );
 }
-
 export default PersistentPlayer;

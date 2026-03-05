@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import './Header.css';
-
-
 function Header({ title, onToggleSidebar, showToggle = true }) {
   const { user, logout, getAvatarUrl } = useAuth();
   const { socket, connected, playerState } = useSocket();
@@ -14,7 +12,6 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
   const dropdownRef = useRef(null);
   const notifRef = useRef(null);
   const notifIdRef = useRef(0);
-
   const addNotification = useCallback((icon, text) => {
     const id = ++notifIdRef.current;
     const now = new Date();
@@ -24,21 +21,17 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
       ...prev
     ].slice(0, 20));
   }, []);
-
   useEffect(() => {
     if (!socket) return;
-
     const handleTrackStart = (track) => {
       const trackTitle = track?.title || track?.info?.title || 'Unknown Track';
       addNotification('fa-play', `Now playing: ${trackTitle}`);
     };
-
     const handleQueueUpdate = (queue) => {
       if (queue && queue.length > 0) {
         addNotification('fa-list', `Queue updated: ${queue.length} track${queue.length > 1 ? 's' : ''}`);
       }
     };
-
     const handlePlayerUpdate = (data) => {
       if (data?.action === 'stopped') {
         addNotification('fa-stop', 'Playback stopped');
@@ -46,35 +39,28 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
         addNotification('fa-random', 'Queue shuffled');
       }
     };
-
     socket.on('trackStart', handleTrackStart);
     socket.on('queueUpdate', handleQueueUpdate);
     socket.on('player:update', handlePlayerUpdate);
-
     return () => {
       socket.off('trackStart', handleTrackStart);
       socket.off('queueUpdate', handleQueueUpdate);
       socket.off('player:update', handlePlayerUpdate);
     };
   }, [socket, addNotification]);
-
   useEffect(() => {
     if (connected && notifications.length === 0) {
       addNotification('fa-plug', 'Connected to server');
     }
   }, [connected]);
-
   const unreadCount = notifications.filter(n => !n.read).length;
-
   const markAllRead = useCallback(() => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   }, []);
-
   const clearNotifications = useCallback(() => {
     setNotifications([]);
     setNotifOpen(false);
   }, []);
-
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -84,11 +70,9 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
         setNotifOpen(false);
       }
     }
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
   return (
     <header className="top-nav">
       <div className="nav-left">
@@ -99,10 +83,8 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
         )}
         <h1 className="page-title">{title}</h1>
       </div>
-
-      {/* Spacer to push right side elements */}
+      {}
       <div className="nav-spacer" />
-
       <div className="nav-right">
         <div className="notif-menu" ref={notifRef}>
           <button
@@ -112,7 +94,6 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
             <i className="fas fa-bell" />
             {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
           </button>
-
           {notifOpen && (
             <div className="notif-dropdown show">
               <div className="notif-dropdown-header">
@@ -154,7 +135,6 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
             </div>
           )}
         </div>
-
         <div className="user-menu" ref={dropdownRef}>
           <button className="user-btn" onClick={() => { setDropdownOpen(!dropdownOpen); setNotifOpen(false); }}>
             <img
@@ -165,7 +145,6 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
             <span className="user-name">{user?.username || 'Loading...'}</span>
             <i className="fas fa-chevron-down chevron-icon" />
           </button>
-
           {dropdownOpen && (
             <div className="user-dropdown show">
               <div className="user-dropdown-header">
@@ -200,5 +179,4 @@ function Header({ title, onToggleSidebar, showToggle = true }) {
     </header>
   );
 }
-
 export default Header;

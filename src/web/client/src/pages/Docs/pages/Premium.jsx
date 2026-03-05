@@ -1,10 +1,8 @@
 import React from 'react';
-
 export default function Premium() {
   return (
     <div className="docs-body">
       <p className="docs-description">Unlock the full potential of SpaceBot with Premium features.</p>
-      
       <h2 id="benefits">Premium Benefits</h2>
       <ul>
         <li><strong>Better audio quality</strong> - 256kbps instead of 128kbps</li>
@@ -15,7 +13,6 @@ export default function Premium() {
         <li><strong>Lyrics sync</strong> - Real-time lyrics display</li>
         <li><strong>Priority support</strong> - Faster response times</li>
       </ul>
-      
       <h2 id="how-to-upgrade">How to Upgrade</h2>
       <ol>
         <li>Visit <a href="https://spacebot.me/pricing" target="_blank" rel="noopener noreferrer" className="docs-link">spacebot.me/pricing</a></li>
@@ -23,7 +20,6 @@ export default function Premium() {
         <li>Click "Upgrade" and follow payment instructions</li>
         <li>Enjoy your Premium features!</li>
       </ol>
-      
       <h2 id="premium-commands">Premium Commands</h2>
       <div className="docs-command-grid">
         <div className="docs-command-item">

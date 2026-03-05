@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('settings')
@@ -13,26 +12,21 @@ module.exports = {
         .addSubcommand(sub =>
             sub.setName('reset')
                 .setDescription('Reset all server settings to default')),
-
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
         const guildId = interaction.guild.id;
-
         try {
             let config = await GuildConfig.findOne({ guildId });
-
             if (subcommand === 'view') {
                 if (!config) {
                     config = await GuildConfig.create({ guildId });
                 }
-
                 const langNames = {
                     en: '🇺🇸 English', id: '🇮🇩 Indonesia', es: '🇪🇸 Spanish',
                     fr: '🇫🇷 French', de: '🇩🇪 German', ja: '🇯🇵 Japanese',
                     ko: '🇰🇷 Korean', pt: '🇧🇷 Portuguese', ru: '🇷🇺 Russian',
                     zh: '🇨🇳 Chinese', th: '🇹🇭 Thai'
                 };
-
                 const djRole = config.djRoleId ? `<@&${config.djRoleId}>` : 'Not set';
                 const musicChannel = config.musicChannelId ? `<#${config.musicChannelId}>` : 'Not set';
                 const allowedVCs = config.allowedVoiceChannels?.length > 0
@@ -44,7 +38,6 @@ module.exports = {
                 const maxSongs = config.maxSongCount > 0
                     ? `${config.maxSongCount} songs`
                     : 'Unlimited';
-
                 const embed = new EmbedBuilder()
                     .setColor('#7C3AED')
                     .setTitle(`Settings — ${interaction.guild.name}`)
@@ -89,10 +82,8 @@ module.exports = {
                     )
                     .setFooter({ text: 'Use /settings reset to restore all defaults' })
                     .setTimestamp();
-
                 return interaction.reply({ embeds: [embed], flags: 64 });
             }
-
             if (subcommand === 'reset') {
                 const row = new ActionRowBuilder().addComponents(
                     new ButtonBuilder()
@@ -105,7 +96,6 @@ module.exports = {
                         .setLabel('Cancel')
                         .setStyle(ButtonStyle.Secondary)
                 );
-
                 const reply = await interaction.reply({
                     content: '⚠️ **Are you sure you want to reset ALL settings to default?**\n\n' +
                              'This will reset:\n' +
@@ -120,19 +110,16 @@ module.exports = {
                     components: [row],
                     flags: 64
                 });
-
                 const collector = reply.createMessageComponentCollector({
                     filter: (i) => i.user.id === interaction.user.id,
                     time: 30000,
                     max: 1
                 });
-
                 collector.on('collect', async (btnInteraction) => {
                     if (btnInteraction.customId === 'settings_reset_confirm') {
                         if (!config) {
                             config = await GuildConfig.create({ guildId });
                         }
-
                         config.language = 'en';
                         config.djRoleId = null;
                         config.allowedVoiceChannels = [];
@@ -147,9 +134,7 @@ module.exports = {
                         config.autoPlay = false;
                         config.alwaysOn = false;
                         config.bannedUsers = [];
-
                         await config.save();
-
                         await btnInteraction.update({
                             content: `${emoji.status.success} **All settings have been reset to default!**\n\nUse \`/settings view\` to see the current configuration.`,
                             components: []
@@ -161,7 +146,6 @@ module.exports = {
                         });
                     }
                 });
-
                 collector.on('end', async (collected) => {
                     if (collected.size === 0) {
                         try {

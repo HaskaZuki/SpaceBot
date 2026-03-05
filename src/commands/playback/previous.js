@@ -2,15 +2,12 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const { validatePlayerState, validateVoiceState } = require('../../utils/validators');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('previous')
         .setDescription('Play the previous track'),
-    
     async execute(interaction) {
         const guildId = interaction.guild.id;
-        
         try {
             const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
             if (!voiceCheck.valid) {
@@ -27,7 +24,6 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-
             try {
                 const previousTrack = playerState.history[playerState.history.length - 1];
                 playerState.history.pop();
@@ -36,11 +32,9 @@ module.exports = {
                 }
                 await playerState.player.playTrack({ track: { encoded: previousTrack.encoded } });
                 playerState.currentTrack = previousTrack;
-                
                 await interaction.reply({
                     content: `${emoji.controls.previous} Playing previous track: **${previousTrack.info.title}**`
                 });
-                
             } catch (playError) {
                 console.error('Previous track play error:', playError);
                 await interaction.reply({ 
@@ -48,10 +42,8 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-            
         } catch (error) {
             console.error('Previous command error:', error);
-            
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({ 
                     content: `${emoji.status.error} An error occurred!`, 

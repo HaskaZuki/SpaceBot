@@ -1,24 +1,32 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
-
+const emoji = require('../../utils/emojiConfig');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('resume')
-        .setDescription('Resumes the paused music'),
-    
+        .setDescription('Resume paused playback'),
+    category: 'dj',
     async execute(interaction) {
         const guildId = interaction.guild.id;
-        try {
-            const playerState = musicPlayer.players.get(guildId);
-            if (playerState && playerState.player && playerState.player.paused) {
-                playerState.player.setPaused(false);
-                musicPlayer.updateDashboard(interaction.client, guildId);
-                await interaction.reply({ content: 'Resumed the music.', flags: 64 });
-            } else {
-                await interaction.reply({ content: 'Music is not paused or not playing.', flags: 64 });
-            }
-        } catch (error) {
-            await interaction.reply({ content: 'Failed to resume.', flags: 64 });
+        const playerState = musicPlayer.players.get(guildId);
+        if (!playerState || !playerState.player) {
+            return interaction.reply({
+                content: `${emoji.status.error} Nothing is currently playing!`,
+                flags: MessageFlags.Ephemeral
+            });
         }
+        if (!playerState.player.paused) {
+            return interaction.reply({
+                content: `${emoji.status.error} The player is already playing. Use \`/pause\` to pause.`,
+                flags: MessageFlags.Ephemeral
+            });
+        }
+        playerState.player.setPaused(false);
+        musicPlayer.updateDashboard(interaction.client, guildId);
+        const embed = new EmbedBuilder()
+            .setColor('#7C3AED')
+            .setDescription(`${emoji.controls.play} Playback **resumed**.`)
+            .setFooter({ text: `Resumed by ${interaction.user.displayName || interaction.user.username}` });
+        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
 };

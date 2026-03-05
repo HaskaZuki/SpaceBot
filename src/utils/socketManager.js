@@ -1,25 +1,19 @@
 const musicPlayer = require('./musicPlayer');
-
 let clientRef = null;
 let ioRef = null;
-
 const init = (client, io) => {
     clientRef = client;
     ioRef = io;
-
     io.on('connection', (socket) => {
         socket.on('player:play', async ({ guildId, query }) => {
             try {
                 const guild = client.guilds.cache.get(guildId);
                 if (!guild) return socket.emit('player:error', { message: 'Guild not found' });
-
                 const botMember = guild.members.me;
                 const voiceChannel = botMember?.voice?.channel;
                 if (!voiceChannel) return socket.emit('player:error', { message: 'Bot is not in a voice channel' });
-
                 const textChannel = guild.channels.cache.find(c => c.type === 0);
                 const result = await musicPlayer.playTrack(client, guildId, voiceChannel.id, query, textChannel);
-
                 if (result?.error) {
                     socket.emit('player:error', { message: result.error });
                 } else {
@@ -30,7 +24,6 @@ const init = (client, io) => {
                 socket.emit('player:error', { message: 'Failed to play track' });
             }
         });
-
         socket.on('player:pause', async ({ guildId }) => {
             try {
                 await musicPlayer.pauseResume(client, guildId);
@@ -39,7 +32,6 @@ const init = (client, io) => {
                 console.error('[Socket] pause error:', err.message);
             }
         });
-
         socket.on('player:skip', async ({ guildId }) => {
             try {
                 await musicPlayer.skipTrack(client, guildId);
@@ -50,7 +42,6 @@ const init = (client, io) => {
                 console.error('[Socket] skip error:', err.message);
             }
         });
-
         socket.on('player:stop', async ({ guildId }) => {
             try {
                 await musicPlayer.stopPlayer(client, guildId);
@@ -59,7 +50,6 @@ const init = (client, io) => {
                 console.error('[Socket] stop error:', err.message);
             }
         });
-
         socket.on('player:volume', async ({ guildId, volume }) => {
             try {
                 const playerState = musicPlayer.players.get(guildId);
@@ -70,7 +60,6 @@ const init = (client, io) => {
                 console.error('[Socket] volume error:', err.message);
             }
         });
-
         socket.on('player:loop', async ({ guildId }) => {
             try {
                 await musicPlayer.setLoop(client, guildId);
@@ -79,7 +68,6 @@ const init = (client, io) => {
                 console.error('[Socket] loop error:', err.message);
             }
         });
-
         socket.on('player:shuffle', async ({ guildId }) => {
             try {
                 await musicPlayer.shuffleQueue(client, guildId);
@@ -88,7 +76,6 @@ const init = (client, io) => {
                 console.error('[Socket] shuffle error:', err.message);
             }
         });
-
         socket.on('player:seek', async ({ guildId, position }) => {
             try {
                 const playerState = musicPlayer.players.get(guildId);
@@ -99,16 +86,13 @@ const init = (client, io) => {
                 console.error('[Socket] seek error:', err.message);
             }
         });
-
         socket.on('player:getState', ({ guildId }) => {
             socket.emit('player:stateUpdate', getPlayerState(guildId));
         });
     });
 };
-
 const getPlayerState = (guildId) => {
     const playerState = musicPlayer.players.get(guildId);
-
     if (!playerState || !playerState.player) {
         return {
             guildId,
@@ -121,7 +105,6 @@ const getPlayerState = (guildId) => {
             position: 0
         };
     }
-
     return {
         guildId,
         isPlaying: !!playerState.currentTrack,
@@ -143,7 +126,6 @@ const getPlayerState = (guildId) => {
         position: playerState.player.position || 0
     };
 };
-
 const emitToGuild = (guildId, event, data) => {
     if (!ioRef) return;
     try {
@@ -152,5 +134,4 @@ const emitToGuild = (guildId, event, data) => {
         console.error('[Socket] emit error:', err.message);
     }
 };
-
 module.exports = { init, getPlayerState, emitToGuild };

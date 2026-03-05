@@ -2,7 +2,6 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const https = require('https');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('lyrics')
@@ -11,18 +10,13 @@ module.exports = {
             option.setName('query')
                 .setDescription('Song name to search for (optional, uses current song if empty)')
                 .setRequired(false)),
-    
     category: 'everyone',
-
     async execute(interaction) {
         await interaction.deferReply();
-        
         const query = interaction.options.getString('query');
         const guildId = interaction.guild.id;
-
         let searchTitle = '';
         let searchArtist = '';
-
         if (query) {
             searchTitle = query;
         } else {
@@ -30,21 +24,16 @@ module.exports = {
             if (!playerState || !playerState.currentTrack) {
                 return interaction.editReply(`${emoji.status.error} No song is currently playing! Use \`/lyrics query:song name\` to search.`);
             }
-            
             const track = playerState.currentTrack;
             searchTitle = cleanTrackTitle(track.info.title);
             searchArtist = track.info.author || '';
         }
-
         try {
             const lyrics = await fetchLyrics(searchTitle, searchArtist);
-            
             if (!lyrics) {
                 return interaction.editReply(`${emoji.status.error} No lyrics found for: **${searchTitle}**\n\nTry a more specific search with \`/lyrics query:artist - song\``);
             }
-
             const chunks = splitLyrics(lyrics.plainLyrics, 3900);
-            
             const embed = new EmbedBuilder()
                 .setColor('#FFFF64')
                 .setTitle(lyrics.trackName)
@@ -54,25 +43,20 @@ module.exports = {
                     text: `${chunks.length > 1 ? `Page 1/${chunks.length} • ` : ''}Source: ${lyrics.source || 'LRCLIB'}` 
                 })
                 .setTimestamp();
-
             await interaction.editReply({ embeds: [embed] });
-
             for (let i = 1; i < chunks.length; i++) {
                 const pageEmbed = new EmbedBuilder()
                     .setColor('#FFFF64')
                     .setDescription(chunks[i])
                     .setFooter({ text: `Page ${i + 1}/${chunks.length}` });
-                
                 await interaction.followUp({ embeds: [pageEmbed] });
             }
-
         } catch (error) {
             console.error('Lyrics error:', error);
             await interaction.editReply(`${emoji.status.error} Failed to fetch lyrics. Please try again.`);
         }
     },
 };
-
 function cleanTrackTitle(title) {
     return title
         .replace(/\(Official\s*(Music\s*)?Video\)/gi, '')
@@ -85,14 +69,11 @@ function cleanTrackTitle(title) {
         .replace(/feat\.?\s*.*/gi, '')
         .trim();
 }
-
 function splitLyrics(text, maxLength) {
     if (text.length <= maxLength) return [text];
-    
     const chunks = [];
     let current = '';
     const lines = text.split('\n');
-    
     for (const line of lines) {
         if ((current + '\n' + line).length > maxLength) {
             chunks.push(current.trim());
@@ -104,19 +85,15 @@ function splitLyrics(text, maxLength) {
     if (current.trim()) chunks.push(current.trim());
     return chunks;
 }
-
 function fetchLyrics(title, artist) {
     return new Promise((resolve, reject) => {
         const params = new URLSearchParams();
         if (artist) params.append('artist_name', artist);
         params.append('track_name', title);
-        
         const url = `https://lrclib.net/api/search?${params.toString()}`;
-        
         const options = {
             headers: { 'User-Agent': 'SpaceBot/1.0.0' }
         };
-
         https.get(url, options, (res) => {
             let data = '';
             res.on('data', (chunk) => { data += chunk; });
@@ -126,10 +103,8 @@ function fetchLyrics(title, artist) {
                     if (!Array.isArray(results) || results.length === 0) {
                         return resolve(null);
                     }
-
                     const best = results.find(r => r.plainLyrics) || results[0];
                     if (!best || !best.plainLyrics) return resolve(null);
-
                     resolve({
                         trackName: best.trackName || title,
                         artistName: best.artistName || artist || 'Unknown',

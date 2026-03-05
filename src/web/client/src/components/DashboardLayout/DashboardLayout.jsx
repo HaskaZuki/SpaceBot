@@ -4,19 +4,16 @@ import Header from '../Header';
 import { useAuth } from '../../context/AuthContext';
 import config from '../../config';
 import './DashboardLayout.css';
-
 function DashboardLayout({ children, title }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, loading } = useAuth();
-
   useEffect(() => {
     const saved = localStorage.getItem('sidebarCollapsed');
     if (saved === 'true') {
       setSidebarCollapsed(true);
     }
   }, []);
-
   const toggleSidebar = () => {
     if (window.innerWidth <= 768) {
       setSidebarOpen(!sidebarOpen);
@@ -26,7 +23,6 @@ function DashboardLayout({ children, title }) {
       localStorage.setItem('sidebarCollapsed', newState);
     }
   };
-
   if (loading) {
     return (
       <div className="loading-screen">
@@ -34,7 +30,6 @@ function DashboardLayout({ children, title }) {
       </div>
     );
   }
-
   if (!user) {
     window.location.href = `${config.apiUrl}/auth/discord`;
     return (
@@ -44,7 +39,6 @@ function DashboardLayout({ children, title }) {
       </div>
     );
   }
-
   return (
     <div className={`dashboard-layout ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <Sidebar 
@@ -65,5 +59,4 @@ function DashboardLayout({ children, title }) {
     </div>
   );
 }
-
 export default DashboardLayout;

@@ -1,6 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
-
 const filterPresets = {
     bassboost: { equalizer: [{ band: 0, gain: 0.6 }, { band: 1, gain: 0.67 }, { band: 2, gain: 0.67 }, { band: 3, gain: 0.4 }, { band: 4, gain: -0.5 }] },
     nightcore: { timescale: { speed: 1.3, pitch: 1.3, rate: 1.0 } },
@@ -13,7 +12,6 @@ const filterPresets = {
     vibrato: { vibrato: { frequency: 10.0, depth: 0.9 } },
     tremolo: { tremolo: { frequency: 10.0, depth: 0.5 } }
 };
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('filter')
@@ -35,23 +33,18 @@ module.exports = {
                     { name: 'Tremolo', value: 'tremolo' },
                     { name: 'OFF', value: 'off' }
                 )),
-    
     async execute(interaction) {
         const UserSettings = require('../../models/UserSettings');
         const userSettings = await UserSettings.findOne({ userId: interaction.user.id });
-        
         if (!userSettings || !userSettings.isPremium) {
             return interaction.reply({ content: 'Filters are restricted to **Premium Users**.', flags: 64 });
         }
-
         const filter = interaction.options.getString('type');
         const guildId = interaction.guild.id;
         const playerState = musicPlayer.players.get(guildId);
-        
         if (!playerState || !playerState.player) {
             return interaction.reply({ content: 'No music is playing.', flags: 64 });
         }
-        
         if (filter === 'off') {
             playerState.player.setFilters({});
             await interaction.reply({ content: '🎚️ Filters disabled.', flags: 64 });

@@ -1,15 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, version: djsVersion } = require('discord.js');
 const os = require('os');
 const { getTotalGuildCount, getTotalUserCount, getTotalVoiceConnections, getShardInfo } = require('../../utils/shardUtils');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('stats')
         .setDescription('[OWNER] Shows detailed bot statistics'),
-    
     async execute(interaction) {
         await interaction.deferReply({ flags: 64 });
-
         const client = interaction.client;
         const uptime = process.uptime();
         const days = Math.floor(uptime / 86400);
@@ -25,29 +22,19 @@ module.exports = {
         const totalGuilds = await getTotalGuildCount(client);
         const totalUsers = await getTotalUserCount(client);
         const totalVoiceConnections = await getTotalVoiceConnections(client);
-        
         const totalChannels = client.channels.cache.size;
         const shardInfo = getShardInfo(client);
         const shoukaku = client.shoukaku;
-        const lavalinkNodes = shoukaku ? [...shoukaku.nodes.values()] : [];
-        
-        // CPU Info
-        const cpus = os.cpus();
+        const lavalinkNodes = shoukaku ? [...shoukaku.nodes.values()] : [];        const cpus = os.cpus();
         let cpuUsage = 0;
         cpus.forEach(cpu => {
             const total = Object.values(cpu.times).reduce((acc, t) => acc + t, 0);
             const usage = ((cpu.times.user / total) * 100);
             cpuUsage += usage;
         });
-        const avgCpu = (cpuUsage / cpus.length).toFixed(2);
-        
-        // Process Info
-        const processUptime = process.uptime();
+        const avgCpu = (cpuUsage / cpus.length).toFixed(2);        const processUptime = process.uptime();
         const nodeVersion = process.version;
-        const v8Version = process.versions.v8;
-        
-        // Network Info
-        const networkInterfaces = os.networkInterfaces();
+        const v8Version = process.versions.v8;        const networkInterfaces = os.networkInterfaces();
         let internalIP = 'N/A';
         for (const name of Object.keys(networkInterfaces)) {
             for (const iface of networkInterfaces[name]) {
@@ -56,10 +43,7 @@ module.exports = {
                     break;
                 }
             }
-        }
-        
-        // Build detailed stats string
-        const statsText = [
+        }        const statsText = [
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             'BOT STATISTICS',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
@@ -100,10 +84,7 @@ module.exports = {
             `Node.js: ${nodeVersion}`,
             `V8 Engine: v${v8Version}`,
             `Discord.js: v${djsVersion}`,
-        ];
-        
-        // Add Lavalink info
-        if (lavalinkNodes.length > 0) {
+        ];        if (lavalinkNodes.length > 0) {
             statsText.push('');
             statsText.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             statsText.push('LAVALINK NODES');
@@ -126,11 +107,9 @@ module.exports = {
             statsText.push('');
             statsText.push('Lavalink: No nodes connected');
         }
-        
         statsText.push('');
         statsText.push(`WebSocket Ping: ${client.ws.ping}ms`);
         statsText.push(`Response Time: ${Date.now() - interaction.createdTimestamp}ms`);
-        
         const embed = new EmbedBuilder()
             .setColor('#6366f1')
             .setTitle('SpaceBot Statistics')
@@ -138,8 +117,6 @@ module.exports = {
             .setDescription(statsText.join('\n'))
             .setFooter({ text: `Shard ${shardInfo.id}/${shardInfo.total} | Requested by ${interaction.user.username}` })
             .setTimestamp();
-
         await interaction.editReply({ embeds: [embed] });
     },
 };
-

@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import './Commands.css';
-
 const allCommands = [
   {
     name: 'play',
@@ -473,7 +472,6 @@ const allCommands = [
     examples: ['/fix']
   }
 ];
-
 const categories = [
   { id: 'all', label: 'All Commands', icon: 'fa-layer-group' },
   { id: 'everyone', label: 'Music', icon: 'fa-music', color: '#e91e63', permission: 'Everyone' },
@@ -482,12 +480,10 @@ const categories = [
   { id: 'premium', label: 'Premium', icon: 'fa-gem', color: '#f1c40f', permission: 'Premium' },
   { id: 'admin', label: 'Admin', icon: 'fa-shield-halved', color: '#95a5a6', permission: 'Admin' }
 ];
-
 function Commands() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCommand, setExpandedCommand] = useState(null);
-
   const filteredCommands = useMemo(() => {
     return allCommands.filter(cmd => {
       const matchesCategory = activeCategory === 'all' || cmd.category === activeCategory;
@@ -497,15 +493,12 @@ function Commands() {
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, searchQuery]);
-
   const getCategoryConfig = (categoryId) => {
     return categories.find(c => c.id === categoryId) || categories[0];
   };
-
   const toggleCommand = (cmdName) => {
     setExpandedCommand(expandedCommand === cmdName ? null : cmdName);
   };
-
   return (
     <div className="landing commands-page">
       <nav className="landing-nav">
@@ -520,7 +513,6 @@ function Commands() {
           </div>
         </div>
       </nav>
-
       <section className="commands-hero">
         <div className="commands-hero-content">
           <div className="commands-badge">
@@ -535,7 +527,6 @@ function Commands() {
           </div>
         </div>
       </section>
-
       <section className="commands-main">
         <div className="commands-toolbar">
           <div className="search-box">
@@ -552,7 +543,6 @@ function Commands() {
               </button>
             )}
           </div>
-
           <div className="category-tabs">
             {categories.map(cat => (
               <button
@@ -572,7 +562,6 @@ function Commands() {
             ))}
           </div>
         </div>
-
         <div className="commands-list">
           {filteredCommands.length === 0 ? (
             <div className="no-results">
@@ -583,7 +572,6 @@ function Commands() {
             filteredCommands.map(cmd => {
               const catConfig = getCategoryConfig(cmd.category);
               const isExpanded = expandedCommand === cmd.name;
-
               return (
                 <div
                   key={cmd.name}
@@ -603,19 +591,16 @@ function Commands() {
                       <i className={`fas fa-chevron-${isExpanded ? 'up' : 'down'} expand-icon`} />
                     </div>
                   </div>
-
                   {isExpanded && (
                     <div className="command-details" onClick={(e) => e.stopPropagation()}>
                       <div className="detail-section">
                         <h4><i className="fas fa-terminal" /> Usage</h4>
                         <code className="usage-code">{cmd.usage}</code>
                       </div>
-
                       <div className="detail-section">
                         <h4><i className="fas fa-info-circle" /> Description</h4>
                         <p>{cmd.description}</p>
                       </div>
-
                       {cmd.options.length > 0 && (
                         <div className="detail-section">
                           <h4><i className="fas fa-cog" /> Options</h4>
@@ -635,7 +620,6 @@ function Commands() {
                           </div>
                         </div>
                       )}
-
                       <div className="detail-section">
                         <h4><i className="fas fa-lightbulb" /> Examples</h4>
                         <div className="examples-list">
@@ -644,7 +628,6 @@ function Commands() {
                           ))}
                         </div>
                       </div>
-
                       <div className="detail-footer">
                         <span className="detail-perm">
                           <i className="fas fa-lock" /> Permission: <strong>{catConfig.permission}</strong>
@@ -658,10 +641,8 @@ function Commands() {
           )}
         </div>
       </section>
-
       <Footer />
     </div>
   );
 }
-
 export default Commands;

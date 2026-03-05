@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import './Features.css';
-
 const featureCategories = [
   {
     title: 'Audio & Playback',
@@ -147,7 +146,6 @@ const featureCategories = [
     ]
   }
 ];
-
 function Features() {
   return (
     <div className="landing features-page">
@@ -163,7 +161,6 @@ function Features() {
           </div>
         </div>
       </nav>
-
       <section className="features-hero">
         <div className="features-hero-content">
           <div className="features-badge">
@@ -173,7 +170,6 @@ function Features() {
           <p>SpaceBot is packed with features that make it the ultimate music bot for your Discord server.</p>
         </div>
       </section>
-
       <section className="features-main">
         {featureCategories.map((category, catIndex) => (
           <div key={catIndex} className="feature-category">
@@ -183,7 +179,6 @@ function Features() {
               </div>
               <h2>{category.title}</h2>
             </div>
-
             <div className="feature-cards">
               {category.features.map((feature, feaIndex) => (
                 <div
@@ -206,7 +201,6 @@ function Features() {
           </div>
         ))}
       </section>
-
       <section className="features-cta">
         <div className="cta-content">
           <h2>Ready to get started?</h2>
@@ -221,10 +215,8 @@ function Features() {
           </div>
         </div>
       </section>
-
       <Footer />
     </div>
   );
 }
-
 export default Features;

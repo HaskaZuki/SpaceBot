@@ -1,13 +1,12 @@
 const { createMusicEmbed } = require('./embedBuilder');
+const { EmbedBuilder } = require('discord.js');
 const GuildConfig = require('../models/GuildConfig');
 const PlayHistory = require('../models/PlayHistory');
 const emoji = require('./emojiConfig');
 const players = new Map();
-
 const isNodeReady = (node) => {
     return node && (node.state === 2 || node.state === 1 || node.state === 'CONNECTED');
 };
-
 const extractTracks = (result) => {
     if (!result) return [];
     if (result.loadType === 'track' && result.data) {
@@ -26,27 +25,20 @@ const extractTracks = (result) => {
         return result.data;
     }
     return [];
-};
-
-// Helper function to check if bot is alone in voice channel
+};
 const isBotAloneInVC = async (client, guildId, voiceChannelId) => {
     try {
         const guild = client.guilds.cache.get(guildId);
         if (!guild) return true;
-        
         const channel = guild.channels.cache.get(voiceChannelId);
-        if (!channel) return true;
-        
-        // Check how many non-bot members are in the channel
+        if (!channel) return true;
         const members = channel.members.filter(m => !m.user.bot);
         return members.size === 0;
     } catch (error) {
         console.error('Error checking if bot is alone:', error);
         return false;
     }
-};
-
-// Helper function to send message to text channel
+};
 const sendToTextChannel = async (client, guildId, textChannelId, message) => {
     try {
         if (!textChannelId) return;
@@ -58,35 +50,28 @@ const sendToTextChannel = async (client, guildId, textChannelId, message) => {
         console.error('Error sending message to text channel:', error);
     }
 };
-
 module.exports = {
     players,
-    
     getQueue: (guildId) => {
         if (!players.has(guildId)) {
             players.set(guildId, { queue: [], loop: 'off', textChannelId: null, voiceChannelId: null });
         }
         return players.get(guildId);
     },
-
     playTrack: async (client, guildId, voiceChannelId, query, textChannel, requestedBy = null) => {
         const nodes = [...client.shoukaku.nodes.values()];
         console.log(`[DEBUG] Found ${nodes.length} Lavalink nodes`);
         nodes.forEach(n => console.log(`[DEBUG] Node: ${n.name}, State: ${n.state}`));
-        
         const node = nodes.find(n => isNodeReady(n));
-        
         if (!node || nodes.length === 0) {
             console.error('[ERROR] No Lavalink node available');
             return { error: 'No Lavalink node available' };
         }
-        
         console.log(`[DEBUG] Using node: ${node.name}, State: ${node.state}`);
         const playerState = module.exports.getQueue(guildId);
         if (textChannel) {
             playerState.textChannelId = textChannel.id;
-        }
-        // Store voice channel ID for later use
+        }
         playerState.voiceChannelId = voiceChannelId;
         let result;
         if (query.startsWith('http')) {
@@ -104,7 +89,6 @@ module.exports = {
                 { name: 'YouTube', prefix: 'ytsearch' },
                 { name: 'Spotify', prefix: 'spsearch' }
             ];
-            
             for (const source of searchSources) {
                 try {
                     const searchQuery = `${source.prefix}:${query}`;
@@ -125,16 +109,13 @@ module.exports = {
                 }
             }
         }
-        
         if (!result || result.loadType === 'empty' || result.loadType === 'NO_MATCHES' || result.loadType === 'error') {
             console.log('[DEBUG] Final result: no tracks found after trying all sources');
             console.log('[DEBUG] Result:', JSON.stringify(result?.loadType));
             return { error: 'No results found. Try a different search term or direct URL.' };
         }
-
         const tracks = extractTracks(result);
         const track = tracks[0];
-        
         if (!track) {
             console.log('[DEBUG] Result loaded but no track could be extracted');
             console.log('[DEBUG] loadType:', result.loadType, 'data:', typeof result.data);
@@ -142,7 +123,6 @@ module.exports = {
         }
         let player = client.shoukaku.players.get(guildId);
         const needsNewConnection = !player || !player.connection;
-        
         if (needsNewConnection) {
             try {
                 player = await client.shoukaku.joinVoiceChannel({
@@ -151,22 +131,18 @@ module.exports = {
                     shardId: 0,
                     deaf: true
                 });
-                
                 console.log('[DEBUG] Successfully joined voice channel');
             } catch (joinError) {
                 console.error('Failed to join voice channel:', joinError);
                 return { error: 'Failed to join voice channel' };
             }
             playerState.player = player;
-        }
-        
-        // Always ensure event listeners are attached
+        }
         player.removeAllListeners('end');
         player.removeAllListeners('exception');
         player.removeAllListeners('stuck');
         player.on('end', async (data) => {
             if (data?.reason === 'replaced') return;
-
             if (playerState.loop === 'track' && playerState.currentTrack) {
                 player.playTrack({ track: playerState.currentTrack.track });
             } else if (playerState.loop === 'queue') {
@@ -176,27 +152,21 @@ module.exports = {
                await module.exports.playNext(client, guildId);
             }
         });
-        
         player.on('exception', async (data) => {
             console.error('❌ Playback exception:', data);
             await module.exports.playNext(client, guildId);
         });
-        
         player.on('stuck', (data) => {
             console.error('Track stuck:', data);
             module.exports.playNext(client, guildId);
         });
-
         track.requestedBy = requestedBy;
-        playerState.queue.push(track);
-        
-        // Play immediately if nothing is currently playing
+        playerState.queue.push(track);
         if (!playerState.currentTrack) {
             await module.exports.playNext(client, guildId);
         } else {
             module.exports.updateDashboard(client, guildId);
         }
-        
         return { track };
     },
     playTrackDirect: async (client, guildId, voiceChannelId, track, textChannel) => {
@@ -205,7 +175,6 @@ module.exports = {
         if (!node) {
             return { error: 'No Lavalink node available' };
         }
-
         const playerState = module.exports.getQueue(guildId);
         let player = client.shoukaku.players.get(guildId);
         if (!player) {
@@ -226,7 +195,6 @@ module.exports = {
             player.removeAllListeners('stuck');
             player.on('end', async (data) => {
                 if (data?.reason === 'replaced') return;
-
                 if (playerState.loop === 'track' && playerState.currentTrack) {
                     player.playTrack({ track: playerState.currentTrack.track });
                 } else if (playerState.loop === 'queue') {
@@ -236,7 +204,6 @@ module.exports = {
                    await module.exports.playNext(client, guildId);
                 }
             });
-
             player.on('exception', async (data) => {
                 console.error('❌ Playback exception:', data);
                 if (playerState.currentTrack && playerState.currentTrack.info) {
@@ -244,19 +211,15 @@ module.exports = {
                     const trackAuthor = playerState.currentTrack.info.author;
                     const currentSource = playerState.currentTrack.info.sourceName;
                     const searchQuery = `${trackAuthor} ${trackTitle}`;
-                    
                     console.log(`🔄 Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})`);
                     const altSources = ['scsearch', 'ytmsearch', 'ytsearch', 'spsearch']
                         .filter(s => !currentSource?.includes(s.replace('search', '')));
-                    
                     for (const sourcePrefix of altSources) {
                         try {
                             const node = [...client.shoukaku.nodes.values()].find(n => isNodeReady(n));
                             if (!node) break;
-                            
                             console.log(`  Trying ${sourcePrefix}:${searchQuery}...`);
                             const result = await node.rest.resolve(`${sourcePrefix}:${searchQuery}`);
-                            
                             if (result && result.data && result.data.length > 0) {
                                 console.log(`✅ Found alternative using ${sourcePrefix}, retrying playback...`);
                                 playerState.currentTrack = result.data[0];
@@ -269,38 +232,31 @@ module.exports = {
                             continue;
                         }
                     }
-                    
                     console.log('⚠️ No alternative found, skipping to next track');
                 }
                 module.exports.playNext(client, guildId);
             });
-
             player.on('stuck', (data) => {
                 console.error('Track stuck:', data);
                 module.exports.playNext(client, guildId);
             });
         }
-
         playerState.queue.push(track);
         if (!playerState.currentTrack && playerState.queue.length === 1) {
             module.exports.playNext(client, guildId);
         } else {
              module.exports.updateDashboard(client, guildId);
         }
-        
         return { track };
     },
-
     playNext: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState) {
             console.log(`No player state found for guild ${guildId}`);
             return;
         }
-
         const track = playerState.queue.shift();
         playerState.currentTrack = track || null;
-
         if (track) {
             try {
                 if (!playerState.player) {
@@ -318,55 +274,44 @@ module.exports = {
                     source: track.info?.sourceName || 'unknown'
                 }).catch(err => console.error('PlayHistory save error:', err.message));
             } catch (error) {
-                console.error('Error playing track:', error.message);
-                // Try next track if this one fails
+                console.error('Error playing track:', error.message);
                 if (playerState.queue.length > 0) {
                     await module.exports.playNext(client, guildId);
                 }
                 return;
             }
-        } else {
-            // Queue is empty - stop and cleanup
+        } else {
             console.log(`[DEBUG] Queue empty for guild ${guildId}`);
             playerState.currentTrack = null;
-            
             try {
                 if (playerState.player) {
                     playerState.player.stopTrack();
                 }
             } catch (error) {
                 console.error('Error stopping track:', error.message);
-            }
-            
-            // Check for 24/7 mode
+            }
             const GuildConfig = require('../models/GuildConfig');
             let config;
             try {
                 config = await GuildConfig.findOne({ guildId });
             } catch (error) {
                 console.error('Error fetching guild config:', error.message);
-            }
-            
-            // Skip if 24/7 mode is enabled
+            }
             if (config && config.alwaysOn) {
                 module.exports.updateDashboard(client, guildId);
                 return;
-            }
-            
-            // Check if bot is alone in VC
+            }
             const voiceChannelId = playerState.voiceChannelId;
             const textChannelId = playerState.textChannelId;
             const isAlone = await isBotAloneInVC(client, guildId, voiceChannelId);
-            
-            if (isAlone) {
-                // Bot is alone - leave in 10 seconds
+            if (isAlone) {
                 setTimeout(async () => {
                     const state = players.get(guildId);
-                    if (state && !state.currentTrack && state.queue.length === 0) {
-                        // Send message before leaving
-                        await sendToTextChannel(client, guildId, textChannelId, 
-                            `${emoji.status.success} Leaving voice channel because I'm alone. Use \`/play\` to play music again!`);
-                        
+                    if (state && !state.currentTrack && state.queue.length === 0) {
+                        const aloneEmbed = new EmbedBuilder()
+                            .setColor('#7C3AED')
+                            .setDescription(`${emoji.status.success} Left the voice channel — nobody was around. Use \`/play\` to bring me back!`);
+                        await sendToTextChannel(client, guildId, textChannelId, { embeds: [aloneEmbed] });
                         try {
                             if (state.player && state.player.connection) {
                                 state.player.connection.disconnect();
@@ -379,15 +324,14 @@ module.exports = {
                         module.exports.updateDashboard(client, guildId);
                     }
                 }, 10000);
-            } else {
-                // There are people in VC - leave in 30 seconds
+            } else {
                 setTimeout(async () => {
                     const state = players.get(guildId);
-                    if (state && !state.currentTrack && state.queue.length === 0) {
-                        // Send message before leaving
-                        await sendToTextChannel(client, guildId, textChannelId, 
-                            `${emoji.status.success} Leaving voice channel due to inactivity. Use \`/play\` to play music again!`);
-                        
+                    if (state && !state.currentTrack && state.queue.length === 0) {
+                        const idleEmbed = new EmbedBuilder()
+                            .setColor('#7C3AED')
+                            .setDescription(`${emoji.controls.pause} Left the voice channel due to **30 seconds of inactivity**. Use \`/play\` to play music again!`);
+                        await sendToTextChannel(client, guildId, textChannelId, { embeds: [idleEmbed] });
                         try {
                             if (state.player && state.player.connection) {
                                 state.player.connection.disconnect();
@@ -402,10 +346,8 @@ module.exports = {
                 }, 30000);
             }
         }
-        
         module.exports.updateDashboard(client, guildId);
     },
-
     updateDashboard: async (client, guildId) => {
         try {
             const config = await GuildConfig.findOne({ guildId });
@@ -431,21 +373,17 @@ module.exports = {
             console.error('Failed to update dashboard:', err);
         }
     },
-
     pauseResume: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState || !playerState.player) return;
-        
         const paused = !playerState.player.paused;
         playerState.player.setPaused(paused);
         module.exports.updateDashboard(client, guildId);
         return paused;
     },
-
     stopPlayer: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState || !playerState.player) return;
-
         try {
             playerState.queue = [];
             playerState.currentTrack = null;
@@ -468,7 +406,6 @@ module.exports = {
                     console.error('Error in fallback disconnect:', e2.message);
                 }
             }
-            
             module.exports.updateDashboard(client, guildId);
             players.delete(guildId);
         } catch (error) {
@@ -476,11 +413,9 @@ module.exports = {
             players.delete(guildId);
         }
     },
-
     skipTrack: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState || !playerState.player) return;
-
         try {
             playerState.player.stopTrack();
         } catch (error) {
@@ -488,18 +423,14 @@ module.exports = {
             module.exports.playNext(client, guildId);
         }
     },
-
     setLoop: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState) return;
-
         const modes = ['off', 'track', 'queue'];
         const currentIndex = modes.indexOf(playerState.loop);
         playerState.loop = modes[(currentIndex + 1) % modes.length];
-        
         return playerState.loop;
     },
-
     shuffleQueue: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState || playerState.queue.length === 0) return;
@@ -509,16 +440,13 @@ module.exports = {
         }
         module.exports.updateDashboard(client, guildId);
     },
-
     clearQueue: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState) return;
-
         playerState.queue = [];
         module.exports.updateDashboard(client, guildId);
         return true;
     },
-
     formatTime: (ms) => {
         if (!ms || isNaN(ms)) return '0:00';
         const seconds = Math.floor((ms / 1000) % 60);
@@ -529,7 +457,6 @@ module.exports = {
         }
         return `${minutes}:${String(seconds).padStart(2, '0')}`;
     },
-
     createProgressBar: (current, total, barLength = 12) => {
         if (!total || total === 0) return '▬'.repeat(barLength);
         const progress = Math.min(Math.round((current / total) * barLength), barLength);

@@ -1,7 +1,6 @@
 import React from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
 import './DashboardFeatures.css';
-
 const features = [
   {
     category: 'Audio & Playback',
@@ -112,7 +111,6 @@ const features = [
     ]
   }
 ];
-
 function DashboardFeatures() {
   return (
     <DashboardLayout>
@@ -121,7 +119,6 @@ function DashboardFeatures() {
           <h1>Features</h1>
           <p>Discover all the amazing features SpaceBot has to offer</p>
         </div>
-
         <div className="features-grid">
           {features.map((category, idx) => (
             <div key={idx} className="feature-category">
@@ -131,7 +128,6 @@ function DashboardFeatures() {
                 </div>
                 <h2>{category.category}</h2>
               </div>
-              
               <div className="category-items">
                 {category.items.map((item, itemIdx) => (
                   <div key={itemIdx} className={`feature-item ${item.highlight ? 'highlight' : ''}`}>
@@ -155,5 +151,4 @@ function DashboardFeatures() {
     </DashboardLayout>
   );
 }
-
 export default DashboardFeatures;

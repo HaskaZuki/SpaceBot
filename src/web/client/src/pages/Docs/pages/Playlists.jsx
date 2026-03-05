@@ -1,10 +1,8 @@
 import React from 'react';
-
 export default function Playlists() {
   return (
     <div className="docs-body">
       <p className="docs-description">Create and manage your personal playlists with SpaceBot.</p>
-      
       <h2 id="playlist-commands">Playlist Commands</h2>
       <div className="docs-command-grid">
         <div className="docs-command-item">
@@ -40,7 +38,6 @@ export default function Playlists() {
           <span>Export to file</span>
         </div>
       </div>
-      
       <h2 id="favorites">Favorites</h2>
       <p>Save your favorite songs for quick access:</p>
       <div className="docs-command-grid">
@@ -53,7 +50,6 @@ export default function Playlists() {
           <span>View & manage</span>
         </div>
       </div>
-      
       <div className="docs-note">
         Note: Free users can create up to 3 playlists. Premium users get unlimited playlists.
       </div>

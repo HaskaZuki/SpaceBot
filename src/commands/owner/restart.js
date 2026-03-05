@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('restart')
@@ -15,11 +14,9 @@ module.exports = {
                 .setName('id')
                 .setDescription('Shard ID to restart')
                 .setRequired(true))),
-    
     async execute(interaction) {
         const client = interaction.client;
         const subcommand = interaction.options.getSubcommand();
-
         if (!client.shard) {
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
@@ -30,10 +27,8 @@ module.exports = {
                     value: 'Start the bot with `node shard.js` to enable sharding.'
                 })
                 .setTimestamp();
-
             return interaction.reply({ embeds: [embed], flags: 64 });
         }
-
         if (subcommand === 'all') {
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
@@ -46,9 +41,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'All shards will reconnect automatically' })
                 .setTimestamp();
-
             await interaction.reply({ embeds: [embed], flags: 64 });
-
             setTimeout(async () => {
                 try {
                     await client.shard.respawnAll({
@@ -60,10 +53,8 @@ module.exports = {
                     console.error('Restart error:', error);
                 }
             }, 1000);
-
         } else if (subcommand === 'shard') {
             const shardId = interaction.options.getInteger('id');
-
             if (shardId < 0 || shardId >= client.shard.count) {
                 const embed = new EmbedBuilder()
                     .setColor('#ff0000')
@@ -74,10 +65,8 @@ module.exports = {
                         value: `Total: ${client.shard.count} (IDs: 0-${client.shard.count - 1})`
                     })
                     .setTimestamp();
-
                 return interaction.reply({ embeds: [embed], flags: 64 });
             }
-
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
                 .setTitle(`Restarting Shard ${shardId}...`)
@@ -89,9 +78,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'Other shards will remain online' })
                 .setTimestamp();
-
             await interaction.reply({ embeds: [embed], flags: 64 });
-
             setTimeout(async () => {
                 try {
                     await client.shard.respawnAll({

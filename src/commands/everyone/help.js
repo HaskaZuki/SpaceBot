@@ -1,6 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
-
 const commandDetails = {
     play: {
         description: 'Play a song from YouTube, SoundCloud, Spotify, or a direct URL',
@@ -216,6 +215,20 @@ const commandDetails = {
         usage: '/leave',
         options: [],
         examples: ['/leave'],
+        category: 'dj'
+    },
+    forceskip: {
+        description: 'Force-skip the current track immediately, bypassing any active voteskip',
+        usage: '/forceskip',
+        options: [],
+        examples: ['/forceskip'],
+        category: 'dj'
+    },
+    connect: {
+        description: 'Join your voice channel without playing anything (useful for pre-loading)',
+        usage: '/connect',
+        options: [],
+        examples: ['/connect'],
         category: 'dj'
     },
     forward: {
@@ -467,9 +480,25 @@ const commandDetails = {
         options: [],
         examples: ['/support'],
         category: 'everyone'
+    },
+    removedupes: {
+        description: 'Remove duplicate tracks from the current queue',
+        usage: '/removedupes',
+        options: [],
+        examples: ['/removedupes'],
+        category: 'everyone'
+    },
+    'setcommandchannel': {
+        description: 'Restrict all bot commands to one specific text channel (whitelist mode)',
+        usage: '/setcommandchannel <set|clear|status> [channel]',
+        options: [
+            { name: 'subcommand', type: 'String', required: true, desc: 'set, clear, or status' },
+            { name: 'channel', type: 'Channel', required: false, desc: 'Channel to restrict to (for set)' }
+        ],
+        examples: ['/setcommandchannel set #bot-commands', '/setcommandchannel clear', '/setcommandchannel status'],
+        category: 'admin'
     }
 };
-
 const categoryConfig = {
     everyone: { emoji: emoji.animated.notes, label: 'Music', color: '#e91e63', permission: 'Everyone' },
     dj: { emoji: '🎚️', label: 'DJ Controls', color: '#9c27b0', permission: 'DJ Role / Admin' },
@@ -477,9 +506,7 @@ const categoryConfig = {
     premium: { emoji: emoji.animated.premium, label: 'Premium', color: '#f1c40f', permission: 'Premium Server' },
     admin: { emoji: emoji.ui.gear, label: 'Admin', color: '#95a5a6', permission: 'Administrator' }
 };
-
 const categoryOrder = ['everyone', 'dj', 'playback', 'premium', 'admin'];
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('help')
@@ -489,9 +516,7 @@ module.exports = {
                 .setDescription('Get detailed info about a specific command')
                 .setRequired(false)
                 .setAutocomplete(true)),
-    
     category: 'everyone',
-
     async autocomplete(interaction) {
         const focused = interaction.options.getFocused().toLowerCase();
         const choices = Object.keys(commandDetails)
@@ -501,40 +526,31 @@ module.exports = {
                 name: `/${cmd} — ${commandDetails[cmd].description.slice(0, 70)}`,
                 value: cmd
             }));
-        
         await interaction.respond(choices);
     },
-
     async execute(interaction) {
         const specificCommand = interaction.options.getString('command');
-
         if (specificCommand) {
             return showCommandDetail(interaction, specificCommand.toLowerCase());
         }
-
         return showOverview(interaction);
     },
 };
-
 async function showCommandDetail(interaction, cmdName) {
     const cmd = commandDetails[cmdName];
     if (!cmd) {
         const suggestions = Object.keys(commandDetails)
             .filter(c => c.includes(cmdName) || cmdName.includes(c))
             .slice(0, 5);
-        
         const suggestionText = suggestions.length > 0
             ? `\n\nDid you mean: ${suggestions.map(s => `\`/${s}\``).join(', ')}?`
             : '';
-            
         return interaction.reply({ 
             content: `${emoji.status.error} Command \`/${cmdName}\` not found.${suggestionText}`, 
             flags: MessageFlags.Ephemeral
         });
     }
-
     const cat = categoryConfig[cmd.category] || categoryConfig.everyone;
-
     let optionsText = '*No options*';
     if (cmd.options && cmd.options.length > 0) {
         optionsText = cmd.options.map(opt => {
@@ -542,7 +558,6 @@ async function showCommandDetail(interaction, cmdName) {
             return `> \`${opt.name}\` (${opt.type}) ${reqTag}\n> ${opt.desc}`;
         }).join('\n\n');
     }
-
     const embed = new EmbedBuilder()
         .setColor(cat.color)
         .setTitle(`/${cmdName}`)
@@ -553,32 +568,25 @@ async function showCommandDetail(interaction, cmdName) {
             { name: 'Permission', value: cat.permission, inline: true },
             { name: 'Options', value: optionsText }
         );
-
     if (cmd.examples && cmd.examples.length > 0) {
         embed.addFields({
             name: '💡 Examples',
             value: cmd.examples.map(e => `\`${e}\``).join('\n')
         });
     }
-
     if (cmd.cooldown) {
         embed.addFields({ name: '⏰ Cooldown', value: cmd.cooldown, inline: true });
     }
-
     embed.setFooter({ text: 'Use /help to see all commands' });
-
     await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 }
-
 function buildCategoryEmbed(catKey, categories) {
     const cat = categoryConfig[catKey];
     const cmds = categories[catKey] || [];
-
     const embed = new EmbedBuilder()
         .setColor(cat.color)
         .setTitle(`${cat.label} Commands`)
         .setDescription(`${cat.emoji} **Permission:** ${cat.permission}\n\n`);
-
     const fields = cmds.map(cmdName => {
         const cmd = commandDetails[cmdName];
         return {
@@ -587,15 +595,12 @@ function buildCategoryEmbed(catKey, categories) {
             inline: true
         };
     });
-
     for (let i = 0; i < fields.length; i += 25) {
         embed.setFields(fields.slice(i, i + 25));
     }
-
     embed.setFooter({ text: `${cmds.length} commands • /help command:<name> for details` });
     return embed;
 }
-
 function buildNavButtons(userId, currentCat) {
     const row = new ActionRowBuilder();
     for (const catKey of categoryOrder) {
@@ -610,17 +615,14 @@ function buildNavButtons(userId, currentCat) {
     }
     return row;
 }
-
 async function showOverview(interaction) {
     const categories = {};
     for (const [name, cmd] of Object.entries(commandDetails)) {
         if (!categories[cmd.category]) categories[cmd.category] = [];
         categories[cmd.category].push(name);
     }
-
     const totalCmds = Object.keys(commandDetails).length;
     const totalCats = Object.keys(categoryConfig).length;
-
     const mainEmbed = new EmbedBuilder()
         .setColor('#7C3AED')
         .setTitle('Space Music — Command Guide')
@@ -634,33 +636,25 @@ async function showOverview(interaction) {
             '\n\n*Click a button below to browse a category*\n*Use `/help command:<name>` for command details*'
         )
         .setFooter({ text: 'Buttons expire after 3 minutes' });
-
     const row = buildNavButtons(interaction.user.id, null);
-
     const reply = await interaction.reply({ 
         embeds: [mainEmbed], 
         components: [row], 
         flags: MessageFlags.Ephemeral
     });
-
     const collector = reply.createMessageComponentCollector({ 
         time: 180_000
     });
-
     collector.on('collect', async (btnInteraction) => {
         if (btnInteraction.user.id !== interaction.user.id) {
             return btnInteraction.reply({ content: `${emoji.status.error} This menu is not for you!`, flags: MessageFlags.Ephemeral });
         }
-
         const parts = btnInteraction.customId.split('_');
         const selectedCategory = parts[parts.length - 1];
-
         const detailEmbed = buildCategoryEmbed(selectedCategory, categories);
         const newRow = buildNavButtons(interaction.user.id, selectedCategory);
-
         await btnInteraction.update({ embeds: [detailEmbed], components: [newRow] });
     });
-
     collector.on('end', async () => {
         try {
             const disabledRow = new ActionRowBuilder();
@@ -676,8 +670,6 @@ async function showOverview(interaction) {
                 );
             }
             await interaction.editReply({ components: [disabledRow] });
-        } catch {
-            // Message might be deleted
-        }
+        } catch {        }
     });
 }

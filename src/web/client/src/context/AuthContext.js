@@ -1,18 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import config from '../config';
-
 const AuthContext = createContext(null);
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
   const [premiumInfo, setPremiumInfo] = useState(null);
-
   useEffect(() => {
     fetchUser();
   }, []);
-
   const fetchUser = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/auth/user`, {
@@ -39,22 +35,18 @@ export function AuthProvider({ children }) {
       setLoading(false);
     }
   };
-
   const login = () => {
     window.location.href = `${config.apiUrl}/auth/discord`;
   };
-
   const logout = () => {
     window.location.href = `${config.apiUrl}/auth/logout`;
   };
-
   const getAvatarUrl = useCallback((userData) => {
     if (!userData || !userData.id || !userData.avatar) {
       return '/images/default-avatar.png';
     }
     return `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`;
   }, []);
-
   return (
     <AuthContext.Provider value={{ 
       user, loading, login, logout, getAvatarUrl, fetchUser,
@@ -64,7 +56,6 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {

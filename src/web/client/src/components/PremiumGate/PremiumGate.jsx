@@ -2,14 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './PremiumGate.css';
-
 function PremiumGate({ children, feature = 'this feature' }) {
   const { isPremium } = useAuth();
-
   if (isPremium) {
     return children;
   }
-
   return (
     <div className="premium-gate">
       <div className="premium-gate-overlay">
@@ -30,5 +27,4 @@ function PremiumGate({ children, feature = 'this feature' }) {
     </div>
   );
 }
-
 export default PremiumGate;

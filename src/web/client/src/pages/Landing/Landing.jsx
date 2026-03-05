@@ -2,28 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import config from '../../config';
 import Footer from '../../components/Footer';
-import './Landing.css';
-
-// ============================================
-// IMAGE CONFIGURATION - Ganti URL gambar di sini
-// ============================================
-const IMAGES = {
-  // Feature images - Ganti dengan URL Imgur atau URL lainnya
-  crystalAudio: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
+import './Landing.css';const IMAGES = {  crystalAudio: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
   audioFilters: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop',
   smartQueue: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=600&h=400&fit=crop',
-  webDashboard: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
-  
-  // Avatar default untuk leaderboard
-  defaultAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
-};
-// ============================================
-
-// Custom hook for scroll animation
-function useScrollAnimation() {
+  webDashboard: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',  defaultAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=1',
+};function useScrollAnimation() {
   const ref = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -33,21 +18,17 @@ function useScrollAnimation() {
       },
       { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
     );
-
     if (ref.current) {
       observer.observe(ref.current);
     }
-
     return () => {
       if (ref.current) {
         observer.unobserve(ref.current);
       }
     };
   }, []);
-
   return [ref, isVisible];
 }
-
 const features = [
   {
     icon: 'fa-music',
@@ -78,7 +59,6 @@ const features = [
     image: IMAGES.webDashboard
   }
 ];
-
 const commands = [
   { name: '/play', desc: 'Play any song from YouTube, Spotify, or URL', category: 'Music' },
   { name: '/search', desc: 'Search and pick from multiple results', category: 'Music' },
@@ -93,7 +73,6 @@ const commands = [
   { name: '/247', desc: 'Keep bot in VC 24/7', category: 'Premium' },
   { name: '/autoplay', desc: 'Auto-play similar songs', category: 'Premium' }
 ];
-
 const leaderboardData = [
   { rank: 1, user: 'MusicLover', plays: 2847, avatar: IMAGES.defaultAvatar },
   { rank: 2, user: 'NightOwl', plays: 2234, avatar: IMAGES.defaultAvatar },
@@ -101,7 +80,6 @@ const leaderboardData = [
   { rank: 4, user: 'VibeMaster', plays: 1654, avatar: IMAGES.defaultAvatar },
   { rank: 5, user: 'ChillSeeker', plays: 1432, avatar: IMAGES.defaultAvatar }
 ];
-
 const chartData = [
   { day: 'Mon', plays: 120 },
   { day: 'Tue', plays: 180 },
@@ -111,21 +89,14 @@ const chartData = [
   { day: 'Sat', plays: 350 },
   { day: 'Sun', plays: 310 }
 ];
-
 function Landing() {
   const [stats, setStats] = useState({ servers: '--', users: '--', commands: '--', uptime: '--' });
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  // Scroll animation refs
-  const [featuresRef, featuresVisible] = useScrollAnimation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);  const [featuresRef, featuresVisible] = useScrollAnimation();
   const [commandsRef, commandsVisible] = useScrollAnimation();
   const [analyticsRef, analyticsVisible] = useScrollAnimation();
   const [leaderboardRef, leaderboardVisible] = useScrollAnimation();
   const [discordRef, discordVisible] = useScrollAnimation();
-
-  useEffect(() => {
-    // Fetch bot stats
-    fetch(`${config.apiUrl}/api/stats`)
+  useEffect(() => {    fetch(`${config.apiUrl}/api/stats`)
       .then(res => res.json())
       .then(data => {
         setStats({
@@ -135,20 +106,15 @@ function Landing() {
           uptime: formatUptime(data.uptime)
         });
       })
-      .catch(() => {
-        // Set default values if API fails
-      });
+      .catch(() => {      });
   }, []);
-
   const formatUptime = (ms) => {
     if (!ms) return '--';
     const days = Math.floor(ms / 86400000);
     const hours = Math.floor(ms / 3600000) % 24;
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
   };
-
   const maxPlays = Math.max(...chartData.map(d => d.plays));
-
   return (
     <div className="landing">
       <nav className="landing-nav">
@@ -167,8 +133,7 @@ function Landing() {
           </button>
         </div>
       </nav>
-
-      {/* Hero Section */}
+      {}
       <section className="hero">
         <div className="hero-content">
           <div className="hero-badge"><i className="fas fa-bolt" /> Next-Gen Music Bot</div>
@@ -208,14 +173,12 @@ function Landing() {
           </div>
         </div>
       </section>
-
-      {/* Features Section - Alternating Layout */}
+      {}
       <section id="features" className="features-section" ref={featuresRef}>
         <div className="section-header">
           <h2 className="section-title">Powerful Features</h2>
           <p className="section-sub">Everything you need for the perfect music server.</p>
         </div>
-        
         {features.map((feature, index) => (
           <div 
             key={index} 
@@ -238,19 +201,16 @@ function Landing() {
             </div>
           </div>
         ))}
-        
         <div className="section-cta">
           <Link to="/features" className="cta-btn">View All Features <i className="fas fa-arrow-right" /></Link>
         </div>
       </section>
-
-      {/* Commands Section */}
+      {}
       <section id="commands" className="commands-section" ref={commandsRef}>
         <div className="section-header">
           <h2 className="section-title">Popular Commands</h2>
           <p className="section-sub">Slash commands to control every aspect of your music experience.</p>
         </div>
-        
         <div className={`commands-grid ${commandsVisible ? 'animate-in' : ''}`}>
           {commands.map((cmd, index) => (
             <div 
@@ -264,19 +224,16 @@ function Landing() {
             </div>
           ))}
         </div>
-        
         <div className="section-cta">
           <Link to="/commands" className="cta-btn">View All Commands <i className="fas fa-arrow-right" /></Link>
         </div>
       </section>
-
-      {/* Analytics Section */}
+      {}
       <section id="analytics" className="analytics-section" ref={analyticsRef}>
         <div className="section-header">
           <h2 className="section-title">Analytics & Insights</h2>
           <p className="section-sub">Track your listening habits and discover your music journey.</p>
         </div>
-        
         <div className={`analytics-grid ${analyticsVisible ? 'animate-in' : ''}`}>
           <div className="analytics-card chart-card">
             <h4 className="card-title">Weekly Activity</h4>
@@ -294,7 +251,6 @@ function Landing() {
               ))}
             </div>
           </div>
-          
           <div className="analytics-card stats-card">
             <h4 className="card-title">Your Stats</h4>
             <div className="stats-list">
@@ -322,14 +278,12 @@ function Landing() {
           </div>
         </div>
       </section>
-
-      {/* Leaderboard Section */}
+      {}
       <section id="leaderboard" className="leaderboard-section" ref={leaderboardRef}>
         <div className="section-header">
           <h2 className="section-title">Top Listeners</h2>
           <p className="section-sub">See who's been vibing the most this week.</p>
         </div>
-        
         <div className={`leaderboard-container ${leaderboardVisible ? 'animate-in' : ''}`}>
           <div className="leaderboard-card">
             <div className="leaderboard-header">
@@ -355,19 +309,16 @@ function Landing() {
             ))}
           </div>
         </div>
-        
         <div className="section-cta">
           <Link to="/leaderboard" className="cta-btn">View Full Leaderboard <i className="fas fa-arrow-right" /></Link>
         </div>
       </section>
-
-      {/* Discord Widget Section */}
+      {}
       <section id="discord" className="discord-section" ref={discordRef}>
         <div className="section-header">
           <h2 className="section-title">Join Our Community</h2>
           <p className="section-sub">Connect with other music lovers and get support.</p>
         </div>
-        
         <div className={`discord-container ${discordVisible ? 'animate-in' : ''}`}>
           <div className="discord-info">
             <h3>SpaceBot Discord Server</h3>
@@ -395,8 +346,7 @@ function Landing() {
           </div>
         </div>
       </section>
-
-      {/* CTA Section */}
+      {}
       <section className="cta-section">
         <div className="cta-content">
           <h2>Ready to elevate your server?</h2>
@@ -411,11 +361,9 @@ function Landing() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
+      {}
       <Footer />
     </div>
   );
 }
-
 export default Landing;

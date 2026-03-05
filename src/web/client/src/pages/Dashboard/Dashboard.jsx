@@ -3,7 +3,6 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import config from '../../config';
 import './Dashboard.css';
-
 const languages = [
   { code: 'en', flag: '🇬🇧', name: 'English' },
   { code: 'id', flag: '🇮🇩', name: 'Bahasa Indonesia' },
@@ -17,7 +16,6 @@ const languages = [
   { code: 'zh', flag: '🇨🇳', name: '中文' },
   { code: 'ru', flag: '🇷🇺', name: 'Русский' }
 ];
-
 function Dashboard() {
   const { isPremium } = useAuth();
   const [servers, setServers] = useState([]);
@@ -32,12 +30,10 @@ function Dashboard() {
   const [saveStatus, setSaveStatus] = useState('');
   const [leaderboard, setLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
-
   useEffect(() => {
     fetchServers();
     fetchBotStats();
   }, []);
-
   const fetchBotStats = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/stats`);
@@ -49,7 +45,6 @@ function Dashboard() {
       console.error('Failed to fetch stats:', error);
     }
   };
-
   const fetchServers = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/user/servers`, {
@@ -63,7 +58,6 @@ function Dashboard() {
       console.error('Failed to fetch servers:', error);
     }
   };
-
   const fetchServerConfig = async (serverId) => {
     setLoading(true);
     try {
@@ -84,14 +78,12 @@ function Dashboard() {
       setLoading(false);
     }
   };
-
   const handleServerChange = (serverId) => {
     if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Discard them?')) {
       return;
     }
     const server = serverId ? servers.find(s => s.id === serverId) : null;
     setSelectedServer(server);
-    
     if (serverId && server?.hasBot) {
       fetchServerConfig(serverId);
       fetchLeaderboard(serverId);
@@ -102,7 +94,6 @@ function Dashboard() {
       setLeaderboard([]);
     }
   };
-
   const fetchLeaderboard = async (serverId) => {
     setLoadingLeaderboard(true);
     try {
@@ -119,12 +110,10 @@ function Dashboard() {
       setLoadingLeaderboard(false);
     }
   };
-
   const trackChange = (key, value) => {
     setPendingChanges(prev => ({ ...prev, [key]: value }));
     setHasUnsavedChanges(true);
   };
-
   const cancelChanges = () => {
     if (!window.confirm('Discard all unsaved changes?')) return;
     setPendingChanges({});
@@ -133,10 +122,8 @@ function Dashboard() {
       setServerConfig(JSON.parse(JSON.stringify(originalConfig)));
     }
   };
-
   const saveChanges = async () => {
     if (!selectedServer || Object.keys(pendingChanges).length === 0) return;
-    
     setSaveStatus('saving');
     try {
       const res = await fetch(`${config.apiUrl}/api/guild/${selectedServer.id}/config`, {
@@ -145,7 +132,6 @@ function Dashboard() {
         credentials: 'include',
         body: JSON.stringify(pendingChanges)
       });
-      
       if (res.ok) {
         const data = await res.json();
         setServerConfig(data.config);
@@ -161,21 +147,17 @@ function Dashboard() {
       setTimeout(() => setSaveStatus(''), 3000);
     }
   };
-
   const getValue = (key, defaultValue) => {
     if (pendingChanges.hasOwnProperty(key)) return pendingChanges[key];
     return serverConfig?.[key] ?? defaultValue;
   };
-
   const formatUptime = (ms) => {
     if (!ms) return '--';
     const days = Math.floor(ms / 86400000);
     const hours = Math.floor(ms / 3600000) % 24;
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
   };
-
   const guildIsPremium = serverConfig?.isPremium || false;
-
   return (
     <DashboardLayout title="Dashboard">
       <div className="dashboard-content">
@@ -211,7 +193,6 @@ function Dashboard() {
             </div>
           </div>
         )}
-
         <div className="server-select-card">
           <h2 className="card-title">
             <i className="fas fa-server" />
@@ -233,7 +214,6 @@ function Dashboard() {
             Only servers where you have Administrator permission are shown
           </p>
         </div>
-
         {!selectedServer && (
           <div className="server-select-card">
             <div className="empty-state">
@@ -243,7 +223,6 @@ function Dashboard() {
             </div>
           </div>
         )}
-
         {selectedServer && !selectedServer.hasBot && (
           <div className="server-select-card">
             <div className="empty-state">
@@ -261,13 +240,11 @@ function Dashboard() {
             </div>
           </div>
         )}
-
         {loading && (
           <div className="loading-container">
             <div className="spinner" />
           </div>
         )}
-
         {selectedServer && serverConfig && !loading && (
           <>
             <div className="server-header-card">
@@ -290,7 +267,6 @@ function Dashboard() {
                 )}
               </div>
             </div>
-
             <div className="settings-grid">
               <div className="setting-card">
                 <div className="setting-header">
@@ -310,7 +286,6 @@ function Dashboard() {
                   ))}
                 </select>
               </div>
-
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-list-ol" /></div>
@@ -327,7 +302,6 @@ function Dashboard() {
                   onChange={(e) => trackChange('maxSongCount', parseInt(e.target.value) || 0)}
                 />
               </div>
-
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-language" /></div>
@@ -345,7 +319,6 @@ function Dashboard() {
                   ))}
                 </select>
               </div>
-
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-bullhorn" /></div>
@@ -364,7 +337,6 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-user-tag" /></div>
@@ -383,7 +355,6 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-stream" /></div>
@@ -402,7 +373,6 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-
               <div className={`setting-card ${guildIsPremium ? '' : 'premium-locked'}`}>
                 <div className="setting-header">
                   <div className="setting-icon premium"><i className="fas fa-infinity" /></div>
@@ -425,7 +395,6 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-
               <div className={`setting-card ${guildIsPremium ? '' : 'premium-locked'}`}>
                 <div className="setting-header">
                   <div className="setting-icon premium"><i className="fas fa-magic" /></div>
@@ -448,7 +417,6 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
-
               <div className={`setting-card ${guildIsPremium ? '' : 'premium-locked'}`}>
                 <div className="setting-header">
                   <div className="setting-icon premium"><i className="fas fa-volume-up" /></div>
@@ -467,7 +435,6 @@ function Dashboard() {
                   onChange={(e) => trackChange('volume', parseInt(e.target.value) || 100)}
                 />
               </div>
-
               {!guildIsPremium && (
                 <div className="setting-card upgrade-card">
                   <div className="setting-header">
@@ -487,7 +454,6 @@ function Dashboard() {
                 </div>
               )}
             </div>
-
             <div className="leaderboard-section">
               <div className="setting-card leaderboard-card">
                 <div className="setting-header">
@@ -538,7 +504,6 @@ function Dashboard() {
             </div>
           </>
         )}
-
         {hasUnsavedChanges && (
           <div className="unsaved-bar show">
             <div className="unsaved-message">
@@ -563,5 +528,4 @@ function Dashboard() {
     </DashboardLayout>
   );
 }
-
 export default Dashboard;

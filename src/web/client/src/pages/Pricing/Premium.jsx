@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import './Premium.css';
-
 const premiumFeatures = [
   { icon: 'fa-infinity', title: '24/7 Mode', desc: 'Bot stays in VC forever, even when idle.' },
   { icon: 'fa-wand-magic-sparkles', title: 'Auto-Play', desc: 'Automatically queues similar songs when queue ends.' },
@@ -16,10 +15,8 @@ const premiumFeatures = [
   { icon: 'fa-forward-step', title: 'Skip to Position', desc: 'Jump directly to any track in your queue.' },
   { icon: 'fa-headset', title: 'Priority Support', desc: 'Get faster responses from our support team.' },
 ];
-
 function Premium() {
   const { isPremium } = useAuth();
-
   if (isPremium) {
     return (
       <DashboardLayout title="Premium">
@@ -33,7 +30,6 @@ function Premium() {
               <p>You have access to all premium features. Enjoy the full SpaceBot experience.</p>
             </div>
           </div>
-
           <div className="premium-features-grid">
             {premiumFeatures.map((feat) => (
               <div key={feat.title} className="premium-feat-card active">
@@ -52,11 +48,10 @@ function Premium() {
       </DashboardLayout>
     );
   }
-
   return (
     <DashboardLayout title="Premium">
       <div className="premium-page">
-        {/* Upgrade Hero */}
+        {}
         <div className="premium-upgrade-hero">
           <div className="premium-upgrade-glow" />
           <div className="premium-upgrade-badge">
@@ -68,8 +63,7 @@ function Premium() {
             <i className="fas fa-rocket" /> View Plans & Pricing
           </Link>
         </div>
-
-        {/* Feature Grid */}
+        {}
         <div className="premium-features-grid">
           {premiumFeatures.map((feat) => (
             <div key={feat.title} className="premium-feat-card locked">
@@ -84,7 +78,6 @@ function Premium() {
             </div>
           ))}
         </div>
-
         <div className="premium-cta-row">
           <Link to="/pricing" className="premium-cta-link">
             <i className="fas fa-arrow-right" /> See full comparison on the Pricing page
@@ -94,5 +87,4 @@ function Premium() {
     </DashboardLayout>
   );
 }
-
 export default Premium;

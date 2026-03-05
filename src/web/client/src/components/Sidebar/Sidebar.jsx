@@ -1,14 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import './Sidebar.css';
-
-// ============================================
-// LOGO CONFIGURATION - Ganti dengan URL logo bot Anda
-// ============================================
-const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
-// ============================================
-
+import './Sidebar.css';const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
 const navItems = [
   { path: '/dashboard', label: 'Dashboard' },
   { path: '/music', label: 'Music Player' },
@@ -19,10 +12,8 @@ const navItems = [
   { path: '/docs', label: 'Docs' },
   { path: '/premium', label: 'Premium' }
 ];
-
 function Sidebar({ collapsed, open, onToggle }) {
   const { isPremium } = useAuth();
-
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${open ? 'open' : ''}`}>
       <div className="sidebar-header">
@@ -31,7 +22,6 @@ function Sidebar({ collapsed, open, onToggle }) {
           {!collapsed && <span className="logo-text">SpaceBot</span>}
         </div>
       </div>
-      
       <nav className="sidebar-nav">
         {navItems.map((item) => (
           <NavLink
@@ -46,7 +36,6 @@ function Sidebar({ collapsed, open, onToggle }) {
           </NavLink>
         ))}
       </nav>
-
       <div className="sidebar-footer">
         {!collapsed && isPremium && (
           <div className="premium-status-mini">
@@ -60,5 +49,4 @@ function Sidebar({ collapsed, open, onToggle }) {
     </aside>
   );
 }
-
 export default Sidebar;

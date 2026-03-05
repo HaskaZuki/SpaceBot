@@ -1,38 +1,31 @@
 const musicPlayer = require('../utils/musicPlayer');
 const GuildConfig = require('../models/GuildConfig');
 const emoji = require('../utils/emojiConfig');
-
 module.exports = {
     name: 'messageCreate',
     async execute(message) {
         if (message.author.bot) return;
         if (!message.guild) return;
-
         try {
             const botMention = `<@${message.client.user.id}>`;
             const botMentionNick = `<@!${message.client.user.id}>`;
-
             if (message.content.startsWith(botMention) || message.content.startsWith(botMentionNick)) {
                 const prefix = message.content.startsWith(botMention) ? botMention : botMentionNick;
                 const args = message.content.slice(prefix.length).trim().split(/\s+/);
                 const commandName = args.shift()?.toLowerCase();
-
                 if (!commandName) {
                     await message.reply({
                         content: `${emoji.animated.disc} Hey! Use \`/help\` to see all commands, or mention me with a command like \`@SpaceBot play <song>\`.`
                     });
                     return;
                 }
-
                 const command = message.client.commands.get(commandName);
-
                 if (!command) {
                     await message.reply({
                         content: `${emoji.status.error} Unknown command: \`${commandName}\`. Use \`/help\` for a list of commands.`
                     });
                     return;
                 }
-
                 const fakeInteraction = {
                     guild: message.guild,
                     guildId: message.guild.id,
@@ -106,7 +99,6 @@ module.exports = {
                     isCommand: () => true,
                     isChatInputCommand: () => true,
                 };
-
                 try {
                     await command.execute(fakeInteraction);
                 } catch (error) {
@@ -117,17 +109,13 @@ module.exports = {
                 }
                 return;
             }
-
             const config = await GuildConfig.findOne({ guildId: message.guild.id });
-
             if (config && config.musicChannelId && message.channel.id === config.musicChannelId) {
                 const query = message.content.trim();
-
                 if (!query || query.length === 0) {
                     await message.delete().catch(() => {});
                     return;
                 }
-
                 const member = message.member;
                 if (!member.voice.channel) {
                     const reply = await message.reply(`${emoji.status.error} You must be in a voice channel to queue songs!`);
@@ -137,9 +125,7 @@ module.exports = {
                     }, 5000);
                     return;
                 }
-
                 await message.delete().catch(() => {});
-
                 try {
                     const result = await musicPlayer.playTrack(
                         message.client,
@@ -149,7 +135,6 @@ module.exports = {
                         message.channel,
                         message.author.id
                     );
-
                     if (result && result.error) {
                         const errorMsg = await message.channel.send(`${emoji.status.error} ${result.error}`);
                         setTimeout(() => errorMsg.delete().catch(() => {}), 5000);
@@ -167,7 +152,6 @@ module.exports = {
         }
     },
 };
-
 function getOptionIndex(command, optionName) {
     if (!command.data?.options) return 0;
     const options = command.data.options;

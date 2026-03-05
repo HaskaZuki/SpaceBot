@@ -1,27 +1,21 @@
 const musicPlayer = require('../utils/musicPlayer');
 const GuildConfig = require('../models/GuildConfig');
 const emoji = require('../utils/emojiConfig');
-
 module.exports = {
     name: 'interactionCreate',
     execute: async (interaction) => {
         if (interaction.isButton()) {
             const guildId = interaction.guild?.id;
             if (!guildId) return;
-            
             const member = interaction.member;
-
             if (interaction.customId.startsWith('help_') || interaction.customId.startsWith('settings_') || interaction.customId.startsWith('servers_')) {
                 return;
             }
-
             try {
                 await interaction.deferUpdate().catch(() => {});
-
                 if (!member.voice?.channel) {
                     return interaction.followUp({ content: `${emoji.status.error} You must be in a voice channel!`, flags: 64 }).catch(() => {});
                 }
-
                 switch (interaction.customId) {
                     case 'play_pause':
                         await musicPlayer.pauseResume(interaction.client, guildId);
@@ -46,29 +40,22 @@ module.exports = {
             }
             return;
         }
-
         if (interaction.isStringSelectMenu()) {
             if (interaction.customId.startsWith('search_select_')) {
                 const userId = interaction.customId.replace('search_select_', '');
-                
                 if (userId !== interaction.user.id) {
                     return interaction.reply({ content: `${emoji.status.error} This search was initiated by someone else!`, flags: 64 });
                 }
-
                 const searchData = global.searchCache?.[userId];
                 if (!searchData) {
                     return interaction.reply({ content: `${emoji.status.error} Search results expired! Please search again.`, flags: 64 });
                 }
-
                 const selectedIndex = parseInt(interaction.values[0]);
                 const selectedTrack = searchData.tracks[selectedIndex];
-
                 if (!selectedTrack) {
                     return interaction.reply({ content: `${emoji.status.error} Invalid selection!`, flags: 64 });
                 }
-
                 await interaction.deferUpdate();
-
                 try {
                     const result = await musicPlayer.playTrackDirect(
                         interaction.client,
@@ -77,9 +64,7 @@ module.exports = {
                         selectedTrack,
                         searchData.textChannel
                     );
-
                     delete global.searchCache[userId];
-
                     await interaction.followUp({
                         content: `${emoji.status.success} Added to queue: **${selectedTrack.info.title}** by ${selectedTrack.info.author}`,
                         flags: 64
@@ -94,7 +79,6 @@ module.exports = {
             }
             return;
         }
-
         if (interaction.isAutocomplete()) {
             const command = interaction.client.commands.get(interaction.commandName);
             if (!command || !command.autocomplete) return;
@@ -105,15 +89,25 @@ module.exports = {
             }
             return;
         }
-
         if (interaction.isChatInputCommand()) {
             const command = interaction.client.commands.get(interaction.commandName);
             if (!command) return;
-
+            const channelConfig = await GuildConfig.findOne({ guildId: interaction.guild.id });
+            if (channelConfig?.commandChannelId && interaction.channel.id !== channelConfig.commandChannelId) {
+                return interaction.reply({
+                    content: `${emoji.status.error} Bot commands are only allowed in <#${channelConfig.commandChannelId}>.`,
+                    flags: 64
+                });
+            }
+            if (!channelConfig?.commandChannelId && channelConfig?.ignoredChannels?.includes(interaction.channel.id)) {
+                return interaction.reply({
+                    content: `${emoji.status.error} Bot commands are disabled in this channel.`,
+                    flags: 64
+                });
+            }
             if (command.category === 'dj') {
-                const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
+                const config = channelConfig;
                 const isAdmin = interaction.member.permissions.has('Administrator');
-                
                 if (config && config.djRoleId) {
                     const hasRole = interaction.member.roles.cache.has(config.djRoleId);
                     if (!hasRole && !isAdmin) {
@@ -131,7 +125,6 @@ module.exports = {
                     }
                 }
             }
-
             if (command.category === 'admin') {
                 if (!interaction.member.permissions.has('Administrator')) {
                      return interaction.reply({ 
@@ -140,7 +133,6 @@ module.exports = {
                     });
                 }
             }
-
             if (command.category === 'owner') {
                 const ownerId = (process.env.OWNER_ID || '').trim();
                 if (!ownerId) {
@@ -154,7 +146,6 @@ module.exports = {
                     });
                 }
             }
-
             if (command.category === 'premium') {
                 const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
                 if (!config || !config.isPremium) {
@@ -164,7 +155,6 @@ module.exports = {
                     });
                 }
             }
-
             try {
                 await command.execute(interaction);
             } catch (error) {

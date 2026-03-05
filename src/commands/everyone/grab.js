@@ -1,25 +1,19 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('grab')
         .setDescription('Save the current song to your DMs'),
-    
     category: 'everyone',
-
     async execute(interaction) {
         const guildId = interaction.guild.id;
         const playerState = musicPlayer.players.get(guildId);
-
         if (!playerState || !playerState.currentTrack) {
             return interaction.reply({ content: `${emoji.status.error} Nothing is currently playing!`, flags: 64 });
         }
-
         const track = playerState.currentTrack;
         const duration = musicPlayer.formatTime(track.info.length);
-
         const embed = new EmbedBuilder()
             .setColor('#10B981')
             .setTitle('Song Saved!')
@@ -32,11 +26,9 @@ module.exports = {
             )
             .setFooter({ text: `Saved from #${interaction.channel.name}` })
             .setTimestamp();
-
         if (track.info.artworkUrl) {
             embed.setThumbnail(track.info.artworkUrl);
         }
-
         try {
             await interaction.user.send({ embeds: [embed] });
             await interaction.reply({ content: `${emoji.status.success} Song info sent to your DMs! Check your messages.`, flags: 64 });

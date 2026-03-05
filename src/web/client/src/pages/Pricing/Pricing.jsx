@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import config from '../../config';
 import './Pricing.css';
-
 const comparisonFeatures = [
   { category: 'Music Playback', features: [
     { name: 'Basic Music Playback', free: true, premium: true },
@@ -27,16 +26,13 @@ const comparisonFeatures = [
     { name: 'Priority Support', free: false, premium: true },
   ]},
 ];
-
 function FeatureValue({ value, isPremium }) {
   if (value === true) return <span className={`feat-yes ${isPremium ? 'feat-yes-premium' : ''}`}><i className="fas fa-check" /></span>;
   if (value === false) return <span className="feat-no"><i className="fas fa-times" /></span>;
   return <span className={`feat-label ${isPremium ? 'feat-label-premium' : ''}`}>{value}</span>;
 }
-
 function Pricing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <div className="landing pricing-public-page">
       <nav className="landing-nav">
@@ -54,10 +50,9 @@ function Pricing() {
           </button>
         </div>
       </nav>
-
       <div className="pricing-page-body">
         <div className="pricing-content">
-          {/* Hero */}
+          {}
           <div className="pricing-hero">
             <div className="pricing-hero-badge">
               <i className="fas fa-rocket" /> Upgrade Today
@@ -65,10 +60,9 @@ function Pricing() {
             <h1>Unlock the Full Experience</h1>
             <p>Take your music to the next level with SpaceBot Premium</p>
           </div>
-
-          {/* Plan Cards */}
+          {}
           <div className="plans-grid">
-            {/* Free Plan */}
+            {}
             <div className="plan-card">
               <div className="plan-header">
                 <div className="plan-icon free-icon">
@@ -94,8 +88,7 @@ function Pricing() {
                 </a>
               </div>
             </div>
-
-            {/* Premium Plan */}
+            {}
             <div className="plan-card premium-card">
               <div className="premium-glow" />
               <div className="popular-badge"><i className="fas fa-star" /> Most Popular</div>
@@ -131,14 +124,12 @@ function Pricing() {
               </div>
             </div>
           </div>
-
-          {/* Comparison Table */}
+          {}
           <div className="comparison-section">
             <div className="comparison-header">
               <h2>Full Feature Comparison</h2>
               <p>See exactly what you get with each plan</p>
             </div>
-
             <div className="comparison-table-wrapper">
               <table className="comparison-table">
                 <thead>
@@ -171,8 +162,7 @@ function Pricing() {
               </table>
             </div>
           </div>
-
-          {/* FAQ */}
+          {}
           <div className="pricing-faq">
             <h2>Frequently Asked Questions</h2>
             <div className="faq-grid">
@@ -196,10 +186,8 @@ function Pricing() {
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
 }
-
 export default Pricing;

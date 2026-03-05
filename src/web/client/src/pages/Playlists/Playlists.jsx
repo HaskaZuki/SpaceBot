@@ -3,7 +3,6 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import config from '../../config';
 import './Playlists.css';
-
 function Playlists() {
   const { user, isPremium, premiumInfo } = useAuth();
   const [playlists, setPlaylists] = useState([]);
@@ -12,11 +11,9 @@ function Playlists() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newPlaylistName, setNewPlaylistName] = useState('');
   const [error, setError] = useState('');
-
   useEffect(() => {
     fetchPlaylists();
   }, []);
-
   const fetchPlaylists = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/user/playlists`, {
@@ -33,11 +30,9 @@ function Playlists() {
       setLoading(false);
     }
   };
-
   const createPlaylist = async () => {
     if (!newPlaylistName.trim()) return;
     setError('');
-    
     try {
       const res = await fetch(`${config.apiUrl}/api/user/playlists`, {
         method: 'POST',
@@ -45,14 +40,11 @@ function Playlists() {
         credentials: 'include',
         body: JSON.stringify({ name: newPlaylistName.trim() })
       });
-      
       const data = await res.json();
-
       if (res.status === 403 && data.requiresPremium) {
         setError(`Playlist limit reached (${maxPlaylists}). Upgrade to Premium for more!`);
         return;
       }
-
       if (res.ok && data.success) {
         setPlaylists([...playlists, data.playlist]);
         setNewPlaylistName('');
@@ -65,16 +57,13 @@ function Playlists() {
       setError('Network error. Please try again.');
     }
   };
-
   const deletePlaylist = async (playlistId) => {
     if (!window.confirm('Are you sure you want to delete this playlist?')) return;
-    
     try {
       const res = await fetch(`${config.apiUrl}/api/user/playlists/${playlistId}`, {
         method: 'DELETE',
         credentials: 'include'
       });
-      
       if (res.ok) {
         setPlaylists(playlists.filter(p => (p.id || p._id) !== playlistId));
       }
@@ -82,9 +71,7 @@ function Playlists() {
       console.error('Failed to delete playlist:', error);
     }
   };
-
   const canCreateMore = playlists.length < maxPlaylists;
-
   return (
     <DashboardLayout title="My Playlists">
       <div className="playlists-content">
@@ -107,7 +94,6 @@ function Playlists() {
             </button>
           </div>
         </div>
-
         {!isPremium && playlists.length >= maxPlaylists && (
           <div className="premium-upsell-banner">
             <div className="upsell-content">
@@ -120,7 +106,6 @@ function Playlists() {
             <a href="/pricing" className="upsell-btn">Upgrade Now</a>
           </div>
         )}
-
         {loading ? (
           <div className="loading-container">
             <div className="spinner" />
@@ -182,7 +167,6 @@ function Playlists() {
             ))}
           </div>
         )}
-
         {showCreateModal && (
           <div className="modal-overlay" onClick={() => { setShowCreateModal(false); setError(''); }}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
@@ -223,5 +207,4 @@ function Playlists() {
     </DashboardLayout>
   );
 }
-
 export default Playlists;

@@ -1,10 +1,8 @@
 import React from 'react';
-
 export default function Dashboard() {
   return (
     <div className="docs-body">
       <p className="docs-description">Manage your server and music through the web dashboard.</p>
-      
       <h2 id="how-to-access">How to Access</h2>
       <ol>
         <li>Open <a href="https://spacebot.me" target="_blank" rel="noopener noreferrer" className="docs-link">spacebot.me</a></li>
@@ -12,7 +10,6 @@ export default function Dashboard() {
         <li>Select your server</li>
         <li>Start managing!</li>
       </ol>
-      
       <h2 id="features">Dashboard Features</h2>
       <ul>
         <li><strong>Server Overview</strong> - View server statistics and bot status</li>
@@ -22,7 +19,6 @@ export default function Dashboard() {
         <li><strong>Analytics</strong> - Detailed listening statistics</li>
         <li><strong>Settings</strong> - Configure server settings</li>
       </ul>
-      
       <h2 id="dashboard-menu">Dashboard Menu</h2>
       <div className="docs-command-grid">
         <div className="docs-command-item">

@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('language')
@@ -24,20 +23,16 @@ module.exports = {
                 { name: '🇹🇭 Thai', value: 'th' }
             ))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    
     async execute(interaction) {
         const lang = interaction.options.getString('lang');
         const guildId = interaction.guild.id;
-        
         try {
             let config = await GuildConfig.findOne({ guildId });
             if (!config) {
                 config = await GuildConfig.create({ guildId });
             }
-            
             config.language = lang;
             await config.save();
-            
             const langNames = { 
                 en: '🇺🇸 English', id: '🇮🇩 Indonesia', es: '🇪🇸 Spanish',
                 fr: '🇫🇷 French', de: '🇩🇪 German', ja: '🇯🇵 Japanese',

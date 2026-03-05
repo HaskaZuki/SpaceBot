@@ -1,10 +1,8 @@
 import React from 'react';
-
 export default function FAQ() {
   return (
     <div className="docs-body">
       <p className="docs-description">Frequently asked questions about SpaceBot.</p>
-      
       <h2 id="music-issues">Music won't play?</h2>
       <ul>
         <li>Make sure bot is in a voice channel</li>
@@ -13,7 +11,6 @@ export default function FAQ() {
         <li>Try <code>/leave</code> then <code>/play</code> again</li>
         <li>Check if Lavalink server is online</li>
       </ul>
-      
       <h2 id="support">How to get support?</h2>
       <ul>
         <li>Join our Discord: <a href="https://discord.gg/spacebot" target="_blank" rel="noopener noreferrer" className="docs-link">discord.gg/spacebot</a></li>
@@ -21,7 +18,6 @@ export default function FAQ() {
         <li>Check the dashboard for server stats</li>
         <li>Use <code>/support</code> command for quick links</li>
       </ul>
-      
       <h2 id="spotify">Can I use Spotify?</h2>
       <p>Yes! SpaceBot supports multiple platforms:</p>
       <ul>
@@ -31,10 +27,8 @@ export default function FAQ() {
         <li><strong>Apple Music</strong> - Tracks and albums</li>
         <li><strong>Direct URLs</strong> - MP3, FLAC, and more</li>
       </ul>
-      
       <h2 id="premium-questions">How to get Premium?</h2>
       <p>Visit <a href="https://spacebot.me/pricing" target="_blank" rel="noopener noreferrer" className="docs-link">spacebot.me/pricing</a> for plans and pricing!</p>
-      
       <h2 id="bot-offline">Bot offline?</h2>
       <p>If the bot appears offline:</p>
       <ul>

@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { Setup, Commands, Filters, Premium, Dashboard, Playlists, FAQ, Support } from './pages';
-import './Docs.css';
-
-// Introduction component inline
-const Introduction = () => (
+import './Docs.css';const Introduction = () => (
   <div className="docs-body">
     <h2 id="getting-started">Getting Started</h2>
     <p className="docs-description">Welcome to SpaceBot! Here's how to get started with the bot.</p>
-    
     <h3 id="add-to-server">How to Add Bot to Your Server</h3>
     <ol>
       <li>Go to <a href="https://spacebot.me" target="_blank" rel="noopener noreferrer" className="docs-link">spacebot.me</a></li>
@@ -17,7 +13,6 @@ const Introduction = () => (
       <li>Allow all required permissions</li>
       <li>Done! Bot will join your server</li>
     </ol>
-    
     <h3 id="quick-commands">Quick Commands</h3>
     <div className="docs-command-grid">
       <div className="docs-command-item">
@@ -46,10 +41,7 @@ const Introduction = () => (
       </div>
     </div>
   </div>
-);
-
-// Sidebar navigation data with categories
-const navCategories = [
+);const navCategories = [
   {
     title: 'Getting Started',
     items: [
@@ -79,13 +71,7 @@ const navCategories = [
       { path: '/docs/support', label: 'Support' },
     ]
   },
-];
-
-// Flatten nav items for navigation
-const allNavItems = navCategories.flatMap(cat => cat.items);
-
-// Table of contents for each page
-const tableOfContents = {
+];const allNavItems = navCategories.flatMap(cat => cat.items);const tableOfContents = {
   '/docs': [
     { id: 'getting-started', label: 'Getting Started' },
     { id: 'add-to-server', label: 'Add to Server' },
@@ -133,35 +119,21 @@ const tableOfContents = {
     { id: 'contact', label: 'Contact Us' },
   ],
 };
-
 function Docs() {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  // Get current page info
-  const currentItem = allNavItems.find(item => 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);  const currentItem = allNavItems.find(item => 
     item.exact ? location.pathname === item.path : location.pathname.startsWith(item.path)
-  ) || allNavItems[0];
-
-  // Get previous and next pages
-  const currentIndex = allNavItems.findIndex(item => 
+  ) || allNavItems[0];  const currentIndex = allNavItems.findIndex(item => 
     item.exact ? location.pathname === item.path : location.pathname.startsWith(item.path)
   );
   const prevPage = currentIndex > 0 ? allNavItems[currentIndex - 1] : null;
-  const nextPage = currentIndex < allNavItems.length - 1 ? allNavItems[currentIndex + 1] : null;
-
-  // Get table of contents for current page
-  const currentTOC = tableOfContents[location.pathname] || [];
-
-  // Close mobile menu on route change
-  useEffect(() => {
+  const nextPage = currentIndex < allNavItems.length - 1 ? allNavItems[currentIndex + 1] : null;  const currentTOC = tableOfContents[location.pathname] || [];  useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
-
   return (
     <div className="docs-page">
-      {/* Mobile Menu Toggle */}
+      {}
       <button 
         className="docs-mobile-toggle"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -171,8 +143,7 @@ function Docs() {
         </svg>
         Menu
       </button>
-
-      {/* Left Sidebar */}
+      {}
       <aside className={`docs-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="docs-sidebar-header">
           <Link to="/" className="docs-logo">
@@ -181,8 +152,7 @@ function Docs() {
           </Link>
           <span className="docs-version">v1.0.0</span>
         </div>
-
-        {/* Search */}
+        {}
         <div className="docs-search">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <circle cx="11" cy="11" r="8"/>
@@ -195,8 +165,7 @@ function Docs() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-
-        {/* Navigation */}
+        {}
         <nav className="docs-nav">
           {navCategories.map((category, idx) => (
             <div key={idx} className="docs-nav-category">
@@ -214,25 +183,22 @@ function Docs() {
           ))}
         </nav>
       </aside>
-
-      {/* Main Content */}
+      {}
       <main className="docs-main">
         <div className="docs-content-wrapper">
-          {/* Content Area */}
+          {}
           <div className="docs-content">
-            {/* Breadcrumb */}
+            {}
             <div className="docs-breadcrumb">
               <Link to="/docs" className="breadcrumb-link">Docs</Link>
               <span className="breadcrumb-separator">/</span>
               <span className="breadcrumb-current">{currentItem.label}</span>
             </div>
-
-            {/* Page Header */}
+            {}
             <div className="docs-header">
               <h1>{currentItem.label}</h1>
             </div>
-
-            {/* Page Content */}
+            {}
             <Routes>
               <Route index element={<Introduction />} />
               <Route path="setup" element={<Setup />} />
@@ -244,8 +210,7 @@ function Docs() {
               <Route path="faq" element={<FAQ />} />
               <Route path="support" element={<Support />} />
             </Routes>
-
-            {/* Footer Navigation */}
+            {}
             <div className="docs-footer-nav">
               {prevPage ? (
                 <Link to={prevPage.path} className="docs-nav-card prev">
@@ -271,8 +236,7 @@ function Docs() {
               ) : <div />}
             </div>
           </div>
-
-          {/* Right Sidebar - Table of Contents */}
+          {}
           {currentTOC.length > 0 && (
             <aside className="docs-toc">
               <h4 className="docs-toc-title">On this page</h4>
@@ -294,5 +258,4 @@ function Docs() {
     </div>
   );
 }
-
 export default Docs;

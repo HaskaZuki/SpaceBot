@@ -1,9 +1,6 @@
 
-
 const UserSettings = require('../models/UserSettings');
-
 module.exports = {
-    
     getUser: async (collection, userId) => {
         try {
             if (collection === 'playlists') {
@@ -20,8 +17,6 @@ module.exports = {
             return null;
         }
     },
-
-    
     setUser: async (collection, userId, userData) => {
         try {
             if (collection === 'playlists') {                await UserSettings.findOneAndUpdate(

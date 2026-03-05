@@ -1,18 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('eval')
         .setDescription('[OWNER] Execute JavaScript code')
         .addStringOption(opt => opt.setName('code').setDescription('Code to evaluate').setRequired(true)),
-    
     async execute(interaction) {
         await interaction.deferReply({ flags: 64 });
-
         const code = interaction.options.getString('code');
         const cleanCode = code.replace(/```(js|javascript)?/g, '').trim();
-
         try {
             const client = interaction.client;
             const guild = interaction.guild;
@@ -20,7 +16,6 @@ module.exports = {
             const member = interaction.member;
             const GuildConfig = require('../../models/GuildConfig');
             const musicPlayer = require('../../utils/musicPlayer');
-            
             let result = eval(cleanCode);
             if (result instanceof Promise) {
                 result = await result;
@@ -29,7 +24,6 @@ module.exports = {
             if (output.length > 1900) {
                 output = output.substring(0, 1900) + '\n... (truncated)';
             }
-
             const embed = new EmbedBuilder()
                 .setColor('#00ff00')
                 .setTitle('Eval Result')
@@ -39,7 +33,6 @@ module.exports = {
                     { name: 'Output', value: `\`\`\`js\n${output}\n\`\`\`` }
                 )
                 .setTimestamp();
-
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
             const embed = new EmbedBuilder()
@@ -51,7 +44,6 @@ module.exports = {
                     { name: 'Error', value: `\`\`\`\n${error.message}\n\`\`\`` }
                 )
                 .setTimestamp();
-
             await interaction.editReply({ embeds: [embed] });
         }
     },

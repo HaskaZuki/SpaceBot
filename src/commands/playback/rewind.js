@@ -2,7 +2,6 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const { formatTime, validatePlayerState, validateVoiceState } = require('../../utils/validators');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('rewind')
@@ -13,10 +12,8 @@ module.exports = {
                 .setMinValue(1)
                 .setMaxValue(300)
                 .setRequired(false)),
-    
     async execute(interaction) {
         const guildId = interaction.guild.id;
-        
         try {
             const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
             if (!voiceCheck.valid) {
@@ -33,11 +30,9 @@ module.exports = {
             const newPosition = Math.max(0, currentPosition - rewindMs);
             try {
                 await playerState.player.seekTo(newPosition);
-                
                 await interaction.reply({
                     content: `${emoji.controls.rewind} Rewound **${seconds}s** to **${formatTime(newPosition)}**`
                 });
-                
             } catch (seekError) {
                 console.error('Rewind error:', seekError);
                 await interaction.reply({ 
@@ -45,10 +40,8 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-            
         } catch (error) {
             console.error('Rewind command error:', error);
-            
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({ 
                     content: `${emoji.status.error} An error occurred while rewinding!`, 

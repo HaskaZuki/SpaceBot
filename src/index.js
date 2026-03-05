@@ -1,13 +1,10 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, EmbedBuilder } = require('discord.js');
 const { Shoukaku, Connectors } = require('shoukaku');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 const database = require('./database');
-const emoji = require('./utils/emojiConfig');
-
-// Discord Portal: only "Server Members Intent" enabled (no Message Content, no Presence)
-const client = new Client({
+const emoji = require('./utils/emojiConfig');const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
@@ -15,9 +12,7 @@ const client = new Client({
         GatewayIntentBits.GuildMessages
     ]
 });
-
 client.commands = new Collection();
-
 const shoukaku = new Shoukaku(
     new Connectors.DiscordJS(client),
     [{
@@ -37,77 +32,64 @@ const shoukaku = new Shoukaku(
         userAgent: 'SpaceBot/1.0.0'
     }
 );
-
 shoukaku.on('error', (_, error) => console.error('Shoukaku Error:', error));
 shoukaku.on('ready', (name) => console.log(`Lavalink Node: ${name} is ready`));
-
+shoukaku.on('disconnect', (name, players, moved) => {
+    console.warn(`[Lavalink] Node ${name} disconnected. Players: ${players.size}. Moved: ${moved}`);
+    if (!moved) {
+        console.warn(`[Lavalink] Node ${name} will attempt to reconnect automatically.`);
+    }
+});
+shoukaku.on('reconnecting', (name) => console.log(`[Lavalink] Node ${name} reconnecting...`));
 client.shoukaku = shoukaku;
-
 const voiceStateTimers = new Map();
-
 client.on('voiceStateUpdate', async (oldState, newState) => {
     const botMember = newState.guild.members.me;
     if (!botMember.voice.channel) return;
-
     const voiceChannel = botMember.voice.channel;
     const guildId = newState.guild.id;
-
     const humanMembers = voiceChannel.members.filter(m => !m.user.bot);
-
     if (humanMembers.size === 0) {
         if (!voiceStateTimers.has(guildId)) {
             console.log(`⏰ Starting 10s timer for empty voice channel in ${newState.guild.name}`);
-            
             const timer = setTimeout(async () => {
                 const currentBotMember = newState.guild.members.me;
                 if (!currentBotMember.voice.channel) return;
-                
                 const currentVoiceChannel = currentBotMember.voice.channel;
                 const currentHumans = currentVoiceChannel.members.filter(m => !m.user.bot);
-                
                 if (currentHumans.size === 0) {
                     console.log(`🚪 Auto-disconnecting from ${newState.guild.name} - no users for 10s`);
-                    
                     const musicPlayer = require('./utils/musicPlayer');
                     const GuildConfig = require('./models/GuildConfig');
-                    
                     try {
-                        const config = await GuildConfig.findOne({ guildId });
-                        
-                        // Check for 24/7 mode - don't leave if enabled
-                        if (config && config.alwaysOn) {
+                        const config = await GuildConfig.findOne({ guildId });                        if (config && config.alwaysOn) {
                             console.log(`[VOICE] Staying in ${newState.guild.name} - 24/7 mode enabled`);
                             return;
                         }
-                        
                         let textChannel = null;
-                        
                         const playerState = musicPlayer.getQueue(guildId);
                         if (playerState && playerState.textChannelId) {
                             textChannel = client.channels.cache.get(playerState.textChannelId);
                         }
-
                         if (!textChannel && config && config.musicChannelId) {
                             textChannel = client.channels.cache.get(config.musicChannelId);
                         }
-                        
                         if (!textChannel) {
                             textChannel = newState.guild.channels.cache.find(c => c.type === 0 && c.permissionsFor(currentBotMember).has('SendMessages'));
                         }
-                        
                         if (textChannel) {
-                            await textChannel.send(`${emoji.status.success} Left voice channel - no one was listening for 10 seconds. Use \`/play\` to play music again!`);
+                            const leaveEmbed = new EmbedBuilder()
+                                .setColor('#7C3AED')
+                                .setDescription(`${emoji.status.success} Left the voice channel — no one was listening for **10 seconds**. Use \`/play\` to bring me back!`);
+                            await textChannel.send({ embeds: [leaveEmbed] });
                         }
                     } catch (error) {
                         console.error('Error sending disconnect message:', error);
                     }
-                    
                     await musicPlayer.stopPlayer(client, guildId);
                 }
-                
                 voiceStateTimers.delete(guildId);
             }, 10000);
-            
             voiceStateTimers.set(guildId, timer);
         }
     } else {
@@ -118,10 +100,8 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         }
     }
 });
-
 const commandsPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(commandsPath);
-
 function loadCommandFiles(dirPath) {
     const files = [];
     const items = fs.readdirSync(dirPath, { withFileTypes: true });
@@ -135,10 +115,8 @@ function loadCommandFiles(dirPath) {
     }
     return files;
 }
-
 for (const folder of commandFolders) {
     const folderPath = path.join(commandsPath, folder);
-    
     if (fs.existsSync(folderPath) && fs.statSync(folderPath).isDirectory()) {
         const commandFiles = loadCommandFiles(folderPath);
         for (const filePath of commandFiles) {
@@ -152,10 +130,8 @@ for (const folder of commandFolders) {
         }
     }
 }
-
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
-
 for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
     const event = require(filePath);
@@ -165,7 +141,6 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
-
 (async () => {
     await database.connect();
     require('./web/server')(client);

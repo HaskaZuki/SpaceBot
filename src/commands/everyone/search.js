@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('search')
@@ -20,19 +19,16 @@ module.exports = {
                     { name: 'SoundCloud', value: 'soundcloud' },
                     { name: 'Spotify', value: 'spotify' }
                 )),
-    
     async execute(interaction) {
         const query = interaction.options.getString('query');
         const source = interaction.options.getString('source') || 'youtube';
         const guildId = interaction.guild.id;
         const member = interaction.member;
-        
         if (!member.voice.channel) {
             return interaction.reply({ content: `${emoji.status.error} You must be in a voice channel!`, flags: 64 });
         }
         const nodes = [...interaction.client.shoukaku.nodes.values()];
         const node = nodes.find(n => n.state === 2 || n.state === 1);
-        
         if (!node || nodes.length === 0) {
             console.log(`[SEARCH] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}`).join(', ')}`);
             return interaction.reply({ 
@@ -40,9 +36,7 @@ module.exports = {
                 flags: 64 
             });
         }
-
         await interaction.reply({ content: `${emoji.animated.loading} Searching for **${query}**...`, flags: MessageFlags.Ephemeral });
-
         try {
             const sourceConfig = {
                 soundcloud: { prefix: 'scsearch', emoji: emoji.sources.soundcloud },
@@ -50,7 +44,6 @@ module.exports = {
                 ytmusic: { prefix: 'ytmsearch', emoji: emoji.sources.youtube },
                 youtube: { prefix: 'ytsearch', emoji: emoji.sources.youtube }
             };
-
             const selectedSource = sourceConfig[source] || sourceConfig.youtube;
             let searchQuery = `${selectedSource.prefix}:${query}`;
             console.log(`[SEARCH] Trying ${selectedSource.emoji}: ${searchQuery}`);
@@ -58,12 +51,10 @@ module.exports = {
             if (!result || result.loadType === 'empty' || result.loadType === 'error') {
                 const fallbackSources = ['scsearch', 'ytmsearch', 'ytsearch', 'spsearch']
                     .filter(s => s !== selectedSource.prefix);
-
                 for (const fallbackPrefix of fallbackSources) {
                     try {
                         const fallbackQuery = `${fallbackPrefix}:${query}`;
                         result = await node.rest.resolve(fallbackQuery);
-                        
                         if (result && result.loadType === 'search' && result.data && result.data.length > 0) {
                             const sourceName = Object.values(sourceConfig).find(s => s.prefix === fallbackPrefix)?.emoji || fallbackPrefix;
                             console.log(`✅ Found results on fallback source: ${sourceName}`);
@@ -74,7 +65,6 @@ module.exports = {
                     }
                 }
             }
-
             if (!result || result.loadType === 'empty' || result.loadType === 'error') {
                 return interaction.editReply(`${emoji.status.error} No results found for: **${query}**\n\nTried multiple sources but found nothing. Try a different search term!`);
             }
@@ -86,12 +76,10 @@ module.exports = {
             } else if (result.tracks) {
                 tracks = result.tracks;
             }
-
             if (tracks.length === 0) {
                 return interaction.editReply(`${emoji.status.error} No results found for: **${query}**`);
             }
             const topTracks = tracks.slice(0, 10);
-            
             const embed = new EmbedBuilder()
                 .setColor('#6366f1')
                 .setTitle(`Search Results`)
@@ -111,9 +99,7 @@ module.exports = {
                         value: i.toString()
                     }))
                 );
-
             const row = new ActionRowBuilder().addComponents(selectMenu);
-
             const message = await interaction.editReply({ embeds: [embed], components: [row] });
             global.searchCache = global.searchCache || {};
             const cacheTimestamp = Date.now();
@@ -129,19 +115,16 @@ module.exports = {
                     delete global.searchCache[interaction.user.id];
                 }
             }, 60000);
-
         } catch (error) {
             console.error('Search error:', error);
             await interaction.editReply(`${emoji.status.error} Failed to search. Error: ${error.message}`);
         }
     },
 };
-
 function formatDuration(ms) {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
-    
     if (hours > 0) {
         return `${hours}:${String(minutes % 60).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
     }

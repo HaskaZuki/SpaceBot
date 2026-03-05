@@ -1,24 +1,19 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('premiumstatus')
         .setDescription('Check server premium status'),
-    
     async execute(interaction) {
         const GuildConfig = require('../../models/GuildConfig');
         const UserSettings = require('../../models/UserSettings');
-        
         const [guildConfig, userSettings] = await Promise.all([
             GuildConfig.findOne({ guildId: interaction.guild.id }),
             UserSettings.findOne({ userId: interaction.user.id })
         ]);
-        
         const isServerPrem = guildConfig && guildConfig.isPremium;
         const isUserPrem = userSettings && userSettings.isPremium;
-        
         const embed = new EmbedBuilder()
             .setColor('#ffd700')
             .setTitle('Premium Status Check')
@@ -40,7 +35,6 @@ module.exports = {
                 }
             )
             .setFooter({ text: isUserPrem || isServerPrem ? 'Thanks for supporting SpaceBot!' : 'Upgrade to unlock exclusive features!' });
-
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
 };

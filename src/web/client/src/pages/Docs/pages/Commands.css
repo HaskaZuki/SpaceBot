@@ -1,0 +1,228 @@
+.commands-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.commands-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.commands-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted, #aaa);
+  margin: 0;
+}
+
+.commands-count {
+  font-weight: 700;
+  color: var(--accent, #7C3AED);
+}
+
+.commands-search-wrap {
+  flex: 1;
+  max-width: 340px;
+}
+
+.commands-search {
+  width: 100%;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text, #fff);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.commands-search:focus {
+  border-color: var(--accent, #7C3AED);
+  background: rgba(124, 58, 237, 0.1);
+}
+
+.commands-search::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.commands-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.commands-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted, #aaa);
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.18s ease;
+}
+
+.commands-tab:hover {
+  border-color: var(--tab-color, #7C3AED);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.commands-tab.active {
+  border-color: var(--tab-color, #7C3AED);
+  background: color-mix(in srgb, var(--tab-color, #7C3AED) 20%, transparent);
+  color: #fff;
+}
+
+.commands-tab-icon {
+  font-size: 1rem;
+}
+
+.commands-tab-count {
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.commands-category-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  border-radius: 10px;
+  border-left: 4px solid;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.commands-category-title {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.commands-category-icon {
+  font-size: 1.25rem;
+}
+
+.commands-category-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+.commands-search-info {
+  font-size: 0.9rem;
+  color: var(--text-muted, #aaa);
+  margin: 0;
+}
+
+.commands-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.85rem;
+}
+
+.commands-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  transition: all 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.commands-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--card-accent, #7C3AED);
+  opacity: 0;
+  transition: opacity 0.18s;
+}
+
+.commands-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.07);
+  transform: translateY(-2px);
+}
+
+.commands-card:hover::before {
+  opacity: 1;
+}
+
+.commands-card-name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--card-accent, #7C3AED);
+  background: none;
+  padding: 0;
+  font-family: 'Fira Code', 'Consolas', monospace;
+}
+
+.commands-card-desc {
+  font-size: 0.84rem;
+  color: var(--text-muted, #aaa);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.commands-card-category {
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  align-self: flex-start;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+}
+
+.commands-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 0;
+  color: var(--text-muted, #aaa);
+}
+
+@media (max-width: 600px) {
+  .commands-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .commands-search-wrap {
+    max-width: 100%;
+    width: 100%;
+  }
+  .commands-tabs {
+    gap: 0.35rem;
+  }
+  .commands-tab {
+    font-size: 0.82rem;
+    padding: 0.4rem 0.75rem;
+  }
+}

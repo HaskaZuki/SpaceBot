@@ -3,7 +3,6 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import config from '../../config';
 import './Settings.css';
-
 const tabs = [
   { id: 'overview', label: 'Overview', icon: 'fa-user' },
   { id: 'audio', label: 'Audio', icon: 'fa-headphones' },
@@ -11,7 +10,6 @@ const tabs = [
   { id: 'servers', label: 'Servers', icon: 'fa-server' },
   { id: 'privacy', label: 'Privacy', icon: 'fa-shield-alt' }
 ];
-
 function Settings() {
   const { user, isPremium, getAvatarUrl } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
@@ -28,18 +26,15 @@ function Settings() {
   const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState('');
   const [confirmAction, setConfirmAction] = useState(null);
-
   useEffect(() => {
     fetchSettings();
     fetchStatus();
   }, []);
-
   useEffect(() => {
     if (activeTab === 'servers') {
       fetchServers();
     }
   }, [activeTab]);
-
   const fetchSettings = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/user/settings`, {
@@ -57,7 +52,6 @@ function Settings() {
       setLoading(false);
     }
   };
-
   const fetchStatus = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/status`);
@@ -69,7 +63,6 @@ function Settings() {
       console.error('Failed to fetch status:', error);
     }
   };
-
   const fetchServers = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/guilds`, {
@@ -83,12 +76,10 @@ function Settings() {
       console.error('Failed to fetch servers:', error);
     }
   };
-
   const saveSettings = async (updates) => {
     const newSettings = { ...settings, ...updates };
     setSettings(newSettings);
     setSaveStatus('saving');
-
     try {
       const res = await fetch(`${config.apiUrl}/api/user/settings`, {
         method: 'POST',
@@ -96,7 +87,6 @@ function Settings() {
         credentials: 'include',
         body: JSON.stringify(updates)
       });
-
       if (res.ok) {
         setSaveStatus('saved');
       } else {
@@ -109,10 +99,8 @@ function Settings() {
     } catch (error) {
       setSaveStatus('error');
     }
-
     setTimeout(() => setSaveStatus(''), 2000);
   };
-
   const clearData = async (type) => {
     try {
       setSaveStatus('saving');
@@ -131,7 +119,6 @@ function Settings() {
     setConfirmAction(null);
     setTimeout(() => setSaveStatus(''), 2000);
   };
-
   const formatUptime = (ms) => {
     if (!ms) return '--';
     const days = Math.floor(ms / 86400000);
@@ -139,10 +126,8 @@ function Settings() {
     const mins = Math.floor(ms / 60000) % 60;
     return `${days}d ${hours}h ${mins}m`;
   };
-
   const getStatusColor = (status) => status ? '#22c55e' : '#ef4444';
   const getStatusText = (status) => status ? 'Operational' : 'Down';
-
   return (
     <DashboardLayout title="Settings">
       <div className="settings-content">
@@ -158,14 +143,12 @@ function Settings() {
             </button>
           ))}
         </div>
-
         {saveStatus && (
           <div className={`save-toast ${saveStatus}`}>
             <i className={`fas ${saveStatus === 'saved' ? 'fa-check' : saveStatus === 'saving' ? 'fa-spinner fa-spin' : 'fa-times'}`} />
             {saveStatus === 'saved' ? 'Settings saved!' : saveStatus === 'saving' ? 'Saving...' : 'Failed to save'}
           </div>
         )}
-
         <div className="settings-panel">
           {activeTab === 'overview' && (
             <div className="tab-content">
@@ -183,10 +166,8 @@ function Settings() {
                   </span>
                 </div>
               </div>
-
               <div className="settings-group">
                 <h3 className="group-title">Preferences</h3>
-
                 <div className="setting-item">
                   <div><strong>Theme</strong><p className="setting-desc">Choose your preferred appearance</p></div>
                   <select
@@ -198,7 +179,6 @@ function Settings() {
                     <option value="light">Light</option>
                   </select>
                 </div>
-
                 <div className="setting-item">
                   <div><strong>Language</strong><p className="setting-desc">Interface language</p></div>
                   <select
@@ -211,7 +191,6 @@ function Settings() {
                     <option value="fr">Français</option>
                   </select>
                 </div>
-
                 <div className="setting-item">
                   <div><strong>Track History</strong><p className="setting-desc">Save your listening history</p></div>
                   <div
@@ -221,7 +200,6 @@ function Settings() {
                     <div className="toggle-slider" />
                   </div>
                 </div>
-
                 <div className="setting-item">
                   <div><strong>Share Activity</strong><p className="setting-desc">Show what you're listening to</p></div>
                   <div
@@ -232,7 +210,6 @@ function Settings() {
                   </div>
                 </div>
               </div>
-
               {serviceStatus && (
                 <div className="settings-group">
                   <h3 className="group-title">System Status</h3>
@@ -262,10 +239,9 @@ function Settings() {
               )}
             </div>
           )}
-
           {activeTab === 'audio' && (
             <div className="tab-content">
-              {/* Audio Visualizer Header */}
+              {}
               <div className="audio-visualizer-header">
                 <div className="audio-wave-container">
                   <div className="audio-wave">
@@ -289,8 +265,7 @@ function Settings() {
                   <p>Customize your listening experience</p>
                 </div>
               </div>
-
-              {/* Audio Quality Cards */}
+              {}
               <div className="audio-quality-section">
                 <h3 className="group-title">Stream Quality</h3>
                 <div className="quality-cards">
@@ -310,7 +285,6 @@ function Settings() {
                       {settings.audioQuality === '64' && <i className="fas fa-check-circle" />}
                     </div>
                   </div>
-
                   <div 
                     className={`quality-card ${settings.audioQuality === '128' ? 'selected' : ''} ${isPremium ? 'clickable' : 'locked'}`}
                     onClick={() => isPremium && saveSettings({ audioQuality: '128' })}
@@ -328,7 +302,6 @@ function Settings() {
                       {settings.audioQuality === '128' && <i className="fas fa-check-circle" />}
                     </div>
                   </div>
-
                   <div 
                     className={`quality-card ${settings.audioQuality === '256' ? 'selected' : ''} ${isPremium ? 'clickable' : 'locked'}`}
                     onClick={() => isPremium && saveSettings({ audioQuality: '256' })}
@@ -348,8 +321,7 @@ function Settings() {
                   </div>
                 </div>
               </div>
-
-              {/* Audio Features Grid */}
+              {}
               <div className="audio-features-section">
                 <h3 className="group-title">Audio Features</h3>
                 <div className="audio-features-grid">
@@ -368,7 +340,6 @@ function Settings() {
                       <div className="toggle-slider" />
                     </div>
                   </div>
-
                   <div className="audio-feature-card">
                     <div className="feature-icon-wrapper">
                       <i className="fas fa-volume-up" />
@@ -381,7 +352,6 @@ function Settings() {
                       {isPremium ? '200%' : '🔒 Premium'}
                     </span>
                   </div>
-
                   <div className="audio-feature-card">
                     <div className="feature-icon-wrapper">
                       <i className="fas fa-sliders-h" />
@@ -394,7 +364,6 @@ function Settings() {
                       {isPremium ? '12 Filters' : '🔒 Premium'}
                     </span>
                   </div>
-
                   <div className="audio-feature-card">
                     <div className="feature-icon-wrapper">
                       <i className="fas fa-infinity" />
@@ -409,8 +378,7 @@ function Settings() {
                   </div>
                 </div>
               </div>
-
-              {/* Equalizer Preview */}
+              {}
               <div className="equalizer-section">
                 <h3 className="group-title">Equalizer Preview</h3>
                 <div className="equalizer-visual">
@@ -435,7 +403,6 @@ function Settings() {
               </div>
             </div>
           )}
-
           {activeTab === 'premium' && (
             <div className="tab-content">
               <div className="premium-overview">
@@ -455,7 +422,6 @@ function Settings() {
                     </a>
                   )}
                 </div>
-
                 <div className="features-list">
                   <h3>Premium Features</h3>
                   <div className="feature-item">
@@ -490,13 +456,11 @@ function Settings() {
               </div>
             </div>
           )}
-
           {activeTab === 'servers' && (
             <div className="tab-content">
               <div className="settings-group">
                 <h3 className="group-title">Your Servers</h3>
                 <p className="group-desc">Servers where you can manage the bot</p>
-
                 {serverList.length === 0 ? (
                   <div className="empty-state small">
                     <i className="fas fa-server" />
@@ -524,13 +488,11 @@ function Settings() {
               </div>
             </div>
           )}
-
           {activeTab === 'privacy' && (
             <div className="tab-content">
               <div className="settings-group">
                 <h3 className="group-title">Data & Privacy</h3>
                 <p className="group-desc">Manage your personal data stored by SpaceBot</p>
-
                 <div className="privacy-actions">
                   <div className="privacy-action-card">
                     <div className="privacy-action-info">
@@ -549,7 +511,6 @@ function Settings() {
                       <i className="fas fa-trash" /> Clear
                     </button>
                   </div>
-
                   <div className="privacy-action-card">
                     <div className="privacy-action-info">
                       <div className="privacy-action-icon favorites">
@@ -567,7 +528,6 @@ function Settings() {
                       <i className="fas fa-trash" /> Clear
                     </button>
                   </div>
-
                   <div className="privacy-action-card danger">
                     <div className="privacy-action-info">
                       <div className="privacy-action-icon danger">
@@ -587,7 +547,6 @@ function Settings() {
                   </div>
                 </div>
               </div>
-
               {confirmAction && (
                 <div className="confirm-overlay" onClick={() => setConfirmAction(null)}>
                   <div className="confirm-dialog" onClick={(e) => e.stopPropagation()}>
@@ -618,5 +577,4 @@ function Settings() {
     </DashboardLayout>
   );
 }
-
 export default Settings;

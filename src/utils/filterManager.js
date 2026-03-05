@@ -1,6 +1,4 @@
 
-
-
 const FILTER_PRESETS = {
     'bass-boost': {
         name: 'Bass Boost',
@@ -64,16 +62,12 @@ const FILTER_PRESETS = {
         }
     }
 };
-
-
 async function applyFilter(player, filter) {
     try {
         if (!player) {
             throw new Error('Player not found');
         }
-
         let filterConfig;
-
         if (typeof filter === 'string') {            const preset = FILTER_PRESETS[filter.toLowerCase()];
             if (!preset) {
                 throw new Error(`Unknown filter: ${filter}`);
@@ -83,51 +77,39 @@ async function applyFilter(player, filter) {
             delete filterConfig.emoji;
         } else {            filterConfig = filter;
         }        await player.setFilters(filterConfig);
-        
         return true;
     } catch (error) {
         console.error('Error applying filter:', error);
         return false;
     }
 }
-
-
 async function resetFilters(player) {
     try {
         if (!player) {
             throw new Error('Player not found');
         }        await player.setFilters({});
-        
         return true;
     } catch (error) {
         console.error('Error resetting filters:', error);
         return false;
     }
 }
-
-
 function getAvailableFilters() {
     return Object.keys(FILTER_PRESETS);
 }
-
-
 function getFilterInfo(filterName) {
     const preset = FILTER_PRESETS[filterName.toLowerCase()];
     if (!preset) return null;
-    
     return {
         name: preset.name,
         emoji: preset.emoji,
         key: filterName.toLowerCase()
     };
 }
-
-
 function isValidFilterConfig(config) {
     if (!config || typeof config !== 'object') return false;    const validProps = ['equalizer', 'karaoke', 'timescale', 'tremolo', 'vibrato', 'rotation', 'distortion', 'channelMix', 'lowPass'];
     return validProps.some(prop => config.hasOwnProperty(prop));
 }
-
 module.exports = {
     FILTER_PRESETS,
     applyFilter,

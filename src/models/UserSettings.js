@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const UserSettingsSchema = new mongoose.Schema({
     userId: { type: String, required: true, unique: true, index: true },
     username: { type: String },
@@ -22,5 +21,4 @@ const UserSettingsSchema = new mongoose.Schema({
 }, {
     timestamps: true 
 });
-
 module.exports = mongoose.model('UserSettings', UserSettingsSchema);

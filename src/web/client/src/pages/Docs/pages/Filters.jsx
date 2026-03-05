@@ -1,10 +1,8 @@
 import React from 'react';
-
 export default function Filters() {
   return (
     <div className="docs-body">
       <p className="docs-description">Audio filters to enhance your music experience. Premium feature only.</p>
-      
       <h2 id="available-filters">Available Filters</h2>
       <div className="docs-command-grid">
         <div className="docs-command-item">
@@ -40,7 +38,6 @@ export default function Filters() {
           <span>Treble boost</span>
         </div>
       </div>
-      
       <h2 id="volume-speed">Volume & Speed</h2>
       <div className="docs-command-grid">
         <div className="docs-command-item">
@@ -52,7 +49,6 @@ export default function Filters() {
           <span>Adjust speed</span>
         </div>
       </div>
-      
       <div className="docs-note">
         Note: Audio filters are for Premium users only. Visit <a href="https://spacebot.me/pricing" target="_blank" rel="noopener noreferrer">spacebot.me/pricing</a> to upgrade.
       </div>

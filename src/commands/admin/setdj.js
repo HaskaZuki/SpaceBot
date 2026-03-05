@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('setdj')
@@ -23,16 +22,13 @@ module.exports = {
                 .setName('view')
                 .setDescription('View the current DJ role'))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
-    
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
-        
         try {
             let config = await GuildConfig.findOne({ guildId: interaction.guild.id });
             if (!config) {
                 config = await GuildConfig.create({ guildId: interaction.guild.id });
             }
-
             if (subcommand === 'view') {
                 if (!config.djRoleId) {
                     return interaction.reply({ 
@@ -52,7 +48,6 @@ module.exports = {
                     flags: 64 
                 });
             }
-
             if (subcommand === 'unset') {
                 if (!config.djRoleId) {
                     return interaction.reply({ 
@@ -67,7 +62,6 @@ module.exports = {
                     ephemeral: false 
                 });
             }
-
             if (subcommand === 'set') {
                 const role = interaction.options.getRole('role');
                 if (config.djRoleId) {
@@ -82,10 +76,8 @@ module.exports = {
                         });
                     }
                 }
-
                 config.djRoleId = role.id;
                 await config.save();
-
                 await interaction.reply({ 
                     content: `${emoji.status.success} Successfully set the DJ role to ${role}.\n` +
                             `Users with this role can now use DJ commands.`, 

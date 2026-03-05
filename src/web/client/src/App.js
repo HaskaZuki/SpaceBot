@@ -19,7 +19,6 @@ import PersistentPlayer from './components/PersistentPlayer';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import './styles/global.css';
-
 const pageVariants = {
   initial: {
     opacity: 0,
@@ -42,10 +41,8 @@ const pageVariants = {
     }
   }
 };
-
 function AnimatedRoutes() {
   const location = useLocation();
-
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
@@ -123,7 +120,6 @@ function AnimatedRoutes() {
     </AnimatePresence>
   );
 }
-
 function App() {
   return (
     <AuthProvider>
@@ -138,5 +134,4 @@ function App() {
     </AuthProvider>
   );
 }
-
 export default App;

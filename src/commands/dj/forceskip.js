@@ -3,27 +3,28 @@ const musicPlayer = require('../../utils/musicPlayer');
 const emoji = require('../../utils/emojiConfig');
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('stop')
-        .setDescription('Stop playback and clear the queue'),
+        .setName('forceskip')
+        .setDescription('Force-skip the current track immediately (DJ only, bypasses vote)'),
     category: 'dj',
     async execute(interaction) {
         const guildId = interaction.guild.id;
         const playerState = musicPlayer.players.get(guildId);
-        if (!playerState || !playerState.player) {
+        if (!playerState || !playerState.currentTrack) {
             return interaction.reply({
                 content: `${emoji.status.error} Nothing is currently playing!`,
                 flags: MessageFlags.Ephemeral
             });
         }
-        const queueCount = playerState.queue?.length || 0;
-        await musicPlayer.stopPlayer(interaction.client, guildId);
+        const skippedTitle = playerState.currentTrack.info.title;
+        const nextTrack = playerState.queue?.[0];
+        await musicPlayer.skipTrack(interaction.client, guildId);
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
             .setDescription(
-                `${emoji.controls.pause} Playback **stopped** and queue cleared.` +
-                (queueCount > 0 ? ` Removed **${queueCount}** track${queueCount !== 1 ? 's' : ''}.` : '')
+                `${emoji.controls.next} Force-skipped **${skippedTitle}**` +
+                (nextTrack ? `\n\nNow playing: **${nextTrack.info.title}**` : '\n\nThe queue is now empty.')
             )
-            .setFooter({ text: `Stopped by ${interaction.user.displayName || interaction.user.username}` });
+            .setFooter({ text: `Force-skipped by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
 };

@@ -2,7 +2,6 @@ const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const { isValidPosition, validatePlayerState, validateVoiceState } = require('../../utils/validators');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('jump')
@@ -12,10 +11,8 @@ module.exports = {
                 .setDescription('Queue position to jump to (1 = next song)')
                 .setMinValue(1)
                 .setRequired(true)),
-    
     async execute(interaction) {
         const guildId = interaction.guild.id;
-        
         try {
             const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
             if (!voiceCheck.valid) {
@@ -34,16 +31,13 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-
             try {
                 const targetTrack = playerState.queue[queueIndex];
                 const skippedTracks = playerState.queue.splice(0, queueIndex);
                 playerState.player.stopTrack();
-                
                 await interaction.reply({
                     content: `${emoji.controls.skip} Jumping to position **${position}**: **${targetTrack.info.title}**\nSkipped **${skippedTracks.length}** track(s)`
                 });
-                
             } catch (jumpError) {
                 console.error('Jump error:', jumpError);
                 await interaction.reply({ 
@@ -51,10 +45,8 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-            
         } catch (error) {
             console.error('Jump command error:', error);
-            
             if (!interaction.replied && !interaction.deferred) {
                 await interaction.reply({ 
                     content: `${emoji.status.error} An error occurred!`, 

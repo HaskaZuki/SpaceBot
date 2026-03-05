@@ -3,12 +3,9 @@ const passport = require('passport');
 const router = express.Router();
 const User = require('../../models/User');
 const UserSettings = require('../../models/UserSettings');
-
 const DASHBOARD_URL = process.env.DASHBOARD_URL || 'http://localhost:3000';
-
 router.get('/login', passport.authenticate('discord'));
 router.get('/discord', passport.authenticate('discord'));
-
 router.get('/callback', (req, res, next) => {
     passport.authenticate('discord', (err, user, info) => {
         if (err) {
@@ -30,25 +27,20 @@ router.get('/callback', (req, res, next) => {
         });
     })(req, res, next);
 });
-
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
         res.redirect(`${DASHBOARD_URL}/`);
     });
 });
-
 router.get('/user', async (req, res) => {
     res.set('Cache-Control', 'no-store');
-    
     if (!req.user) return res.json(null);
-    
     try {
         let dbUser = await User.findOne({ userId: req.user.id });
         if (!dbUser) {
             dbUser = await User.create({ userId: req.user.id });
         }
-
         let userSettings = await UserSettings.findOne({ userId: req.user.id });
         if (!userSettings) {
             userSettings = await UserSettings.create({
@@ -57,16 +49,13 @@ router.get('/user', async (req, res) => {
                 avatar: req.user.avatar
             });
         }
-
         const now = new Date();
         const isPremiumActive = userSettings.isPremium && 
             (!userSettings.premiumExpiresAt || userSettings.premiumExpiresAt > now);
-
         if (userSettings.isPremium && userSettings.premiumExpiresAt && userSettings.premiumExpiresAt <= now) {
             userSettings.isPremium = false;
             await userSettings.save();
         }
-
         const userData = {
             ...req.user,
             isPremium: isPremiumActive,
@@ -77,12 +66,10 @@ router.get('/user', async (req, res) => {
             canControlVolume: isPremiumActive,
             memberSince: userSettings.createdAt
         };
-
         res.json(userData);
     } catch (err) {
         console.error('Auth user error:', err);
         res.json({ ...req.user, isPremium: false });
     }
 });
-
 module.exports = router;

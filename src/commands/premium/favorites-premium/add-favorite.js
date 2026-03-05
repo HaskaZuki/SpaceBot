@@ -3,25 +3,21 @@ const musicPlayer = require('../../../utils/musicPlayer');
 const storage = require('../../../utils/storage');
 const { validatePlayerState } = require('../../../utils/validators');
 const emoji = require('../../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('favorite')
         .setDescription('Add current track to your favorites'),
-    
     async execute(interaction) {
         const userId = interaction.user.id;
         const guildId = interaction.guild.id;
         const UserSettings = require('../../../models/UserSettings');
         const userSettings = await UserSettings.findOne({ userId });
-        
         if (!userSettings || !userSettings.isPremium) {
              return interaction.reply({
                  content: `${emoji.premium.star} **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to save unlimited tracks.`,
                  flags: MessageFlags.Ephemeral
              });
         }
-        
         try {
             const playerState = musicPlayer.players.get(guildId);
             const playerCheck = validatePlayerState(playerState, { requireTrack: true });
@@ -31,10 +27,8 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-
             const currentTrack = playerState.currentTrack;
             let userFavorites = await storage.getUser('favorites', userId);
-            
             if (!userFavorites) {
                 userFavorites = {
                     userId,
@@ -45,7 +39,6 @@ module.exports = {
             const alreadyFavorited = userFavorites.favorites.some(
                 fav => fav.info.uri === currentTrack.info.uri
             );
-            
             if (alreadyFavorited) {
                 return interaction.reply({
                     content: `${emoji.premium.star} **${currentTrack.info.title}** is already in your favorites!`,
@@ -64,9 +57,7 @@ module.exports = {
                     info: currentTrack.info,
                     addedAt: new Date().toISOString()
                 });
-                
                 const success = await storage.setUser('favorites', userId, userFavorites);
-                
                 if (success) {
                     await interaction.reply({
                         content: `${emoji.premium.star} Added to favorites: **${currentTrack.info.title}**\n\n` +
@@ -85,10 +76,8 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-            
         } catch (error) {
             console.error('Favorite command error:', error);
-            
             if (!interaction.replied) {
                 await interaction.reply({
                     content: `${emoji.status.error} An error occurred!`,

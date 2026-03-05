@@ -1,39 +1,30 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('nowplaying')
         .setDescription('Show detailed info about the currently playing track'),
-    
     category: 'everyone',
-
     async execute(interaction) {
         const guildId = interaction.guild.id;
         const playerState = musicPlayer.players.get(guildId);
-
         if (!playerState || !playerState.currentTrack) {
             return interaction.reply({ content: `${emoji.status.error} Nothing is currently playing!`, flags: 64 });
         }
-
         const track = playerState.currentTrack;
         const player = playerState.player;
         const position = player?.position || 0;
         const duration = track.info.length || 0;
         const isStream = track.info.isStream || false;
-
         const sourceName = track.info.sourceName || 'default';
         const sourceIcon = emoji.getSourceIcon(sourceName);
-
         const progressBar = isStream
             ? '🔴 **LIVE STREAM**'
             : `${musicPlayer.createProgressBar(position, duration)} \`${musicPlayer.formatTime(position)} / ${musicPlayer.formatTime(duration)}\``;
-
         const loopMode = playerState.loop || 'off';
         const loopDisplay = emoji.getLoopDisplay(loopMode);
         const queueLength = playerState.queue?.length || 0;
-
         let requestedByText = track.requestedByName || null;
         let requestedByIcon = track.requestedByAvatar || null;
         if (!requestedByText && track.requestedBy) {
@@ -43,17 +34,13 @@ module.exports = {
                     requestedByText = user.displayName || user.username;
                     requestedByIcon = user.displayAvatarURL({ size: 32 });
                 }
-            } catch (_) { /* user left / uncached */ }
+            } catch (_) {  }
         }
-        if (!requestedByText) requestedByText = 'Someone';
-
-        // Build description with cleaner format - emoji in description works!
-        const description = 
+        if (!requestedByText) requestedByText = 'Someone';        const description = 
             `${emoji.animated.disc} **Now Playing**\n\n` +
             `**Duration**\n${progressBar}\n\n` +
             `**Artist**\n${track.info.author || 'Unknown'}\n\n` +
             `**Source**\n${sourceIcon} ${sourceName.charAt(0).toUpperCase() + sourceName.slice(1)}`;
-
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
             .setTitle(track.info.title)
@@ -68,11 +55,9 @@ module.exports = {
                 iconURL: requestedByIcon || undefined
             })
             .setTimestamp();
-
         if (track.info.artworkUrl) {
             embed.setThumbnail(track.info.artworkUrl);
         }
-
         await interaction.reply({ embeds: [embed] });
     },
 };

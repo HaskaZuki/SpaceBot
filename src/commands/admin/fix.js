@@ -1,16 +1,13 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('fix')
         .setDescription('Tries to fix voice connection issues')
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    
     async execute(interaction) {
         const guildId = interaction.guild.id;
         const playerState = musicPlayer.players.get(guildId);
-        
         if (playerState && playerState.player) {
             playerState.player.disconnect();
             musicPlayer.players.delete(guildId);

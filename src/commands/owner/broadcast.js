@@ -1,18 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
-
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('broadcast')
         .setDescription('[OWNER] Send announcement to all servers')
         .addStringOption(opt => opt.setName('message').setDescription('Announcement message').setRequired(true)),
-    
     async execute(interaction) {
         await interaction.deferReply({ flags: 64 });
-
         const message = interaction.options.getString('message');
         const client = interaction.client;
-        
         const embedData = {
             color: 0x6366f1,
             title: '📢 SpaceBot Announcement',
@@ -20,18 +16,14 @@ module.exports = {
             footer: { text: 'From the SpaceBot Team' },
             timestamp: new Date().toISOString()
         };
-
         let totalSent = 0;
         let totalFailed = 0;
-
         if (client.shard) {
             const results = await client.shard.broadcastEval(async (c, ctx) => {
                 const { EmbedBuilder } = require('discord.js');
                 const embed = new EmbedBuilder(ctx.embedData);
-                
                 let sent = 0;
                 let failed = 0;
-
                 for (const guild of c.guilds.cache.values()) {
                     try {
                         const channel = guild.channels.cache.find(ch => 
@@ -39,7 +31,6 @@ module.exports = {
                             ch.permissionsFor(guild.members.me).has(['SendMessages', 'ViewChannel']) &&
                             (ch.name.includes('general') || ch.name.includes('bot') || ch.name.includes('music'))
                         ) || guild.systemChannel;
-
                         if (channel) {
                             await channel.send({ embeds: [embed] });
                             sent++;
@@ -50,14 +41,12 @@ module.exports = {
                         failed++;
                     }
                 }
-
                 return { sent, failed };
             }, { context: { embedData } });
             totalSent = results.reduce((acc, r) => acc + r.sent, 0);
             totalFailed = results.reduce((acc, r) => acc + r.failed, 0);
         } else {
             const embed = new EmbedBuilder(embedData);
-            
             for (const guild of client.guilds.cache.values()) {
                 try {
                     const channel = guild.channels.cache.find(c => 
@@ -65,7 +54,6 @@ module.exports = {
                         c.permissionsFor(guild.members.me).has(['SendMessages', 'ViewChannel']) &&
                         (c.name.includes('general') || c.name.includes('bot') || c.name.includes('music'))
                     ) || guild.systemChannel;
-
                     if (channel) {
                         await channel.send({ embeds: [embed] });
                         totalSent++;
@@ -77,9 +65,7 @@ module.exports = {
                 }
             }
         }
-
         const shardInfo = client.shard ? ` (${client.shard.count} shards)` : '';
         await interaction.editReply(`📢 **Announcement sent!${shardInfo}**\n${emoji.status.success} Sent: **${totalSent}**\n${emoji.status.error} Failed: **${totalFailed}**`);
     },
 };
-

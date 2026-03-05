@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import config from '../../config';
 import './Music.css';
-
 function Music() {
   const { isPremium } = useAuth();
   const { playerState, joinGuild, playPause, skip, previous, seek, setVolume, addToQueue, clearQueue, shuffle, toggleLoop, connected } = useSocket();
@@ -13,18 +12,15 @@ function Music() {
   const [searchQuery, setSearchQuery] = useState('');
   const [loopActive, setLoopActive] = useState(false);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
-
   useEffect(() => {
     fetchServers();
     if (isPremium) fetchHistory();
   }, []);
-
   useEffect(() => {
     if (selectedServer) {
       joinGuild(selectedServer);
     }
   }, [selectedServer, joinGuild]);
-
   const fetchServers = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/user/servers`, {
@@ -38,7 +34,6 @@ function Music() {
       console.error('Failed to fetch servers:', error);
     }
   };
-
   const fetchHistory = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/user/analytics`, {
@@ -52,41 +47,34 @@ function Music() {
       console.error('Failed to fetch history:', error);
     }
   };
-
   const handleServerChange = (serverId) => {
     setSelectedServer(serverId);
   };
-
   const handlePlaySong = () => {
     if (searchQuery.trim()) {
       addToQueue(searchQuery.trim());
       setSearchQuery('');
     }
   };
-
   const handleSeek = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const percent = (e.clientX - rect.left) / rect.width;
     const position = Math.floor(percent * playerState.duration);
     seek(position);
   };
-
   const handleVolumeChange = (newVolume) => {
     if (!isPremium && newVolume > 100) {
       return;
     }
     setVolume(parseInt(newVolume));
   };
-
   const formatTime = (seconds) => {
     if (!seconds || isNaN(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
-
   const progressPercent = playerState.duration > 0 ? (playerState.progress / playerState.duration) * 100 : 0;
-
   return (
     <DashboardLayout title="Music Player">
       <div className="music-content">
@@ -107,7 +95,6 @@ function Music() {
             {connected ? 'Connected' : 'Disconnected'}
           </div>
         </div>
-
         {playerState.currentTrack ? (
           <div className="now-playing-hero">
             <div className="now-playing-content">
@@ -119,7 +106,6 @@ function Music() {
               <div className="track-info-large">
                 <h1>{playerState.currentTrack.title || 'No track playing'}</h1>
                 <p>{playerState.currentTrack.author || 'Add songs to get started'}</p>
-
                 <div className="player-controls-hero">
                   <button className="control-btn-hero" onClick={shuffle} title="Shuffle">
                     <i className="fas fa-shuffle" />
@@ -142,7 +128,6 @@ function Music() {
                     <i className="fas fa-repeat" />
                   </button>
                 </div>
-
                 <div className="progress-bar-hero">
                   <div className="progress-track" onClick={handleSeek}>
                     <div className="progress-fill-hero" style={{ width: `${progressPercent}%` }} />
@@ -152,7 +137,6 @@ function Music() {
                     <span>{formatTime(playerState.duration)}</span>
                   </div>
                 </div>
-
                 <div className="volume-control">
                   <i className="fas fa-volume-low volume-icon" />
                   <input
@@ -182,7 +166,6 @@ function Music() {
             </div>
           </div>
         )}
-
         <div className="search-bar">
           <input
             type="text"
@@ -196,7 +179,6 @@ function Music() {
             <i className="fas fa-plus" /> Add
           </button>
         </div>
-
         <div className="quick-actions">
           <button className="action-btn" onClick={shuffle}>
             <i className="fas fa-shuffle" /> Shuffle
@@ -215,12 +197,10 @@ function Music() {
             </a>
           )}
         </div>
-
         <div className="section-header">
           <h2 className="section-title">Queue</h2>
           <span className="badge">{playerState.queue?.length || 0} tracks</span>
         </div>
-
         <div className="queue-section">
           {playerState.queue && playerState.queue.length > 0 ? (
             <div className="queue-list">
@@ -248,7 +228,6 @@ function Music() {
             </div>
           )}
         </div>
-
         <div className="section-header">
           <h2 className="section-title">
             <i className="fas fa-history" style={{ marginRight: '0.5rem', opacity: 0.7 }} />
@@ -257,7 +236,6 @@ function Music() {
           {isPremium && <span className="badge">{recentlyPlayed.length} tracks</span>}
           {!isPremium && <span className="badge premium-badge-sm"><i className="fas fa-crown" style={{ marginRight: '0.3rem' }} /> Premium</span>}
         </div>
-
         {isPremium ? (
           <div className="queue-section history-section">
             {recentlyPlayed.length > 0 ? (
@@ -296,5 +274,4 @@ function Music() {
     </DashboardLayout>
   );
 }
-
 export default Music;
