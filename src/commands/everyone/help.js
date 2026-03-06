@@ -1,10 +1,9 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
 
-// ─── Command Data ────────────────────────────────────────────────────────────
 
 const COMMANDS = {
-    // Everyone
+
     play:              { desc: 'Play a song from YouTube, Spotify, or SoundCloud',  usage: '/play <song>',            cat: 'music' },
     search:            { desc: 'Search and pick from a list of results',             usage: '/search <query>',         cat: 'music' },
     nowplaying:        { desc: 'Show the currently playing track',                  usage: '/nowplaying',             cat: 'music' },
@@ -22,7 +21,7 @@ const COMMANDS = {
     support:           { desc: 'Get the support server invite link',                 usage: '/support',                cat: 'music' },
     ping:              { desc: "Check the bot's latency",                            usage: '/ping',                   cat: 'music' },
     updates:           { desc: 'View the latest bot updates',                        usage: '/updates',                cat: 'music' },
-    // DJ
+
     pause:             { desc: 'Pause the current track',                            usage: '/pause',                  cat: 'dj' },
     resume:            { desc: 'Resume paused playback',                             usage: '/resume',                 cat: 'dj' },
     skip:              { desc: 'Skip to the next track',                             usage: '/skip',                   cat: 'dj' },
@@ -37,12 +36,12 @@ const COMMANDS = {
     replay:            { desc: 'Restart the current track',                          usage: '/replay',                 cat: 'dj' },
     leave:             { desc: 'Disconnect the bot from voice',                      usage: '/leave',                  cat: 'dj' },
     connect:           { desc: 'Join your voice channel',                            usage: '/connect',                cat: 'dj' },
-    // Playback
+
     forward:           { desc: 'Fast forward by N seconds',                          usage: '/forward <seconds>',      cat: 'playback' },
     rewind:            { desc: 'Rewind by N seconds',                                usage: '/rewind <seconds>',       cat: 'playback' },
     jump:              { desc: 'Jump to a queue position',                           usage: '/jump <position>',        cat: 'playback' },
     previous:          { desc: 'Play the previous track',                            usage: '/previous',               cat: 'playback' },
-    // Premium
+
     volume:            { desc: 'Set playback volume (1–200%)',                       usage: '/volume <level>',         cat: 'premium' },
     filter:            { desc: 'Apply an audio filter',                              usage: '/filter <type>',          cat: 'premium' },
     bassboost:         { desc: 'Toggle bass boost effect',                           usage: '/bassboost',              cat: 'premium' },
@@ -57,7 +56,7 @@ const COMMANDS = {
     history:           { desc: 'View your listening history',                        usage: '/history',                cat: 'premium' },
     'lyrics-sync':     { desc: 'Synchronized karaoke-style lyrics',                  usage: '/lyrics-sync',            cat: 'premium' },
     skipto:            { desc: 'Skip to any position in the queue',                  usage: '/skipto <position>',      cat: 'premium' },
-    // Admin
+
     settings:          { desc: 'View or change server settings',                     usage: '/settings <action>',      cat: 'admin' },
     setup:             { desc: 'Set up a dedicated music channel',                   usage: '/setup',                  cat: 'admin' },
     setdj:             { desc: 'Set the DJ role for this server',                    usage: '/setdj <role>',           cat: 'admin' },
@@ -83,7 +82,6 @@ const CATS = {
 
 const CAT_ORDER = ['music', 'dj', 'playback', 'premium', 'admin'];
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function grouped() {
     const g = {};
@@ -94,7 +92,6 @@ function grouped() {
     return g;
 }
 
-// Overview embed — clean list layout like Aero
 function buildOverview() {
     const g = grouped();
     const total = Object.keys(COMMANDS).length;
@@ -116,7 +113,6 @@ function buildOverview() {
         .setFooter({ text: `${total} total commands  ·  Buttons expire in 3 min` });
 }
 
-// Category embed — compact two-column inline fields
 function buildCategory(catKey) {
     const c = CATS[catKey];
     const g = grouped();
@@ -133,7 +129,6 @@ function buildCategory(catKey) {
         inline: true,
     }));
 
-    // Discord max 25 fields — split into chunks
     for (let i = 0; i < fields.length; i += 25) {
         embed.setFields(fields.slice(i, Math.min(i + 25, fields.length)));
     }
@@ -142,7 +137,6 @@ function buildCategory(catKey) {
     return embed;
 }
 
-// Command detail embed — focused, single-command
 function buildDetail(name) {
     const cmd = COMMANDS[name];
     const c = CATS[cmd.cat];
@@ -159,7 +153,6 @@ function buildDetail(name) {
         .setFooter({ text: 'Use /help to see all commands' });
 }
 
-// Navigation buttons row
 function buildButtons(userId, activeCat) {
     const row = new ActionRowBuilder();
     for (const cat of CAT_ORDER) {
@@ -191,7 +184,6 @@ function buildDisabledButtons() {
     return row;
 }
 
-// ─── Module ──────────────────────────────────────────────────────────────────
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -221,7 +213,6 @@ module.exports = {
     async execute(interaction) {
         const cmdName = interaction.options.getString('command')?.toLowerCase();
 
-        // ── Specific command detail ──────────────────────────────────────────
         if (cmdName) {
             if (!COMMANDS[cmdName]) {
                 const suggestions = Object.keys(COMMANDS)
@@ -237,7 +228,6 @@ module.exports = {
             return interaction.reply({ embeds: [buildDetail(cmdName)], flags: MessageFlags.Ephemeral });
         }
 
-        // ── Overview with category buttons ───────────────────────────────────
         const reply = await interaction.reply({
             embeds: [buildOverview()],
             components: [buildButtons(interaction.user.id, null)],
@@ -260,7 +250,7 @@ module.exports = {
         collector.on('end', async () => {
             try {
                 await interaction.editReply({ components: [buildDisabledButtons()] });
-            } catch { /* message deleted */ }
+            } catch {  }
         });
     },
 };

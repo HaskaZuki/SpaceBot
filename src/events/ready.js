@@ -20,7 +20,6 @@ module.exports = {
             status: 'online',
         });
 
-        // Wait for Lavalink node to be ready before restoring sessions
         const tryRestore = async (attempts = 0) => {
             const nodes = [...client.shoukaku.nodes.values()];
             const ready = nodes.find(n => n.state === 2); // State 2 = READY in Shoukaku
@@ -36,10 +35,8 @@ module.exports = {
             }
         };
 
-        // Give Lavalink a short head-start before polling
         setTimeout(() => tryRestore(), 5000);
 
-        // Broadcast stats to ShardingManager every 60s so the console table stays fresh
         if (client.shard) {
             const broadcastStats = () => {
                 const statPayload = {

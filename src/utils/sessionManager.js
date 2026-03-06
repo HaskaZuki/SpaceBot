@@ -1,22 +1,17 @@
 const MusicSession = require('../models/MusicSession');
 
-/**
- * Save the current player state for a guild to MongoDB.
- * Called before shutdown or when finishing playback in 24/7 mode.
- */
+
 async function saveSession(guildId, playerState) {
     if (!playerState) return;
 
     const { voiceChannelId, textChannelId, currentTrack, queue, loop, volume } = playerState;
 
-    // Only persist sessions where the bot is actually in a voice channel
     if (!voiceChannelId) return;
 
     const queueToSave = [];
     if (currentTrack) queueToSave.push(currentTrack);
     queueToSave.push(...(queue || []));
 
-    // Don't save empty sessions
     if (queueToSave.length === 0) {
         await clearSession(guildId);
         return;
@@ -43,9 +38,7 @@ async function saveSession(guildId, playerState) {
     }
 }
 
-/**
- * Load a saved session for a guild.
- */
+
 async function loadSession(guildId) {
     try {
         return await MusicSession.findOne({ guildId });
@@ -55,9 +48,7 @@ async function loadSession(guildId) {
     }
 }
 
-/**
- * Delete a saved session (after restoring or when bot leaves).
- */
+
 async function clearSession(guildId) {
     try {
         await MusicSession.deleteOne({ guildId });
@@ -66,9 +57,7 @@ async function clearSession(guildId) {
     }
 }
 
-/**
- * Save ALL active sessions (call on process SIGINT/SIGTERM).
- */
+
 async function saveAllSessions(players) {
     const saves = [];
     for (const [guildId, state] of players.entries()) {
@@ -78,10 +67,7 @@ async function saveAllSessions(players) {
     console.log(`[Session] Saved ${saves.length} active session(s) before shutdown`);
 }
 
-/**
- * Restore all saved sessions after bot is ready and Lavalink is connected.
- * Rejoins voice channels and requeues tracks.
- */
+
 async function restoreAllSessions(client) {
     const emoji = require('./emojiConfig');
     const musicPlayer = require('./musicPlayer');
@@ -119,7 +105,6 @@ async function restoreAllSessions(client) {
                 continue;
             }
 
-            // Check Lavalink node is ready
             const nodes = [...client.shoukaku.nodes.values()];
             const node = nodes.find(n => n.state === 2); // State 2 = READY in Shoukaku
             if (!node) {
@@ -127,7 +112,6 @@ async function restoreAllSessions(client) {
                 break;
             }
 
-            // Rejoin voice channel
             let player;
             try {
                 player = await client.shoukaku.joinVoiceChannel({
@@ -142,7 +126,6 @@ async function restoreAllSessions(client) {
                 continue;
             }
 
-            // Rebuild player state in memory
             const playerState = musicPlayer.getQueue(guildId);
             playerState.player = player;
             playerState.voiceChannelId = voiceChannelId;
@@ -150,7 +133,6 @@ async function restoreAllSessions(client) {
             playerState.loop = loop || 'off';
             playerState.queue = queue || [];
 
-            // Re-attach Lavalink event listeners
             player.removeAllListeners('end');
             player.removeAllListeners('exception');
             player.removeAllListeners('stuck');
@@ -176,7 +158,6 @@ async function restoreAllSessions(client) {
                 musicPlayer.playNext(client, guildId);
             });
 
-            // Start playback from current track
             if (currentTrack) {
                 try {
                     await player.playTrack({ track: { encoded: currentTrack.encoded || currentTrack.track } });
@@ -184,14 +165,13 @@ async function restoreAllSessions(client) {
                     musicPlayer.updateDashboard(client, guildId);
                 } catch (err) {
                     console.error(`[Session] Failed to start playback for ${guild.name}:`, err.message);
-                    // Try the next in queue if current fails
+
                     musicPlayer.playNext(client, guildId);
                 }
             } else if (playerState.queue.length > 0) {
                 musicPlayer.playNext(client, guildId);
             }
 
-            // Notify the text channel
             if (textChannelId) {
                 const textChannel = client.channels.cache.get(textChannelId);
                 if (textChannel) {
@@ -204,7 +184,7 @@ async function restoreAllSessions(client) {
                                 `${emoji.controls.play} **${currentTrack ? currentTrack.info?.title || 'Unknown Track' : 'Next in queue'}**`
                             );
                         await textChannel.send({ embeds: [embed] });
-                    } catch (_) { /* channel may be inaccessible */ }
+                    } catch (_) {  }
                 }
             }
 

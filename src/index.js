@@ -149,7 +149,6 @@ for (const file of eventFiles) {
     client.login(process.env.DISCORD_TOKEN);
 })();
 
-// ─── Graceful Shutdown ────────────────────────────────────────────────────────
 const gracefulShutdown = async (signal) => {
     console.log(`\n[Shutdown] Received ${signal}. Saving sessions...`);
     try {

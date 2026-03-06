@@ -169,11 +169,9 @@ module.exports = {
             module.exports.playNext(client, guildId);
         });
         track.requestedBy = requestedBy;
-        
-        // Check if this is the FIRST track BEFORE adding to queue
+
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
-        
-        // Add to queue
+
         playerState.queue.push(track);
         
         if (isFirst) {
@@ -316,7 +314,6 @@ module.exports = {
                 console.error('Error stopping track:', error.message);
             }
 
-            // GuildConfig is already required at the top of this file
             let config;
             try {
                 config = await GuildConfig.findOne({ guildId });
@@ -343,11 +340,14 @@ module.exports = {
                             .setDescription(`${emoji.status.success} Left the voice channel — nobody was around. Use \`/play\` to bring me back!`);
                         await sendToTextChannel(client, guildId, textChannelId, { embeds: [aloneEmbed] });
                         try {
-                            if (state.player && state.player.connection) {
-                                state.player.connection.disconnect();
-                            }
+                            await client.shoukaku.leaveVoiceChannel(guildId);
                         } catch (error) {
                             console.error('Error disconnecting player:', error.message);
+                            try {
+                                if (state.player && state.player.connection) {
+                                    state.player.connection.disconnect();
+                                }
+                            } catch (e2) {}
                         }
                         players.delete(guildId);
                         console.log(`Disconnected from guild ${guildId} - bot was alone`);
@@ -365,11 +365,14 @@ module.exports = {
                             .setDescription(`${emoji.controls.pause} Left the voice channel due to **30 seconds of inactivity**. Use \`/play\` to play music again!`);
                         await sendToTextChannel(client, guildId, textChannelId, { embeds: [idleEmbed] });
                         try {
-                            if (state.player && state.player.connection) {
-                                state.player.connection.disconnect();
-                            }
+                            await client.shoukaku.leaveVoiceChannel(guildId);
                         } catch (error) {
                             console.error('Error disconnecting player:', error.message);
+                            try {
+                                if (state.player && state.player.connection) {
+                                    state.player.connection.disconnect();
+                                }
+                            } catch (e2) {}
                         }
                         players.delete(guildId);
                         console.log(`Disconnected from guild ${guildId} due to inactivity`);
