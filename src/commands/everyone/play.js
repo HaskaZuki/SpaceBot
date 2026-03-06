@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const i18n = require('../../utils/i18n');
 const emoji = require('../../utils/emojiConfig');
@@ -54,10 +54,28 @@ module.exports = {
                 await interaction.editReply({ content: `${emoji.status.error} ${result.error}` });
             } else if (result && result.track) {
                 const title = result.track.info?.title || query;
-                const msg = result.isFirst
-                    ? `${emoji.animated.disc} Now Playing: **${title}**`
-                    : `${emoji.status.success} Added to queue: **${title}**`;
-                await interaction.editReply({ content: msg });
+                const url = result.track.info?.uri || null;
+                const thumbnail = result.track.info?.artworkUrl || result.track.info?.thumbnail || null;
+                
+                if (result.isFirst) {
+                    const nowPlayingEmbed = new EmbedBuilder()
+                        .setColor('#7C3AED')
+                        .setAuthor({ name: 'SpaceMusic', iconURL: 'https://i.imgur.com/hHKiFvO.png' })
+                        .setTitle('Now Playing')
+                        .setDescription(`[${title}](${url})`)
+                        .setFooter({ text: '🎵 SpaceMusic' });
+                    if (thumbnail) nowPlayingEmbed.setThumbnail(thumbnail);
+                    await interaction.editReply({ embeds: [nowPlayingEmbed] });
+                } else {
+                    const queueEmbed = new EmbedBuilder()
+                        .setColor('#3B82F6')
+                        .setAuthor({ name: 'SpaceMusic', iconURL: 'https://i.imgur.com/hHKiFvO.png' })
+                        .setTitle('Added to Queue')
+                        .setDescription(`[${title}](${url})`)
+                        .setFooter({ text: '🎵 SpaceMusic' });
+                    if (thumbnail) queueEmbed.setThumbnail(thumbnail);
+                    await interaction.editReply({ embeds: [queueEmbed] });
+                }
             } else {
                 await interaction.editReply({ content: `${emoji.status.error} No results found.` });
             }

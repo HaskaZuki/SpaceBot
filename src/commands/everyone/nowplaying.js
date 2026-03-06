@@ -37,24 +37,20 @@ module.exports = {
             } catch (_) { }
         }
         if (!requestedByText) requestedByText = 'Someone';
-        const description =
-            `${emoji.animated.disc} **Now Playing** ${track.info.title}\n\n` +
-            `**Duration**\n${progressBar}\n\n` +
-            `**Artist**\n${track.info.author || 'Unknown'}\n\n` +
-            `**Source**\n${sourceIcon} ${sourceName.charAt(0).toUpperCase() + sourceName.slice(1)}`;
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
+            .setAuthor({ name: 'SpaceMusic', iconURL: 'https://i.imgur.com/hHKiFvO.png' })
+            .setTitle(`${emoji.animated.disc} Now Playing`)
             .setURL(track.info.uri || null)
-            .setDescription(description)
+            .setDescription(`**[${track.info.title}](${track.info.uri || '#'})**`)
             .addFields(
-                { name: 'Loop Mode', value: loopDisplay, inline: true },
-                { name: 'Queue', value: `${queueLength} track${queueLength !== 1 ? 's' : ''} remaining`, inline: true }
+                { name: 'Progress', value: progressBar, inline: false },
+                { name: 'Artist', value: track.info.author || 'Unknown', inline: true },
+                { name: 'Source', value: `${sourceIcon} ${sourceName}`, inline: true },
+                { name: 'Loop', value: loopDisplay, inline: true },
+                { name: 'Queue', value: `${queueLength} track${queueLength !== 1 ? 's' : ''}`, inline: true }
             )
-            .setFooter({
-                text: `Requested by ${requestedByText}`,
-                iconURL: requestedByIcon || undefined
-            })
-            .setTimestamp();
+            .setFooter({ text: `Requested by ${requestedByText}` });
         if (track.info.artworkUrl) {
             embed.setThumbnail(track.info.artworkUrl);
         }

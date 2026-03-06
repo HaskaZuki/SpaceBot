@@ -4,7 +4,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#6366f1')
             .setTitle('SpaceBot Music Control')
-            .setImage('https://cdn.discordapp.com/attachments/1435852776449118371/1465402991979790498/Untitled_video_-_Made_with_Clipchamp.mp4?ex=6978fa63&is=6977a8e3&hm=00839384b272fd0e7f115717c169df50dfb1963583edc93c019abe179128f401&')
+            .setImage('https://imgur.com/a/hHKiFvO')
             .setFooter({ text: 'SpaceBot Music System' });
         if (track) {
             embed.setDescription(`**[${track.info.title}](${track.info.uri})**\nAuthor: ${track.info.author}\nRequested by: unknown`);

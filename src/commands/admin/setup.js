@@ -35,7 +35,7 @@ module.exports = {
             const channel = await interaction.guild.channels.create({
                 name: 'space-music',
                 type: ChannelType.GuildText,
-                topic: '🎵 Send song names or links here to play music!',
+                topic: 'Send song names or links here to play music!',
                 parent: interaction.channel.parentId,
                 permissionOverwrites: [
                     {
@@ -43,7 +43,8 @@ module.exports = {
                         allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory],
                     }
                 ]
-            });            if (!config) {
+            });
+            if (!config) {
                 config = await GuildConfig.create({ guildId: interaction.guild.id });
             }
             const { embeds, components } = createMusicEmbed(config, null, [], 'Idle');
