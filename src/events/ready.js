@@ -22,7 +22,7 @@ module.exports = {
 
         const tryRestore = async (attempts = 0) => {
             const nodes = [...client.shoukaku.nodes.values()];
-            const ready = nodes.find(n => n.state === 2); // State 2 = READY in Shoukaku
+            const ready = nodes.find(n => n.state === 2 || n.state === 1);
 
             if (ready) {
                 console.log('[Session] Lavalink ready — restoring sessions...');
