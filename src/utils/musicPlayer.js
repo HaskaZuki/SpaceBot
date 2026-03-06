@@ -5,7 +5,7 @@ const PlayHistory = require('../models/PlayHistory');
 const emoji = require('./emojiConfig');
 const players = new Map();
 const isNodeReady = (node) => {
-    return node && node.state === 2; // State 2 = READY in Shoukaku
+    return node && node.state === 1;
 };
 const extractTracks = (result) => {
     if (!result) return [];

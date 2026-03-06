@@ -65,7 +65,7 @@ module.exports = (client) => {
             }
 
             const nodes = client.shoukaku ? [...client.shoukaku.nodes.values()] : [];
-            const lavalinkOnline = nodes.some(n => n.state === 2); // State 2 = READY in Shoukaku
+            const lavalinkOnline = nodes.some(n => n.state === 1);
             const dbOnline = require('mongoose').connection.readyState === 1;
 
             res.json({
@@ -154,7 +154,7 @@ module.exports = (client) => {
             } catch (_) { totalVoice = 0; }
 
             const nodes = client.shoukaku ? [...client.shoukaku.nodes.values()] : [];
-            const lavalinkOnline = nodes.some(n => n.state === 2); // State 2 = READY in Shoukaku
+            const lavalinkOnline = nodes.some(n => n.state === 1);
 
             res.json({
                 totalShards,

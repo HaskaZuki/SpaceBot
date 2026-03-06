@@ -106,7 +106,7 @@ async function restoreAllSessions(client) {
             }
 
             const nodes = [...client.shoukaku.nodes.values()];
-            const node = nodes.find(n => n.state === 2); // State 2 = READY in Shoukaku
+            const node = nodes.find(n => n.state === 1);
             if (!node) {
                 console.log('[Session] No Lavalink node ready, skipping restore');
                 break;
