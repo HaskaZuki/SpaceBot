@@ -94,7 +94,7 @@ module.exports = {
             statsText.push('LAVALINK NODES');
             statsText.push('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             lavalinkNodes.forEach(node => {
-                const status = node.state === 1 ? 'Online' : 'Offline';
+                const status = node.state === 2 ? 'Online' : 'Offline'; // State 2 = READY in Shoukaku
                 const players = node.stats ? node.stats.players : 0;
                 const playing = node.stats ? node.stats.playingPlayers : 0;
                 statsText.push(`${status} ${node.name}`);

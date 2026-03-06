@@ -23,7 +23,7 @@ module.exports = {
         // Wait for Lavalink node to be ready before restoring sessions
         const tryRestore = async (attempts = 0) => {
             const nodes = [...client.shoukaku.nodes.values()];
-            const ready = nodes.find(n => n.state === 1);
+            const ready = nodes.find(n => n.state === 2); // State 2 = READY in Shoukaku
 
             if (ready) {
                 console.log('[Session] Lavalink ready — restoring sessions...');

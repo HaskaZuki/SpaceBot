@@ -5,7 +5,7 @@ const PlayHistory = require('../models/PlayHistory');
 const emoji = require('./emojiConfig');
 const players = new Map();
 const isNodeReady = (node) => {
-    return node && node.state === 1;
+    return node && node.state === 2; // State 2 = READY in Shoukaku
 };
 const extractTracks = (result) => {
     if (!result) return [];
@@ -57,7 +57,7 @@ module.exports = {
     players,
     getQueue: (guildId) => {
         if (!players.has(guildId)) {
-            players.set(guildId, { queue: [], loop: 'off', textChannelId: null, voiceChannelId: null });
+            players.set(guildId, { queue: [], loop: 'off', textChannelId: null, voiceChannelId: null, currentTrack: null });
         }
         return players.get(guildId);
     },
@@ -169,8 +169,13 @@ module.exports = {
             module.exports.playNext(client, guildId);
         });
         track.requestedBy = requestedBy;
+        
+        // Check if this is the FIRST track BEFORE adding to queue
+        const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
+        
+        // Add to queue
         playerState.queue.push(track);
-        const isFirst = !playerState.currentTrack;
+        
         if (isFirst) {
             await module.exports.playNext(client, guildId);
         } else {
