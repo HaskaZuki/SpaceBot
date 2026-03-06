@@ -35,7 +35,8 @@ module.exports = {
                 guildId,
                 channelId: voiceChannel.id,
                 shardId: 0,
-                deaf: true
+                deaf: true,
+                mute: false
             });
             const playerState = musicPlayer.getQueue(guildId);
             playerState.player = player;

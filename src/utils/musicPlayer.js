@@ -133,7 +133,8 @@ module.exports = {
                     guildId: guildId,
                     channelId: voiceChannelId,
                     shardId: 0,
-                    deaf: true
+                    deaf: true,
+                    mute: false
                 });
                 console.log('[DEBUG] Successfully joined voice channel');
             } catch (joinError) {
@@ -195,7 +196,8 @@ module.exports = {
                     guildId: guildId,
                     channelId: voiceChannelId,
                     shardId: 0,
-                    deaf: true
+                    deaf: true,
+                    mute: false
                 });
             } catch (joinError) {
                 console.error('Failed to join voice channel:', joinError);

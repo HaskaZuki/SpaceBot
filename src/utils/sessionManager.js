@@ -119,6 +119,7 @@ async function restoreAllSessions(client) {
                     channelId: voiceChannelId,
                     shardId: 0,
                     deaf: true,
+                    mute: false
                 });
             } catch (err) {
                 console.error(`[Session] Failed to join VC for ${guild.name}:`, err.message);
