@@ -19,8 +19,10 @@ const shoukaku = new Shoukaku(
     new Connectors.DiscordJS(client),
     [{
         name: 'Public-Node',
-        url: `${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT}`,
-        auth: process.env.LAVALINK_PASSWORD,
+        url: process.env.LAVALINK_HOST 
+            ? `${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 443}`
+            : '127.0.0.1:2333',
+        auth: process.env.LAVALINK_PASSWORD || 'youshallnotpass',
         secure: process.env.LAVALINK_SECURE === 'true'
     }],
     {
