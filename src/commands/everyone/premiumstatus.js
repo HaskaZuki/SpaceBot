@@ -1,13 +1,12 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
+const UserSettings = require('../../models/UserSettings');
 const emoji = require('../../utils/emojiConfig');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('premiumstatus')
         .setDescription('Check server premium status'),
     async execute(interaction) {
-        const GuildConfig = require('../../models/GuildConfig');
-        const UserSettings = require('../../models/UserSettings');
         const [guildConfig, userSettings] = await Promise.all([
             GuildConfig.findOne({ guildId: interaction.guild.id }),
             UserSettings.findOne({ userId: interaction.user.id })

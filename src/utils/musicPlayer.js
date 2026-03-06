@@ -316,7 +316,7 @@ module.exports = {
                 console.error('Error stopping track:', error.message);
             }
 
-            const GuildConfig = require('../models/GuildConfig');
+            // GuildConfig is already required at the top of this file
             let config;
             try {
                 config = await GuildConfig.findOne({ guildId });

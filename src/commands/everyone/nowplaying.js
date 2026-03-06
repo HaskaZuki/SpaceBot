@@ -38,13 +38,12 @@ module.exports = {
         }
         if (!requestedByText) requestedByText = 'Someone';
         const description =
-            `${emoji.animated.disc} **Now Playing**\n\n` +
+            `${emoji.animated.disc} **Now Playing** ${track.info.title}\n\n` +
             `**Duration**\n${progressBar}\n\n` +
             `**Artist**\n${track.info.author || 'Unknown'}\n\n` +
             `**Source**\n${sourceIcon} ${sourceName.charAt(0).toUpperCase() + sourceName.slice(1)}`;
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setTitle(track.info.title)
             .setURL(track.info.uri || null)
             .setDescription(description)
             .addFields(
