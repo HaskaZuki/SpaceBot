@@ -51,22 +51,27 @@ module.exports = {
                 const title = result.track.info?.title || query;
                 const url = result.track.info?.uri || null;
                 const thumbnail = result.track.info?.artworkUrl || result.track.info?.thumbnail || null;
+                const requester = interaction.user;
+                const requesterName = requester.displayName || requester.username;
+                const requesterAvatar = requester.displayAvatarURL({ size: 32 });
+                const botAvatar = interaction.client.user.displayAvatarURL({ size: 64 });
                 
                 if (result.isFirst) {
                     const nowPlayingEmbed = new EmbedBuilder()
                         .setColor('#7C3AED')
+                        .setAuthor({ name: 'SpaceMusic', iconURL: botAvatar })
                         .setTitle('Now Playing')
                         .setDescription(`[${title}](${url})`)
-                        .setFooter({ text: 'SpaceMusic', iconURL: track.requestedByAvatar});
+                        .setFooter({ text: `Requested by ${requesterName}`, iconURL: requesterAvatar });
                     if (thumbnail) nowPlayingEmbed.setThumbnail(thumbnail);
                     await interaction.reply({ embeds: [nowPlayingEmbed] });
                 } else {
                     const queueEmbed = new EmbedBuilder()
                         .setColor('#3B82F6')
-                    
+                        .setAuthor({ name: 'SpaceMusic', iconURL: botAvatar })
                         .setTitle('Added to Queue')
                         .setDescription(`[${title}](${url})`)
-                        .setFooter({ text: 'SpaceMusic', iconURL: track.requestedByAvatar});
+                        .setFooter({ text: `Requested by ${requesterName}`, iconURL: requesterAvatar });
                     if (thumbnail) queueEmbed.setThumbnail(thumbnail);
                     await interaction.reply({ embeds: [queueEmbed] });
                 }

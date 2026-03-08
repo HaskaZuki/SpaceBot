@@ -37,9 +37,11 @@ module.exports = {
             } catch (_) { }
         }
         if (!requestedByText) requestedByText = 'Someone';
+        const botAvatar = interaction.client.user.displayAvatarURL({ size: 64 });
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setTitle(`**${emoji.animated.disc} Now Playing**`)
+            .setAuthor({ name: 'SpaceMusic', iconURL: botAvatar })
+            .setTitle(`${emoji.animated.disc} Now Playing`)
             .setDescription(`**[${track.info.title}](${track.info.uri || '#'})**`)
             .addFields(
                 { name: 'Progress', value: progressBar, inline: false },
