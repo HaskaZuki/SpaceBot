@@ -138,6 +138,24 @@ module.exports = {
                 });
                 console.log('[DEBUG] Successfully joined voice channel');
                 console.log('[DEBUG] Player connection:', player?.connection ? 'exists' : 'MISSING');
+                
+                // Wait for connection to be ready
+                if (!player.connection) {
+                    console.log('[DEBUG] Waiting for player connection to be ready...');
+                    await new Promise(resolve => {
+                        const checkConnection = setInterval(() => {
+                            if (player.connection) {
+                                clearInterval(checkConnection);
+                                resolve();
+                            }
+                        }, 100);
+                        setTimeout(() => {
+                            clearInterval(checkConnection);
+                            resolve();
+                        }, 3000);
+                    });
+                    console.log('[DEBUG] Player connection after wait:', player?.connection ? 'exists' : 'still missing');
+                }
             } catch (joinError) {
                 console.error('Failed to join voice channel:', joinError);
                 return { error: 'Failed to join voice channel' };
