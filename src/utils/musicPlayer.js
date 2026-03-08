@@ -176,7 +176,12 @@ module.exports = {
         });
         track.requestedBy = requestedBy;
 
+        // Debug: Log queue state before checking isFirst
+        console.log(`[DEBUG musicPlayer.js] Before isFirst check - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
+        
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
+
+        console.log(`[DEBUG musicPlayer.js] isFirst value: ${isFirst}`);
 
         playerState.queue.push(track);
         

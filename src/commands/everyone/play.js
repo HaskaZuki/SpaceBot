@@ -57,7 +57,11 @@ module.exports = {
                 const requesterAvatar = requester.displayAvatarURL({ size: 32 });
                 const botAvatar = interaction.client.user.displayAvatarURL({ size: 64 });
                 
-                if (result.isFirst) {
+                // Debug: Check queue state
+        const playerState = musicPlayer.getQueue(guildId);
+        console.log(`[DEBUG play.js] Queue state - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
+        
+        if (result.isFirst) {
                     const nowPlayingEmbed = new EmbedBuilder()
                         .setColor('#7C3AED')
                         .setAuthor({ name: 'SpaceMusic', iconURL: botAvatar })
