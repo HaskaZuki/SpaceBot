@@ -39,9 +39,7 @@ module.exports = {
         if (!requestedByText) requestedByText = 'Someone';
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setAuthor({ name: 'SpaceMusic', iconURL: 'https://i.imgur.com/hHKiFvO.png' })
-            .setTitle(`${emoji.animated.disc} Now Playing`)
-            .setURL(track.info.uri || null)
+            .setTitle(`**${emoji.animated.disc} Now Playing**`)
             .setDescription(`**[${track.info.title}](${track.info.uri || '#'})**`)
             .addFields(
                 { name: 'Progress', value: progressBar, inline: false },
@@ -50,7 +48,7 @@ module.exports = {
                 { name: 'Loop', value: loopDisplay, inline: true },
                 { name: 'Queue', value: `${queueLength} track${queueLength !== 1 ? 's' : ''}`, inline: true }
             )
-            .setFooter({ text: `Requested by ${requestedByText}` });
+            .setFooter({ text: `Requested by ${requestedByText}`, iconURL: requestedByIcon });
         if (track.info.artworkUrl) {
             embed.setThumbnail(track.info.artworkUrl);
         }

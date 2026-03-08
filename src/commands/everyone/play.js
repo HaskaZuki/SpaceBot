@@ -37,11 +37,6 @@ module.exports = {
             });
         }
         try {
-            await interaction.reply({ content: `${emoji.animated.loading} Searching for \`${query}\`...` });
-        } catch (e) {
-            return;
-        }
-        try {
             const result = await musicPlayer.playTrack(
                 interaction.client, 
                 guildId, 
@@ -51,7 +46,7 @@ module.exports = {
                 interaction.user.id
             );
             if (result && result.error) {
-                await interaction.editReply({ content: `${emoji.status.error} ${result.error}` });
+                await interaction.reply({ content: `${emoji.status.error} ${result.error}` });
             } else if (result && result.track) {
                 const title = result.track.info?.title || query;
                 const url = result.track.info?.uri || null;
@@ -60,29 +55,28 @@ module.exports = {
                 if (result.isFirst) {
                     const nowPlayingEmbed = new EmbedBuilder()
                         .setColor('#7C3AED')
-                        .setAuthor({ name: 'SpaceMusic', iconURL: 'https://i.imgur.com/hHKiFvO.png' })
                         .setTitle('Now Playing')
                         .setDescription(`[${title}](${url})`)
-                        .setFooter({ text: '🎵 SpaceMusic' });
+                        .setFooter({ text: 'SpaceMusic', iconURL: track.requestedByAvatar});
                     if (thumbnail) nowPlayingEmbed.setThumbnail(thumbnail);
-                    await interaction.editReply({ embeds: [nowPlayingEmbed] });
+                    await interaction.reply({ embeds: [nowPlayingEmbed] });
                 } else {
                     const queueEmbed = new EmbedBuilder()
                         .setColor('#3B82F6')
-                        .setAuthor({ name: 'SpaceMusic', iconURL: 'https://i.imgur.com/hHKiFvO.png' })
+                    
                         .setTitle('Added to Queue')
                         .setDescription(`[${title}](${url})`)
-                        .setFooter({ text: '🎵 SpaceMusic' });
+                        .setFooter({ text: 'SpaceMusic', iconURL: track.requestedByAvatar});
                     if (thumbnail) queueEmbed.setThumbnail(thumbnail);
-                    await interaction.editReply({ embeds: [queueEmbed] });
+                    await interaction.reply({ embeds: [queueEmbed] });
                 }
             } else {
-                await interaction.editReply({ content: `${emoji.status.error} No results found.` });
+                await interaction.reply({ content: `${emoji.status.error} No results found.` });
             }
         } catch (error) {
             console.error('Play command error:', error);
             try {
-                await interaction.editReply({ content: i18n.get(lang, 'common.error') });
+                await interaction.reply({ content: i18n.get(lang, 'common.error') });
             } catch (e) { }
         }
     },
