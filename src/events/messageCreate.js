@@ -117,8 +117,26 @@ module.exports = {
                     return;
                 }
                 const member = message.member;
-                if (!member.voice.channel) {
+                if (!member.voice?.channel) {
                     const reply = await message.reply(`${emoji.status.error} You must be in a voice channel to queue songs!`);
+                    setTimeout(() => {
+                        message.delete().catch(() => {});
+                        reply.delete().catch(() => {});
+                    }, 5000);
+                    return;
+                }
+                if (!message.client.shoukaku) {
+                    const reply = await message.reply(`${emoji.status.error} Music system is not available right now.`);
+                    setTimeout(() => {
+                        message.delete().catch(() => {});
+                        reply.delete().catch(() => {});
+                    }, 5000);
+                    return;
+                }
+                const nodes = [...message.client.shoukaku.nodes.values()];
+                const node = nodes.find(n => n.state === 1);
+                if (!node) {
+                    const reply = await message.reply(`${emoji.status.error} Lavalink is offline. Please try again later.`);
                     setTimeout(() => {
                         message.delete().catch(() => {});
                         reply.delete().catch(() => {});
@@ -139,10 +157,10 @@ module.exports = {
                         const errorMsg = await message.channel.send(`${emoji.status.error} ${result.error}`);
                         setTimeout(() => errorMsg.delete().catch(() => {}), 5000);
                     } else if (result && result.track) {
-                        console.log(`[HYDRA] Added to queue: ${result.track.info.title}`);
+                        console.log(`[SETUP] Added to queue: ${result.track.info.title}`);
                     }
                 } catch (error) {
-                    console.error('[HYDRA] Error adding song:', error);
+                    console.error('[SETUP] Error adding song:', error);
                     const errorMsg = await message.channel.send(`${emoji.status.error} Failed to add song to queue.`);
                     setTimeout(() => errorMsg.delete().catch(() => {}), 5000);
                 }

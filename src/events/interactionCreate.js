@@ -17,6 +17,13 @@ module.exports = {
                 if (!member.voice?.channel) {
                     return interaction.followUp({ content: `${emoji.status.error} You must be in a voice channel!`, flags: 64 }).catch(() => {});
                 }
+                const REQUIRES_MUSIC = ['play_pause', 'stop', 'skip', 'shuffle'];
+                if (REQUIRES_MUSIC.includes(interaction.customId)) {
+                    const playerState = musicPlayer.players?.get(guildId);
+                    if (!playerState || !playerState.currentTrack) {
+                        return interaction.followUp({ content: `${emoji.status.error} Nothing is currently playing!`, flags: 64 }).catch(() => {});
+                    }
+                }
                 switch (interaction.customId) {
                     case 'play_pause':
                         await musicPlayer.pauseResume(interaction.client, guildId);
