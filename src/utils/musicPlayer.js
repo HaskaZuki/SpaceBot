@@ -137,6 +137,7 @@ module.exports = {
                     mute: false
                 });
                 console.log('[DEBUG] Successfully joined voice channel');
+                console.log('[DEBUG] Player connection:', player?.connection ? 'exists' : 'MISSING');
             } catch (joinError) {
                 console.error('Failed to join voice channel:', joinError);
                 return { error: 'Failed to join voice channel' };
@@ -144,6 +145,7 @@ module.exports = {
             playerState.player = player;
         } else {
             playerState.player = player;
+            console.log('[DEBUG] Using existing player');
         }
 
         player.removeAllListeners('end');
@@ -168,6 +170,9 @@ module.exports = {
         player.on('stuck', (data) => {
             console.error('Track stuck:', data);
             module.exports.playNext(client, guildId);
+        });
+        player.on('start', () => {
+            console.log('[DEBUG] Playback started - audio should be playing');
         });
         track.requestedBy = requestedBy;
 
@@ -255,6 +260,9 @@ module.exports = {
                 console.error('Track stuck:', data);
                 module.exports.playNext(client, guildId);
             });
+            player.on('start', () => {
+                console.log('[DEBUG] Playback started (playTrackDirect) - audio should be playing');
+            });
         }
         playerState.queue.push(track);
         console.log(`[DEBUG] Queue length after push: ${playerState.queue.length}, currentTrack: ${!!playerState.currentTrack}`);
@@ -287,6 +295,7 @@ module.exports = {
                     return;
                 }
                 await playerState.player.playTrack({ track: { encoded } });
+                console.log('[DEBUG] playTrack called successfully');
                 PlayHistory.create({
                     userId: track.requestedBy || 'unknown',
                     guildId,

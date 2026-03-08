@@ -20,7 +20,7 @@ const shoukaku = new Shoukaku(
     [{
         name: 'Public-Node',
         url: process.env.LAVALINK_HOST 
-            ? `${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 443}`
+            ? `${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 2333}`
             : '127.0.0.1:2333',
         auth: process.env.LAVALINK_PASSWORD || 'youshallnotpass',
         secure: process.env.LAVALINK_SECURE === 'true'

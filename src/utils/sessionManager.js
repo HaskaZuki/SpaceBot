@@ -158,6 +158,9 @@ async function restoreAllSessions(client) {
             player.on('stuck', () => {
                 musicPlayer.playNext(client, guildId);
             });
+            player.on('start', () => {
+                console.log('[DEBUG] Playback started (session restore) - audio should be playing');
+            });
 
             if (currentTrack) {
                 try {
