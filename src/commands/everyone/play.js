@@ -36,6 +36,7 @@ module.exports = {
                 flags: 64 
             });
         }
+        await interaction.deferReply();
         try {
             const result = await musicPlayer.playTrack(
                 interaction.client, 
@@ -46,7 +47,7 @@ module.exports = {
                 interaction.user.id
             );
             if (result && result.error) {
-                await interaction.reply({ content: `${emoji.status.error} ${result.error}` });
+                await interaction.editReply({ content: `${emoji.status.error} ${result.error}` });
             } else if (result && result.track) {
                 const title = result.track.info?.title || query;
                 const url = result.track.info?.uri || null;
@@ -64,7 +65,7 @@ module.exports = {
                         .setDescription(`[${title}](${url})`)
                         .setFooter({ text: `Requested by ${requesterName}`, iconURL: requesterAvatar });
                     if (thumbnail) nowPlayingEmbed.setThumbnail(thumbnail);
-                    await interaction.reply({ embeds: [nowPlayingEmbed] });
+                    await interaction.editReply({ embeds: [nowPlayingEmbed] });
                 } else {
                     const queueEmbed = new EmbedBuilder()
                         .setColor('#3B82F6')
@@ -73,15 +74,15 @@ module.exports = {
                         .setDescription(`[${title}](${url})`)
                         .setFooter({ text: `Requested by ${requesterName}`, iconURL: requesterAvatar });
                     if (thumbnail) queueEmbed.setThumbnail(thumbnail);
-                    await interaction.reply({ embeds: [queueEmbed] });
+                    await interaction.editReply({ embeds: [queueEmbed] });
                 }
             } else {
-                await interaction.reply({ content: `${emoji.status.error} No results found.` });
+                await interaction.editReply({ content: `${emoji.status.error} No results found.` });
             }
         } catch (error) {
             console.error('Play command error:', error);
             try {
-                await interaction.reply({ content: i18n.get(lang, 'common.error') });
+                await interaction.editReply({ content: i18n.get(lang, 'common.error') });
             } catch (e) { }
         }
     },
