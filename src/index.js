@@ -48,26 +48,43 @@ shoukaku.on('reconnecting', (name) => console.log(`[Lavalink] Node ${name} recon
 client.shoukaku = shoukaku;
 const voiceStateTimers = new Map();
 client.on('voiceStateUpdate', async (oldState, newState) => {
+    const botId = client.user?.id;
+    if (!botId) return;
+
     const botMember = newState.guild.members.me;
-    if (!botMember.voice.channel) return;
+    if (!botMember?.voice?.channel) {
+        if (oldState.member?.id === botId && voiceStateTimers.has(newState.guild.id)) {
+            clearTimeout(voiceStateTimers.get(newState.guild.id));
+            voiceStateTimers.delete(newState.guild.id);
+        }
+        return;
+    }
+
+    // Ignore events triggered by the bot itself joining — Discord cache hasn't
+    // updated with other members yet, causing a false "empty channel" detection.
+    if (newState.member?.id === botId && !oldState.channelId) return;
+
     const voiceChannel = botMember.voice.channel;
     const guildId = newState.guild.id;
     const humanMembers = voiceChannel.members.filter(m => !m.user.bot);
+
     if (humanMembers.size === 0) {
         if (!voiceStateTimers.has(guildId)) {
-            console.log(`⏰ Starting 10s timer for empty voice channel in ${newState.guild.name}`);
+            console.log(`⏰ Starting 30s timer for empty voice channel in ${newState.guild.name}`);
             const timer = setTimeout(async () => {
                 const currentBotMember = newState.guild.members.me;
-                if (!currentBotMember.voice.channel) return;
+                if (!currentBotMember?.voice?.channel) return;
                 const currentVoiceChannel = currentBotMember.voice.channel;
                 const currentHumans = currentVoiceChannel.members.filter(m => !m.user.bot);
                 if (currentHumans.size === 0) {
-                    console.log(`🚪 Auto-disconnecting from ${newState.guild.name} - no users for 10s`);
+                    console.log(`🚪 Auto-disconnecting from ${newState.guild.name} - no users for 30s`);
                     const musicPlayer = require('./utils/musicPlayer');
                     const GuildConfig = require('./models/GuildConfig');
                     try {
-                        const config = await GuildConfig.findOne({ guildId });                        if (config && config.alwaysOn) {
+                        const config = await GuildConfig.findOne({ guildId });
+                        if (config && config.alwaysOn) {
                             console.log(`[VOICE] Staying in ${newState.guild.name} - 24/7 mode enabled`);
+                            voiceStateTimers.delete(guildId);
                             return;
                         }
                         let textChannel = null;
@@ -84,7 +101,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
                         if (textChannel) {
                             const leaveEmbed = new EmbedBuilder()
                                 .setColor('#7C3AED')
-                                .setDescription(`${emoji.status.success} Left the voice channel — no one was listening for **10 seconds**. Use \`/play\` to bring me back!`);
+                                .setDescription(`${emoji.status.success} Left the voice channel — no one was listening for **30 seconds**. Use \`/play\` to bring me back!`);
                             await textChannel.send({ embeds: [leaveEmbed] });
                         }
                     } catch (error) {
@@ -93,7 +110,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
                     await musicPlayer.stopPlayer(client, guildId);
                 }
                 voiceStateTimers.delete(guildId);
-            }, 10000);
+            }, 30000);
             voiceStateTimers.set(guildId, timer);
         }
     } else {
@@ -104,6 +121,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         }
     }
 });
+
 const commandsPath = path.join(__dirname, 'commands');
 const commandFolders = fs.readdirSync(commandsPath);
 function loadCommandFiles(dirPath) {
