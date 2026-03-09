@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
   }, []);
   const fetchUser = async () => {
     try {
-      const res = await fetch('${config.apiUrl}/auth/user', {
+      const res = await fetch(`${config.apiUrl}/auth/user`, {
         credentials: 'include'
       });
       if (res.ok) {
@@ -36,16 +36,16 @@ export function AuthProvider({ children }) {
     }
   };
   const login = () => {
-    window.location.href = '${config.apiUrl}/auth/discord`;
+    window.location.href = `${config.apiUrl}/auth/discord`;
   };
   const logout = () => {
-    window.location.href = `${config.apiUrl}/auth/logout';
+    window.location.href = `${config.apiUrl}/auth/logout`;
   };
   const getAvatarUrl = useCallback((userData) => {
     if (!userData || !userData.id || !userData.avatar) {
       return '/images/default-avatar.png';
     }
-    return 'https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`;
+    return `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`;
   }, []);
   return (
     <AuthContext.Provider value={{ 

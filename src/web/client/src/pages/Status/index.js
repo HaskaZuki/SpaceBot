@@ -12,7 +12,7 @@ function Status() {
 
   useEffect(() => {
     const fetchShardData = () => {
-      fetch('${config.apiUrl}/api/shards')
+      fetch(`${config.apiUrl}/api/shards`)
         .then(res => res.json())
         .then(data => {
           setShardData(data);
@@ -35,9 +35,9 @@ function Status() {
     const days = Math.floor(ms / 86400000);
     const hours = Math.floor(ms / 3600000) % 24;
     const minutes = Math.floor(ms / 60000) % 60;
-    if (days > 0) return '${days}d ${hours}h ${minutes}m`;
+    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
     if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m';
+    return `${minutes}m`;
   };
 
   const getShardStatusColor = (shard) => {
@@ -79,7 +79,7 @@ function Status() {
 
   const gatewayLabel = shardData
     ? shardData.onlineShards === shardData.totalShards ? 'Operational'
-      : shardData.onlineShards > 0 ? 'Partial (${shardData.onlineShards}/${shardData.totalShards})' : 'Outage'
+      : shardData.onlineShards > 0 ? `Partial (${shardData.onlineShards}/${shardData.totalShards})` : 'Outage'
     : 'Operational';
 
   return (
@@ -92,7 +92,7 @@ function Status() {
           <p>Real-time status and performance metrics for SpaceBot</p>
         </div>
 
-        <div className={'status-banner ${overall.status}'}>
+        <div className={`status-banner ${overall.status}`}>
           <div className="status-banner-icon">
             {overall.status === 'operational' ? (
               <i className="fas fa-check-circle" />
@@ -207,7 +207,7 @@ function Status() {
                 {shardData.shards.map((shard) => (
                   <div
                     key={shard.id}
-                    className={'shard-card ${!shard.ready ? 'offline' : shard.ping > 200 ? 'degraded' : 'online'}'}
+                    className={`shard-card ${!shard.ready ? 'offline' : shard.ping > 200 ? 'degraded' : 'online'}`}
                   >
                     <div className="shard-card-header">
                       <span className="shard-id">Shard #{shard.id}</span>
