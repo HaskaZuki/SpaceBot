@@ -1,4 +1,3 @@
-const emoji = require('../utils/emojiConfig');
 const { ActivityType } = require('discord.js');
 const { restoreAllSessions } = require('../utils/sessionManager');
 
@@ -11,7 +10,7 @@ module.exports = {
         const guildCount = client.guilds.cache.size;
 
         console.log(`Ready! Logged in as ${client.user.tag}`);
-        console.log(`${emoji.ui.charts} Shard ${shardId}/${totalShards} | ${guildCount} servers`);
+        console.log(`📊 Shard ${shardId}/${totalShards} | ${guildCount} servers`);
 
         client.user.setPresence({
             activities: [{
@@ -29,7 +28,7 @@ module.exports = {
                 console.log('[Session] Lavalink ready — restoring sessions...');
                 await restoreAllSessions(client);
             } else if (attempts < 10) {
-                console.log('[Session] Waiting for Lavalink... (attempt ${attempts + 1}/10)`);
+                console.log(`[Session] Waiting for Lavalink... (attempt ${attempts + 1}/10)`);
                 setTimeout(() => tryRestore(attempts + 1), 3000);
             } else {
                 console.warn('[Session] Lavalink not available after 30s — skipping session restore');

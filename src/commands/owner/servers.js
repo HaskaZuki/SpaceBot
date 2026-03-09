@@ -28,7 +28,7 @@ module.exports = {
         allGuilds.sort((a, b) => b.memberCount - a.memberCount);
         const totalPages = Math.max(1, Math.ceil(allGuilds.length / PER_PAGE));
         const totalMembers = allGuilds.reduce((acc, g) => acc + g.memberCount, 0);
-        const shardInfo = client.shard ? 'Shard ${client.shard.ids[0]}/${client.shard.count}' : 'No Sharding';
+        const shardInfo = client.shard ? `Shard ${client.shard.ids[0]}/${client.shard.count}` : 'No Sharding';
         let currentPage = 0;
         function buildEmbed(page) {
             const start = page * PER_PAGE;
@@ -36,12 +36,12 @@ module.exports = {
             const pageGuilds = allGuilds.slice(start, end);
             let description = '';
             pageGuilds.forEach((g, i) => {
-                description += '**${start + i + 1}.** ${g.name}\n`;
+                description += `**${start + i + 1}.** ${g.name}\n`;
                 description += `   ID: \`${g.id}\` | Members: **${g.memberCount.toLocaleString()}**\n\n`;
             });
             return new EmbedBuilder()
                 .setColor('#6366f1')
-                .setTitle('Server List (Page ${page + 1}/${totalPages})`)
+                .setTitle(`Server List (Page ${page + 1}/${totalPages})`)
                 .setDescription(`${emoji.ui.charts} Bot server statistics\n\n${description || 'No servers found.'}`)
                 .addFields(
                     { name: 'Total Servers', value: allGuilds.length.toLocaleString(), inline: true },
@@ -49,18 +49,18 @@ module.exports = {
                     { name: 'Average Size', value: allGuilds.length > 0 ? Math.round(totalMembers / allGuilds.length).toLocaleString() : '0', inline: true },
                     { name: 'Sharding', value: shardInfo, inline: false }
                 )
-                .setFooter({ text: 'Page ${page + 1}/${totalPages} • Use buttons to navigate` })
+                .setFooter({ text: `Page ${page + 1}/${totalPages} • Use buttons to navigate` })
                 .setTimestamp();
         }
         function buildButtons(page) {
             return new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`servers_prev_${interaction.user.id}')
+                    .setCustomId(`servers_prev_${interaction.user.id}`)
                     .setEmoji('◀️')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page === 0),
                 new ButtonBuilder()
-                    .setCustomId('servers_next_${interaction.user.id}')
+                    .setCustomId(`servers_next_${interaction.user.id}`)
                     .setEmoji('▶️')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page >= totalPages - 1)

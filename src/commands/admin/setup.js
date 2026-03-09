@@ -15,7 +15,7 @@ module.exports = {
             );
             if (existingChannel) {
                 return interaction.editReply({
-                    content: `${emoji.status.error} Music controller already setup!\n\n` +
+                    content: `⚠️ Music controller already setup!\n\n` +
                             `Channel: ${existingChannel}\n\n` +
                             `The channel **#space-music** already exists in this server.\n` +
                             `Delete that channel first if you want to run setup again.`
@@ -26,9 +26,9 @@ module.exports = {
                 const dbChannel = interaction.guild.channels.cache.get(config.musicChannelId);
                 if (dbChannel) {
                     return interaction.editReply({
-                        content: `${emoji.status.error} Music controller already setup!\n\n` +
+                        content: `⚠️ Music controller already setup!\n\n` +
                                 `Channel: ${dbChannel}\n\n` +
-                                `You've already configured a music controller in this server.'
+                                `You've already configured a music controller in this server.`
                     });
                 }
             }
@@ -55,7 +55,7 @@ module.exports = {
             await interaction.editReply(`${emoji.status.success} Setup complete! Access your music controller here: ${channel}`);
         } catch (error) {
             console.error('Setup error:', error);
-            await interaction.editReply('${emoji.status.error} Failed to set up music system.`);
+            await interaction.editReply(`${emoji.status.error} Failed to set up music system.`);
         }
     },
 };

@@ -18,7 +18,7 @@ module.exports = {
         const player = playerState.player;
         const position = player?.position || 0;
         const cleanTitle = cleanTrackTitle(track.info.title);
-        const artist = track.info.author || ``;
+        const artist = track.info.author || '';
         try {
             const lyricsData = await fetchSyncedLyrics(cleanTitle, artist);
             if (!lyricsData || !lyricsData.syncedLyrics) {
@@ -35,7 +35,7 @@ module.exports = {
             const display = buildSyncedDisplay(lines, currentLineIndex, 7);
             const progressBar = `${musicPlayer.createProgressBar(position, track.info.length)} \`${musicPlayer.formatTime(position)} / ${musicPlayer.formatTime(track.info.length)}\``;
             const embed = new EmbedBuilder()
-                .setColor(`#8B5CF6`)
+                .setColor('#8B5CF6')
                 .setTitle(lyricsData.trackName)
                 .setDescription(`${emoji.animated.notes} **Synced Lyrics**\n\n${progressBar}\n\n${display}`)
                 .setFooter({ text: `${lyricsData.artistName} • Use this command again to refresh • Source: LRCLIB` })
@@ -45,7 +45,7 @@ module.exports = {
             }
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
-            console.error(`Lyrics-sync error:`, error);
+            console.error('Lyrics-sync error:', error);
             await interaction.editReply(`${emoji.status.error} Failed to fetch synced lyrics. Please try again.`);
         }
     },
@@ -113,14 +113,14 @@ function formatTimestamp(ms) {
     const totalSeconds = Math.floor(ms / 1000);
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
-    return '${minutes}:${String(seconds).padStart(2, '0')}';
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 function fetchSyncedLyrics(title, artist) {
     return new Promise((resolve, reject) => {
         const params = new URLSearchParams();
         if (artist) params.append('artist_name', artist);
         params.append('track_name', title);
-        const url = 'https://lrclib.net/api/search?${params.toString()}`;
+        const url = `https://lrclib.net/api/search?${params.toString()}`;
         const options = {
             headers: { 'User-Agent': 'SpaceBot/1.0.0' }
         };

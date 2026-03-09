@@ -65,20 +65,20 @@ module.exports = {
             const entries = [];
             for (let i = 0; i < topListeners.length; i++) {
                 const listener = topListeners[i];
-                const rank = i < 3 ? medals[i] : `\`${i + 1}.\'';
+                const rank = i < 3 ? medals[i] : `\`${i + 1}.\``;
                 let username = 'Unknown User';
                 try {
                     const user = await interaction.client.users.fetch(listener._id);
                     username = user.displayName || user.username;
                 } catch {
-                    username = 'User (${listener._id.slice(-4)})`;
+                    username = `User (${listener._id.slice(-4)})`;
                 }
                 const listeningTime = musicPlayer.formatTime(listener.totalDuration);
                 entries.push(`${rank} **${username}** — ${listener.totalPlays} plays • ${listeningTime} listened`);
             }
             const embed = new EmbedBuilder()
                 .setColor('#F59E0B')
-                .setTitle('Listening Leaderboard — ${interaction.guild.name}`)
+                .setTitle(`Listening Leaderboard — ${interaction.guild.name}`)
                 .setDescription(`**Period:** ${periodLabels[period]}\n\n${entries.join('\n')}`)
                 .setFooter({ text: `${topListeners.reduce((acc, l) => acc + l.totalPlays, 0)} total plays tracked` })
                 .setTimestamp();
@@ -88,7 +88,7 @@ module.exports = {
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
             console.error('Leaderboard error:', error);
-            await interaction.editReply('${emoji.status.error} Failed to load leaderboard. Please try again.`);
+            await interaction.editReply(`${emoji.status.error} Failed to load leaderboard. Please try again.`);
         }
     },
 };

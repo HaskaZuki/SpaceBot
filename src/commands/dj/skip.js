@@ -19,10 +19,10 @@ module.exports = {
         const nextTrack = playerState.queue?.[0];
         await musicPlayer.skipTrack(interaction.client, guildId);
         const embed = new EmbedBuilder()
-            .setColor(`#7C3AED`)
+            .setColor('#7C3AED')
             .setDescription(
                 `${emoji.controls.next} Skipped **${skippedTitle}**` +
-                (nextTrack ? `\n\nNow playing: **${nextTrack.info.title}**' : '\n\nThe queue is now empty.')
+                (nextTrack ? `\n\nNow playing: **${nextTrack.info.title}**` : '\n\nThe queue is now empty.')
             )
             .setFooter({ text: `Skipped by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });

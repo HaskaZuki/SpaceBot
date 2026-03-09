@@ -27,28 +27,28 @@ module.exports = {
             const currentTitle = currentTrack?.info?.title || 'Unknown Track';
             const currentUri = currentTrack?.info?.uri || '';
             const nowPlayingText = currentTrack 
-                ? '**Now Playing:** [${currentTitle}](${currentUri})'
+                ? `**Now Playing:** [${currentTitle}](${currentUri})`
                 : '**Now Playing:** Nothing';
             const list = pageItems.map((t, i) => 
-                '${start + i + 1}. [${t.info?.title || 'Unknown'}](${t.info?.uri || '#'})'
+                `${start + i + 1}. [${t.info?.title || 'Unknown'}](${t.info?.uri || '#'})`
             ).join('\n');
             const upNextTitle = i18n.get(lang, 'queue.up_next');
             const upNextContent = list || i18n.get(lang, 'queue.empty');
             return new EmbedBuilder()
                 .setColor('#6366f1')
                 .setTitle('Music Queue')
-                .setDescription('${nowPlayingText}\n\n${upNextTitle}\n${upNextContent}`)
+                .setDescription(`${nowPlayingText}\n\n${upNextTitle}\n${upNextContent}`)
                 .setFooter({ text: `Page ${page + 1}/${totalPages} • ${queue.length} tracks • Loop: ${playerState.loop || 'off'}` });
         }
         function buildButtons(page, userId) {
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`queue_prev_${userId}')
+                    .setCustomId(`queue_prev_${userId}`)
                     .setLabel('Prev')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page === 0),
                 new ButtonBuilder()
-                    .setCustomId('queue_next_${userId}')
+                    .setCustomId(`queue_next_${userId}`)
                     .setLabel('Next')
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(page >= totalPages - 1)

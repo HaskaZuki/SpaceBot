@@ -10,6 +10,6 @@ module.exports = {
         const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
         config.autoPlay = !config.autoPlay;
         await config.save();
-        await interaction.reply({ content: 'Autoplay is now **${config.autoPlay ? 'ON' : 'OFF'}**.', flags: MessageFlags.Ephemeral });
+        await interaction.reply({ content: `Autoplay is now **${config.autoPlay ? 'ON' : 'OFF'}**.`, flags: MessageFlags.Ephemeral });
     },
 };

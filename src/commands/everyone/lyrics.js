@@ -26,7 +26,7 @@ module.exports = {
             }
             const track = playerState.currentTrack;
             searchTitle = cleanTrackTitle(track.info.title);
-            searchArtist = track.info.author || ``;
+            searchArtist = track.info.author || '';
         }
         try {
             const lyrics = await fetchLyrics(searchTitle, searchArtist);
@@ -40,7 +40,7 @@ module.exports = {
                 .setAuthor({ name: lyrics.artistName })
                 .setDescription(chunks[0])
                 .setFooter({ 
-                    text: '${chunks.length > 1 ? `Page 1/${chunks.length} • ' : ''}Source: ${lyrics.source || 'LRCLIB'}' 
+                    text: `${chunks.length > 1 ? `Page 1/${chunks.length} • ` : ''}Source: ${lyrics.source || 'LRCLIB'}` 
                 })
                 .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
@@ -48,7 +48,7 @@ module.exports = {
                 const pageEmbed = new EmbedBuilder()
                     .setColor('#FFFF64')
                     .setDescription(chunks[i])
-                    .setFooter({ text: 'Page ${i + 1}/${chunks.length}' });
+                    .setFooter({ text: `Page ${i + 1}/${chunks.length}` });
                 await interaction.followUp({ embeds: [pageEmbed] });
             }
         } catch (error) {
@@ -90,7 +90,7 @@ function fetchLyrics(title, artist) {
         const params = new URLSearchParams();
         if (artist) params.append('artist_name', artist);
         params.append('track_name', title);
-        const url = 'https://lrclib.net/api/search?${params.toString()}`;
+        const url = `https://lrclib.net/api/search?${params.toString()}`;
         const options = {
             headers: { 'User-Agent': 'SpaceBot/1.0.0' }
         };

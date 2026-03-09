@@ -8,7 +8,7 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply({ flags: 64 });
         const code = interaction.options.getString('code');
-        const cleanCode = code.replace(/'''(js|javascript)?/g, '').trim();
+        const cleanCode = code.replace(/```(js|javascript)?/g, '').trim();
         try {
             const client = interaction.client;
             const guild = interaction.guild;
@@ -29,8 +29,8 @@ module.exports = {
                 .setTitle('Eval Result')
                 .setDescription(`${emoji.status.success} Code executed successfully`)
                 .addFields(
-                    { name: 'Input', value: '\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\'' },
-                    { name: 'Output', value: '\`\`\`js\n${output}\n\`\`\'' }
+                    { name: 'Input', value: `\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\`` },
+                    { name: 'Output', value: `\`\`\`js\n${output}\n\`\`\`` }
                 )
                 .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
@@ -40,8 +40,8 @@ module.exports = {
                 .setTitle('Eval Error')
                 .setDescription(`${emoji.status.error} An error occurred`)
                 .addFields(
-                    { name: 'Input', value: '\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\'' },
-                    { name: 'Error', value: '\`\`\`\n${error.message}\n\`\`\`` }
+                    { name: 'Input', value: `\`\`\`js\n${cleanCode.substring(0, 500)}\n\`\`\`` },
+                    { name: 'Error', value: `\`\`\`\n${error.message}\n\`\`\`` }
                 )
                 .setTimestamp();
             await interaction.editReply({ embeds: [embed] });

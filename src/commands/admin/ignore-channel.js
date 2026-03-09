@@ -38,10 +38,10 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
-            const channelList = ignored.map(id => `<#${id}>').join('\n');
+            const channelList = ignored.map(id => `<#${id}>`).join('\n');
             const embed = new EmbedBuilder()
                 .setColor('#7C3AED')
-                .setDescription('${emoji.ui.gear} **Ignored Channels**\n\n${channelList}`)
+                .setDescription(`${emoji.ui.gear} **Ignored Channels**\n\n${channelList}`)
                 .setFooter({ text: `${ignored.length} channel${ignored.length !== 1 ? 's' : ''} ignored` });
             return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         }
@@ -56,12 +56,12 @@ module.exports = {
             config.ignoredChannels.push(channel.id);
             await config.save();
             const embed = new EmbedBuilder()
-                .setColor(`#7C3AED`)
+                .setColor('#7C3AED')
                 .setDescription(`${emoji.status.success} Now ignoring commands from ${channel}.\nUsers in that channel cannot trigger bot commands.`)
                 .setFooter({ text: `Updated by ${interaction.user.displayName || interaction.user.username}` });
             return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         }
-        if (sub === `remove`) {
+        if (sub === 'remove') {
             if (!config.ignoredChannels.includes(channel.id)) {
                 return interaction.reply({
                     content: `${emoji.status.error} ${channel} is not in the ignore list!`,
@@ -72,7 +72,7 @@ module.exports = {
             await config.save();
             const embed = new EmbedBuilder()
                 .setColor('#7C3AED')
-                .setDescription('${emoji.status.success} ${channel} is no longer ignored.`)
+                .setDescription(`${emoji.status.success} ${channel} is no longer ignored.`)
                 .setFooter({ text: `Updated by ${interaction.user.displayName || interaction.user.username}` });
             return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         }

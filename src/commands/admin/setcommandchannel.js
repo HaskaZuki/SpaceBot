@@ -35,14 +35,14 @@ module.exports = {
                 });
             }
             const embed = new EmbedBuilder()
-                .setColor(`#7C3AED`)
+                .setColor('#7C3AED')
                 .setDescription(
                     `${emoji.ui.gear} Commands are restricted to <#${config.commandChannelId}>.\n` +
                     `Use \`/setcommandchannel clear\` to allow all channels.`
                 );
             return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         }
-        if (sub === `clear`) {
+        if (sub === 'clear') {
             if (!config.commandChannelId) {
                 return interaction.reply({
                     content: `${emoji.status.error} No command channel was set.`,
@@ -52,7 +52,7 @@ module.exports = {
             config.commandChannelId = null;
             await config.save();
             const embed = new EmbedBuilder()
-                .setColor(`#7C3AED`)
+                .setColor('#7C3AED')
                 .setDescription(`${emoji.status.success} Restriction removed — bot now responds in all channels.`)
                 .setFooter({ text: `Updated by ${interaction.user.displayName || interaction.user.username}` });
             return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
@@ -64,7 +64,7 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#7C3AED')
                 .setDescription(
-                    '${emoji.status.success} Commands are now restricted to ${channel}.\n\n` +
+                    `${emoji.status.success} Commands are now restricted to ${channel}.\n\n` +
                     `Users in other channels will see a redirect message.\n` +
                     `Use \`/setcommandchannel clear\` to remove this restriction.`
                 )

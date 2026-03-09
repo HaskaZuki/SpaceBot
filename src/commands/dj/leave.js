@@ -11,7 +11,7 @@ module.exports = {
         const playerState = musicPlayer.players.get(guildId);
         if (!playerState || !playerState.player) {
             return interaction.reply({
-                content: `${emoji.status.error} I'm not connected to any voice channel!',
+                content: `${emoji.status.error} I'm not connected to any voice channel!`,
                 flags: MessageFlags.Ephemeral
             });
         }
@@ -19,7 +19,7 @@ module.exports = {
         musicPlayer.players.delete(guildId);
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setDescription('${emoji.status.success} Disconnected from the voice channel. Goodbye!`)
+            .setDescription(`${emoji.status.success} Disconnected from the voice channel. Goodbye!`)
             .setFooter({ text: `Disconnected by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },

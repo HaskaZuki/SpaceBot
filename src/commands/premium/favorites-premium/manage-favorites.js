@@ -37,10 +37,10 @@ module.exports = {
              });
         }
         try {
-            const userFavorites = await storage.getUser(`favorites`, userId);
+            const userFavorites = await storage.getUser('favorites', userId);
             if (!userFavorites || userFavorites.favorites.length === 0) {
                 return interaction.reply({
-                    content: `${emoji.status.error} You don`t have any favorites yet!\n\nUse \`/favorite\' while a track is playing to add it.',
+                    content: `${emoji.status.error} You don't have any favorites yet!\n\nUse \`/favorite\` while a track is playing to add it.`,
                     flags: MessageFlags.Ephemeral
                 });
             }
@@ -59,21 +59,21 @@ module.exports = {
                             `${emoji.premium.star} Your saved favorite tracks\n\n` +
                             pageFavorites.map((fav, idx) => 
                                 `**${startIdx + idx + 1}.** [${fav.info.title}](${fav.info.uri})\n` +
-                                `└ ${fav.info.author} • ${formatTime(fav.info.length)}'
+                                `└ ${fav.info.author} • ${formatTime(fav.info.length)}`
                             ).join('\n\n')
                         )
-                        .setFooter({ text: 'Page ${page + 1}/${totalPages} • Use /favorites play to play all` })
+                        .setFooter({ text: `Page ${page + 1}/${totalPages} • Use /favorites play to play all` })
                         .setTimestamp();
                 }
                 function buildButtons(page) {
                     return new ActionRowBuilder().addComponents(
                         new ButtonBuilder()
-                            .setCustomId(`fav_prev_${userId}')
+                            .setCustomId(`fav_prev_${userId}`)
                             .setEmoji('◀️')
                             .setStyle(ButtonStyle.Secondary)
                             .setDisabled(page === 0),
                         new ButtonBuilder()
-                            .setCustomId('fav_next_${userId}')
+                            .setCustomId(`fav_next_${userId}`)
                             .setEmoji('▶️')
                             .setStyle(ButtonStyle.Secondary)
                             .setDisabled(page >= totalPages - 1)
@@ -130,14 +130,14 @@ module.exports = {
                             );
                             addedCount++;
                         } catch (error) {
-                            console.error(`Error adding favorite:`, error);
+                            console.error('Error adding favorite:', error);
                         }
                     }
                     await interaction.editReply({
                         content: `${emoji.premium.star} Added **${addedCount}** favorites to the queue!`
                     });
                 } catch (playError) {
-                    console.error(`Play favorites error:`, playError);
+                    console.error('Play favorites error:', playError);
                     await interaction.editReply({
                         content: `${emoji.status.error} An error occurred while adding favorites to queue!`
                     });
@@ -153,7 +153,7 @@ module.exports = {
                 }
                 try {
                     const removed = userFavorites.favorites.splice(index, 1)[0];
-                    const success = await storage.setUser(`favorites`, userId, userFavorites);
+                    const success = await storage.setUser('favorites', userId, userFavorites);
                     if (success) {
                         await interaction.reply({
                             content: `${emoji.controls.remove} Removed from favorites: **${removed.info.title}**\n\n` +
@@ -167,7 +167,7 @@ module.exports = {
                         });
                     }
                 } catch (removeError) {
-                    console.error(`Remove favorite error:`, removeError);
+                    console.error('Remove favorite error:', removeError);
                     await interaction.reply({
                         content: `${emoji.status.error} An error occurred while removing favorite!`,
                         flags: MessageFlags.Ephemeral

@@ -47,10 +47,10 @@ module.exports = {
         playerState.player.seekTo(totalSeconds * 1000);
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
-        const formatted = `${minutes}:${String(seconds).padStart(2, '0')}';
+        const formatted = `${minutes}:${String(seconds).padStart(2, '0')}`;
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setDescription('${emoji.controls.play} Seeked to **${formatted}** in **${playerState.currentTrack.info.title}**.`)
+            .setDescription(`${emoji.controls.play} Seeked to **${formatted}** in **${playerState.currentTrack.info.title}**.`)
             .setFooter({ text: `Seeked by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },
