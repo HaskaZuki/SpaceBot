@@ -1,4 +1,4 @@
-const emoji = require('./utils/emojiConfig');
+const emoji = require('../utils/emojiConfig');
 const { ActivityType } = require('discord.js');
 const { restoreAllSessions } = require('../utils/sessionManager');
 

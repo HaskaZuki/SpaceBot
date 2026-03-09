@@ -2,7 +2,7 @@ const { createMusicEmbed } = require('./embedBuilder');
 const { EmbedBuilder } = require('discord.js');
 const GuildConfig = require('../models/GuildConfig');
 const PlayHistory = require('../models/PlayHistory');
-const emoji = require('./emojiConfig');
+const emoji = require('../utils/emojiConfig');
 const players = new Map();
 const isNodeReady = (node) => {
     return node && node.state === 1;

@@ -1,4 +1,4 @@
-const emojiConfig = require('./emojiConfig');
+const emojiConfig = require('../utils/emojiConfig');
 
 const FILTER_PRESETS = {
     'bass-boost': {

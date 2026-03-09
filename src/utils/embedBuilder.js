@@ -1,5 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const emoji = require('./emojiConfig');
+const emoji = require('../utils/emojiConfig');
 
 module.exports = {
     createMusicEmbed: (guildConfig, track, queue, status = 'Playing') => {

@@ -1,4 +1,4 @@
-const emoji = require('../../../../utils/emojiConfig');
+const emoji = require('../../../../../utils/emojiConfig');
 import React, { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import './PersistentPlayer.css';

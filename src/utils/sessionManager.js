@@ -69,7 +69,7 @@ async function saveAllSessions(players) {
 
 
 async function restoreAllSessions(client) {
-    const emoji = require('./emojiConfig');
+    const emoji = require('../utils/emojiConfig');
     const musicPlayer = require('./musicPlayer');
 
     let sessions;

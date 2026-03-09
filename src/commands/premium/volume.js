@@ -1,4 +1,4 @@
-const emoji = require('../utils/emojiConfig');
+const emoji = require('../../utils/emojiConfig');
 const { SlashCommandBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 module.exports = {
