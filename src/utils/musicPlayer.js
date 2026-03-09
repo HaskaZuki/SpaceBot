@@ -126,8 +126,21 @@ module.exports = {
             return { error: 'No track found' };
         }
         let player = client.shoukaku.players.get(guildId);
-        const needsNewConnection = !player || !player.connection;
-        if (needsNewConnection) {
+        const guild = client.guilds.cache.get(guildId);
+        const botCurrentChannel = guild?.members?.me?.voice?.channelId;
+
+        if (player && botCurrentChannel === voiceChannelId) {
+            // Bot already in the right channel and player exists — reuse it
+            playerState.player = player;
+            console.log('[DEBUG] Reusing existing player in voice channel');
+        } else {
+            // Need to join (or rejoin from a different channel)
+            if (botCurrentChannel) {
+                // Bot is stuck in a channel (state mismatch) — force leave first
+                console.log('[DEBUG] Bot still in channel but player stale, force-leaving first...');
+                try { await client.shoukaku.leaveVoiceChannel(guildId); } catch (_) {}
+                await new Promise(r => setTimeout(r, 500));
+            }
             try {
                 player = await client.shoukaku.joinVoiceChannel({
                     guildId: guildId,
@@ -137,15 +150,11 @@ module.exports = {
                     mute: false
                 });
                 console.log('[DEBUG] Successfully joined voice channel');
-                console.log('[DEBUG] Player connection:', player?.connection ? 'exists' : 'MISSING (will be ready async)');
             } catch (joinError) {
-                console.error('Failed to join voice channel:', joinError);
+                console.error('Failed to join voice channel:', joinError.message);
                 return { error: 'Failed to join voice channel' };
             }
             playerState.player = player;
-        } else {
-            playerState.player = player;
-            console.log('[DEBUG] Using existing player');
         }
 
         player.removeAllListeners('end');
@@ -200,7 +209,16 @@ module.exports = {
         }
         const playerState = module.exports.getQueue(guildId);
         let player = client.shoukaku.players.get(guildId);
-        if (!player) {
+        const guild = client.guilds.cache.get(guildId);
+        const botCurrentChannel = guild?.members?.me?.voice?.channelId;
+
+        if (player && botCurrentChannel === voiceChannelId) {
+            playerState.player = player;
+        } else {
+            if (botCurrentChannel) {
+                try { await client.shoukaku.leaveVoiceChannel(guildId); } catch (_) {}
+                await new Promise(r => setTimeout(r, 500));
+            }
             try {
                 player = await client.shoukaku.joinVoiceChannel({
                     guildId: guildId,
@@ -210,7 +228,7 @@ module.exports = {
                     mute: false
                 });
             } catch (joinError) {
-                console.error('Failed to join voice channel:', joinError);
+                console.error('Failed to join voice channel:', joinError.message);
                 return { error: 'Failed to join voice channel' };
             }
             playerState.player = player;
