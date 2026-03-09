@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const GuildConfig = require('../../models/GuildConfig');
+const emoji = require('../../utils/emojiConfig');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('export-playlist')
@@ -15,9 +16,9 @@ module.exports = {
                 .setDescription('Export to which platform')
                 .setRequired(true)
                 .addChoices(
-                    { name: '🎵 Spotify', value: 'spotify' },
-                    { name: '📺 YouTube Music', value: 'youtube' },
-                    { name: '🍎 Apple Music', value: 'apple' }
+                    { name: `${emoji.sources.spotify} Spotify`, value: 'spotify' },
+                    { name: `${emoji.sources.youtube} YouTube Music`, value: 'youtube' },
+                    { name: `${emoji.sources.apple} Apple Music`, value: 'apple' }
                 )),
     async execute(interaction) {
         const playlistName = interaction.options.getString('playlist');
