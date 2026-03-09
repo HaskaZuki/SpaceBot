@@ -27,55 +27,55 @@ module.exports = {
                     ko: '🇰🇷 Korean', pt: '🇧🇷 Portuguese', ru: '🇷🇺 Russian',
                     zh: '🇨🇳 Chinese', th: '🇹🇭 Thai'
                 };
-                const djRole = config.djRoleId ? '<@&${config.djRoleId}>' : 'Not set';
-                const musicChannel = config.musicChannelId ? '<#${config.musicChannelId}>' : 'Not set';
+                const djRole = config.djRoleId ? `<@&${config.djRoleId}>` : 'Not set';
+                const musicChannel = config.musicChannelId ? `<#${config.musicChannelId}>` : 'Not set';
                 const allowedVCs = config.allowedVoiceChannels?.length > 0
-                    ? config.allowedVoiceChannels.map(id => '<#${id}>').join(', ')
+                    ? config.allowedVoiceChannels.map(id => `<#${id}>`).join(', ')
                     : 'All channels';
                 const maxDuration = config.maxSongDuration > 0
-                    ? '${Math.floor(config.maxSongDuration / 60)} minutes'
+                    ? `${Math.floor(config.maxSongDuration / 60)} minutes`
                     : 'Unlimited';
                 const maxSongs = config.maxSongCount > 0
-                    ? '${config.maxSongCount} songs'
+                    ? `${config.maxSongCount} songs`
                     : 'Unlimited';
                 const embed = new EmbedBuilder()
                     .setColor('#7C3AED')
-                    .setTitle('Settings — ${interaction.guild.name}')
+                    .setTitle(`Settings — ${interaction.guild.name}`)
                     .addFields(
                         {
                             name: 'Music | Settings',
                             value: [
-                                '**Volume:** ${config.volume}%`,
+                                `**Volume:** ${config.volume}%`,
                                 `**Loop:** ${config.loopMode}`,
                                 `**Auto Play:** ${config.autoPlay ? emoji.status.success : emoji.status.error}`,
-                                `**24/7 Mode:** ${config.alwaysOn ? emoji.status.success : emoji.status.error}'
+                                `**24/7 Mode:** ${config.alwaysOn ? emoji.status.success : emoji.status.error}`
                             ].join('\n'),
                             inline: true
                         },
                         {
                             name: 'Limits | Settings',
                             value: [
-                                '**Max Duration:** ${maxDuration}`,
+                                `**Max Duration:** ${maxDuration}`,
                                 `**Max Queue:** ${maxSongs}`,
-                                `**Allow Playlists:** ${config.allowPlaylists ? emoji.status.success : emoji.status.error}'
+                                `**Allow Playlists:** ${config.allowPlaylists ? emoji.status.success : emoji.status.error}`
                             ].join('\n'),
                             inline: true
                         },
                         {
                             name: 'Channels & Roles | Settings',
                             value: [
-                                '**DJ Role:** ${djRole}`,
+                                `**DJ Role:** ${djRole}`,
                                 `**Music Channel:** ${musicChannel}`,
-                                `**Allowed VCs:** ${allowedVCs}'
+                                `**Allowed VCs:** ${allowedVCs}`
                             ].join('\n'),
                             inline: false
                         },
                         {
                             name: 'Announcements | Settings',
                             value: [
-                                '**Announce Songs:** ${config.announceSongs ? emoji.status.success : emoji.status.error}`,
+                                `**Announce Songs:** ${config.announceSongs ? emoji.status.success : emoji.status.error}`,
                                 `**Show Requester:** ${config.showRequester ? emoji.status.success : emoji.status.error}`,
-                                `**Delete Announcements:** ${config.deleteSongAnnouncements ? emoji.status.success : emoji.status.error}'
+                                `**Delete Announcements:** ${config.deleteSongAnnouncements ? emoji.status.success : emoji.status.error}`
                             ].join('\n'),
                             inline: false
                         }
@@ -90,14 +90,14 @@ module.exports = {
                         .setCustomId('settings_reset_confirm')
                         .setLabel('Yes, reset everything')
                         .setStyle(ButtonStyle.Danger)
-                        .setEmoji('${emoji.status.error}'),
+                        .setEmoji('⚠️'),
                     new ButtonBuilder()
                         .setCustomId('settings_reset_cancel')
                         .setLabel('Cancel')
                         .setStyle(ButtonStyle.Secondary)
                 );
                 const reply = await interaction.reply({
-                    content: '${emoji.status.error} **Are you sure you want to reset ALL settings to default?**\n\n' +
+                    content: '⚠️ **Are you sure you want to reset ALL settings to default?**\n\n' +
                              'This will reset:\n' +
                              '• Language → English\n' +
                              '• Volume → 50%\n' +
@@ -136,7 +136,7 @@ module.exports = {
                         config.bannedUsers = [];
                         await config.save();
                         await btnInteraction.update({
-                            content: '${emoji.status.success} **All settings have been reset to default!**\n\nUse \`/settings view\` to see the current configuration.`,
+                            content: `${emoji.status.success} **All settings have been reset to default!**\n\nUse \`/settings view\` to see the current configuration.`,
                             components: []
                         });
                     } else {

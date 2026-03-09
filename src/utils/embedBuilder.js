@@ -1,5 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const emoji = require('../utils/emojiConfig');
+const emoji = require('./emojiConfig');
 
 module.exports = {
     createMusicEmbed: (guildConfig, track, queue, status = 'Playing') => {
@@ -9,8 +9,8 @@ module.exports = {
             .setImage('https://imgur.com/a/hHKiFvO')
             .setFooter({ text: 'SpaceBot Music System' });
         if (track) {
-            embed.setDescription('**[${track.info.title}](${track.info.uri})**\nAuthor: ${track.info.author}\nRequested by: unknown`);
-            const nextTracks = queue.slice(0, 5).map((t, i) => `**${i + 1}.** [${t.info.title}](${t.info.uri})').join('\n');
+            embed.setDescription(`**[${track.info.title}](${track.info.uri})**\nAuthor: ${track.info.author}\nRequested by: unknown`);
+            const nextTracks = queue.slice(0, 5).map((t, i) => `**${i + 1}.** [${t.info.title}](${t.info.uri})`).join('\n');
             if (nextTracks) embed.addFields({ name: 'Up Next:', value: nextTracks });
             embed.addFields({ name: 'Status', value: status, inline: true });
         } else {

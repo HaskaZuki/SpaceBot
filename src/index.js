@@ -20,7 +20,7 @@ const shoukaku = new Shoukaku(
     [{
         name: 'Public-Node',
         url: process.env.LAVALINK_HOST 
-            ? '${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 2333}'
+            ? `${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 2333}`
             : '127.0.0.1:2333',
         auth: process.env.LAVALINK_PASSWORD || 'youshallnotpass',
         secure: process.env.LAVALINK_SECURE === 'true'
@@ -37,14 +37,14 @@ const shoukaku = new Shoukaku(
     }
 );
 shoukaku.on('error', (_, error) => console.error('Shoukaku Error:', error));
-shoukaku.on('ready', (name) => console.log('Lavalink Node: ${name} is ready'));
+shoukaku.on('ready', (name) => console.log(`Lavalink Node: ${name} is ready`));
 shoukaku.on('disconnect', (name, players, moved) => {
-    console.warn('[Lavalink] Node ${name} disconnected. Players: ${players.size}. Moved: ${moved}`);
+    console.warn(`[Lavalink] Node ${name} disconnected. Players: ${players.size}. Moved: ${moved}`);
     if (!moved) {
-        console.warn(`[Lavalink] Node ${name} will attempt to reconnect automatically.');
+        console.warn(`[Lavalink] Node ${name} will attempt to reconnect automatically.`);
     }
 });
-shoukaku.on('reconnecting', (name) => console.log('[Lavalink] Node ${name} reconnecting...'));
+shoukaku.on('reconnecting', (name) => console.log(`[Lavalink] Node ${name} reconnecting...`));
 client.shoukaku = shoukaku;
 const voiceStateTimers = new Map();
 client.on('voiceStateUpdate', async (oldState, newState) => {
@@ -60,7 +60,8 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         return;
     }
 
-
+    // Ignore events triggered by the bot itself joining — Discord cache hasn't
+    // updated with other members yet, causing a false "empty channel" detection.
     if (newState.member?.id === botId && !oldState.channelId) return;
 
     const voiceChannel = botMember.voice.channel;
@@ -69,20 +70,20 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 
     if (humanMembers.size === 0) {
         if (!voiceStateTimers.has(guildId)) {
-            console.log('⏰ Starting 30s timer for empty voice channel in ${newState.guild.name}`);
+            console.log(`⏰ Starting 30s timer for empty voice channel in ${newState.guild.name}`);
             const timer = setTimeout(async () => {
                 const currentBotMember = newState.guild.members.me;
                 if (!currentBotMember?.voice?.channel) return;
                 const currentVoiceChannel = currentBotMember.voice.channel;
                 const currentHumans = currentVoiceChannel.members.filter(m => !m.user.bot);
                 if (currentHumans.size === 0) {
-                    console.log(` Auto-disconnecting from ${newState.guild.name} - no users for 30s');
+                    console.log(` Auto-disconnecting from ${newState.guild.name} - no users for 30s`);
                     const musicPlayer = require('./utils/musicPlayer');
                     const GuildConfig = require('./models/GuildConfig');
                     try {
                         const config = await GuildConfig.findOne({ guildId });
                         if (config && config.alwaysOn) {
-                            console.log('[VOICE] Staying in ${newState.guild.name} - 24/7 mode enabled`);
+                            console.log(`[VOICE] Staying in ${newState.guild.name} - 24/7 mode enabled`);
                             voiceStateTimers.delete(guildId);
                             return;
                         }
@@ -114,7 +115,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         }
     } else {
         if (voiceStateTimers.has(guildId)) {
-            console.log(`Cancelling auto-disconnect timer for ${newState.guild.name} - user joined`);
+            console.log(` Cancelling auto-disconnect timer for ${newState.guild.name} - user joined`);
             clearTimeout(voiceStateTimers.get(guildId));
             voiceStateTimers.delete(guildId);
         }
@@ -146,7 +147,7 @@ for (const folder of commandFolders) {
                 command.category = folder;
                 client.commands.set(command.data.name, command);
             } else {
-                console.log('[WARNING] Command at ${filePath} missing "data" or "execute"');
+                console.log(`[WARNING] Command at ${filePath} missing "data" or "execute"`);
             }
         }
     }
@@ -169,7 +170,7 @@ for (const file of eventFiles) {
 })();
 
 const gracefulShutdown = async (signal) => {
-    console.log('\n[Shutdown] Received ${signal}. Saving sessions...`);
+    console.log(`\n[Shutdown] Received ${signal}. Saving sessions...`);
     try {
         const { players } = require('./utils/musicPlayer');
         await saveAllSessions(players);

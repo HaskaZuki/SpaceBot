@@ -23,7 +23,7 @@ class I18n {
                         const content = fs.readFileSync(path.join(langDir, file), 'utf8');
                         this.locales[langCode][namespace] = JSON.parse(content);
                     } catch (err) {
-                        console.error('[i18n] Failed to load ${langCode}/${file}:`, err);
+                        console.error(`[i18n] Failed to load ${langCode}/${file}:`, err);
                     }
                 }
                 console.log(`[i18n] Loaded locale: ${langCode} (${files.length} files)`);

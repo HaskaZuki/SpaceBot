@@ -32,7 +32,7 @@ async function saveSession(guildId, playerState) {
             },
             { upsert: true, new: true }
         );
-        console.log('[Session] Saved session for guild ${guildId} (${queueToSave.length} tracks)`);
+        console.log(`[Session] Saved session for guild ${guildId} (${queueToSave.length} tracks)`);
     } catch (err) {
         console.error(`[Session] Failed to save session for ${guildId}:`, err.message);
     }
@@ -69,7 +69,7 @@ async function saveAllSessions(players) {
 
 
 async function restoreAllSessions(client) {
-    const emoji = require('../utils/emojiConfig');
+    const emoji = require('./emojiConfig');
     const musicPlayer = require('./musicPlayer');
 
     let sessions;
@@ -85,7 +85,7 @@ async function restoreAllSessions(client) {
         return;
     }
 
-    console.log('[Session] Restoring ${sessions.length} session(s)...`);
+    console.log(`[Session] Restoring ${sessions.length} session(s)...`);
 
     for (const session of sessions) {
         const { guildId, voiceChannelId, textChannelId, currentTrack, queue, loop } = session;
@@ -100,7 +100,7 @@ async function restoreAllSessions(client) {
 
             const voiceChannel = guild.channels.cache.get(voiceChannelId);
             if (!voiceChannel) {
-                console.log(`[Session] Voice channel ${voiceChannelId} not found in ${guild.name}, skipping');
+                console.log(`[Session] Voice channel ${voiceChannelId} not found in ${guild.name}, skipping`);
                 await clearSession(guildId);
                 continue;
             }
@@ -122,7 +122,7 @@ async function restoreAllSessions(client) {
                     mute: false
                 });
             } catch (err) {
-                console.error('[Session] Failed to join VC for ${guild.name}:', err.message);
+                console.error(`[Session] Failed to join VC for ${guild.name}:`, err.message);
                 await clearSession(guildId);
                 continue;
             }
@@ -168,7 +168,7 @@ async function restoreAllSessions(client) {
                     playerState.currentTrack = currentTrack;
                     musicPlayer.updateDashboard(client, guildId);
                 } catch (err) {
-                    console.error('[Session] Failed to start playback for ${guild.name}:`, err.message);
+                    console.error(`[Session] Failed to start playback for ${guild.name}:`, err.message);
 
                     musicPlayer.playNext(client, guildId);
                 }

@@ -2,7 +2,7 @@ const { createMusicEmbed } = require('./embedBuilder');
 const { EmbedBuilder } = require('discord.js');
 const GuildConfig = require('../models/GuildConfig');
 const PlayHistory = require('../models/PlayHistory');
-const emoji = require('../utils/emojiConfig');
+const emoji = require('./emojiConfig');
 const players = new Map();
 const isNodeReady = (node) => {
     return node && node.state === 1;
@@ -63,14 +63,14 @@ module.exports = {
     },
     playTrack: async (client, guildId, voiceChannelId, query, textChannel, requestedBy = null) => {
         const nodes = [...client.shoukaku.nodes.values()];
-        console.log('[DEBUG] Found ${nodes.length} Lavalink nodes`);
-        nodes.forEach(n => console.log(`[DEBUG] Node: ${n.name}, State: ${n.state}'));
+        console.log(`[DEBUG] Found ${nodes.length} Lavalink nodes`);
+        nodes.forEach(n => console.log(`[DEBUG] Node: ${n.name}, State: ${n.state}`));
         const node = nodes.find(n => isNodeReady(n));
         if (!node || nodes.length === 0) {
             console.error('[ERROR] No Lavalink node available');
             return { error: 'No Lavalink node available' };
         }
-        console.log('[DEBUG] Using node: ${node.name}, State: ${node.state}');
+        console.log(`[DEBUG] Using node: ${node.name}, State: ${node.state}`);
         const playerState = module.exports.getQueue(guildId);
         if (textChannel) {
             playerState.textChannelId = textChannel.id;
@@ -79,7 +79,7 @@ module.exports = {
         playerState.voiceChannelId = voiceChannelId;
         let result;
         if (query.startsWith('http')) {
-            console.log('[DEBUG] Direct URL: ${query}`);
+            console.log(`[DEBUG] Direct URL: ${query}`);
             try {
                 result = await node.rest.resolve(query);
             } catch (e) {
@@ -95,14 +95,14 @@ module.exports = {
             ];
             for (const source of searchSources) {
                 try {
-                    const searchQuery = '${source.prefix}:${query}`;
-                    console.log(`[DEBUG] Trying ${source.name}: ${searchQuery}');
+                    const searchQuery = `${source.prefix}:${query}`;
+                    console.log(`[DEBUG] Trying ${source.name}: ${searchQuery}`);
                     result = await node.rest.resolve(searchQuery);
                     if (result && result.loadType !== 'empty' && result.loadType !== 'NO_MATCHES' && result.loadType !== 'error') {
                         if ((result.loadType === 'track' && result.data) || 
                             (result.loadType === 'search' && result.data && result.data.length > 0) ||
                             (result.loadType === 'playlist' && result.data && result.data.tracks && result.data.tracks.length > 0)) {
-                            console.log(' Found results using ${source.name}`);
+                            console.log(` Found results using ${source.name}`);
                             break;
                         }
                     }
@@ -129,11 +129,14 @@ module.exports = {
         const guild = client.guilds.cache.get(guildId);
         const botCurrentChannel = guild?.members?.me?.voice?.channelId;
 
-        if (player && botCurrentChannel === voiceChannelId) {
+        if (player && botCurrentChannel === voiceChannelId) {
+            // Bot already in the right channel and player exists — reuse it
             playerState.player = player;
             console.log('[DEBUG] Reusing existing player in voice channel');
-        } else {
-            if (botCurrentChannel) {
+        } else {
+            // Need to join (or rejoin from a different channel)
+            if (botCurrentChannel) {
+                // Bot is stuck in a channel (state mismatch) — force leave first
                 console.log('[DEBUG] Bot still in channel but player stale, force-leaving first...');
                 try { await client.shoukaku.leaveVoiceChannel(guildId); } catch (_) {}
                 await new Promise(r => setTimeout(r, 500));
@@ -180,7 +183,9 @@ module.exports = {
         player.on('start', () => {
             console.log('[DEBUG] Playback started - audio should be playing');
         });
-        track.requestedBy = requestedBy;
+        track.requestedBy = requestedBy;
+
+        // Debug: Log queue state before checking isFirst
         console.log(`[DEBUG musicPlayer.js] Before isFirst check - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
         
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
@@ -248,15 +253,15 @@ module.exports = {
                     const trackTitle = playerState.currentTrack.info.title;
                     const trackAuthor = playerState.currentTrack.info.author;
                     const currentSource = playerState.currentTrack.info.sourceName;
-                    const searchQuery = '${trackAuthor} ${trackTitle}`;
-                    console.log(` Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})');
+                    const searchQuery = `${trackAuthor} ${trackTitle}`;
+                    console.log(` Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})`);
                     const altSources = ['scsearch', 'ytmsearch', 'ytsearch', 'spsearch']
                         .filter(s => !currentSource?.includes(s.replace('search', '')));
                     for (const sourcePrefix of altSources) {
                         try {
                             const node = [...client.shoukaku.nodes.values()].find(n => isNodeReady(n));
                             if (!node) break;
-                            console.log('  Trying ${sourcePrefix}:${searchQuery}...`);
+                            console.log(`  Trying ${sourcePrefix}:${searchQuery}...`);
                             const result = await node.rest.resolve(`${sourcePrefix}:${searchQuery}`);
                             if (result && result.data && result.data.length > 0) {
                                 console.log(` Found alternative using ${sourcePrefix}, retrying playback...`);
@@ -283,7 +288,7 @@ module.exports = {
             });
         }
         playerState.queue.push(track);
-        console.log('[DEBUG] Queue length after push: ${playerState.queue.length}, currentTrack: ${!!playerState.currentTrack}`);
+        console.log(`[DEBUG] Queue length after push: ${playerState.queue.length}, currentTrack: ${!!playerState.currentTrack}`);
         if (!playerState.currentTrack && playerState.queue.length === 1) {
             await module.exports.playNext(client, guildId);
         } else {
@@ -294,7 +299,7 @@ module.exports = {
     playNext: async (client, guildId) => {
         const playerState = players.get(guildId);
         if (!playerState) {
-            console.log(`No player state found for guild ${guildId}');
+            console.log(`No player state found for guild ${guildId}`);
             return;
         }
         const track = playerState.queue.shift();
@@ -306,7 +311,7 @@ module.exports = {
                     return;
                 }
                 const encoded = track.encoded || track.track;
-                console.log('[DEBUG] playNext: encoded=${encoded ? encoded.substring(0, 20) + '...' : 'MISSING'}, title=${track.info?.title}');
+                console.log(`[DEBUG] playNext: encoded=${encoded ? encoded.substring(0, 20) + '...' : 'MISSING'}, title=${track.info?.title}`);
                 if (!encoded) {
                     console.error('[ERROR] Track has no encoded field! Skipping.');
                     if (playerState.queue.length > 0) await module.exports.playNext(client, guildId);
@@ -333,7 +338,7 @@ module.exports = {
             }
         } else {
 
-            console.log('[DEBUG] Queue empty for guild ${guildId}`);
+            console.log(`[DEBUG] Queue empty for guild ${guildId}`);
             playerState.currentTrack = null;
             try {
                 if (playerState.player) {
@@ -379,7 +384,7 @@ module.exports = {
                             } catch (e2) {}
                         }
                         players.delete(guildId);
-                        console.log('Disconnected from guild ${guildId} - bot was alone`);
+                        console.log(`Disconnected from guild ${guildId} - bot was alone`);
                         module.exports.updateDashboard(client, guildId);
                     }
                 }, 10000);
@@ -404,7 +409,7 @@ module.exports = {
                             } catch (e2) {}
                         }
                         players.delete(guildId);
-                        console.log('Disconnected from guild ${guildId} due to inactivity`);
+                        console.log(`Disconnected from guild ${guildId} due to inactivity`);
                         module.exports.updateDashboard(client, guildId);
                     }
                 }, 30000);
@@ -463,9 +468,9 @@ module.exports = {
                 console.error('Error stopping track:', e.message);
             }
             try {
-                console.log('[stopPlayer] Attempting to leave voice channel for guild ${guildId}`);
+                console.log(`[stopPlayer] Attempting to leave voice channel for guild ${guildId}`);
                 await client.shoukaku.leaveVoiceChannel(guildId);
-                console.log(`[stopPlayer] Successfully left voice channel for guild ${guildId}');
+                console.log(`[stopPlayer] Successfully left voice channel for guild ${guildId}`);
             } catch (disconnectError) {
                 console.error('Error disconnecting from voice:', disconnectError.message);
                 try {
@@ -523,7 +528,7 @@ module.exports = {
         const minutes = Math.floor((ms / 1000 / 60) % 60);
         const hours = Math.floor(ms / 1000 / 60 / 60);
         if (hours > 0) {
-            return '${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         }
         return `${minutes}:${String(seconds).padStart(2, '0')}`;
     },
@@ -532,6 +537,6 @@ module.exports = {
         const progress = Math.min(Math.round((current / total) * barLength), barLength);
         const before = '▬'.repeat(Math.max(progress, 0));
         const after = '▬'.repeat(Math.max(barLength - progress - 1, 0));
-        return '${before}•${after}`;
+        return `${before}•${after}`;
     }
 };

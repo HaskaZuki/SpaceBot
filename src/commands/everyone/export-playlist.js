@@ -15,19 +15,18 @@ module.exports = {
                 .setDescription('Export to which platform')
                 .setRequired(true)
                 .addChoices(
-                    { name: 'Spotify', value: 'spotify' },
-                    { name: 'YouTube Music', value: 'youtube' },
-                    { name: 'Apple Music', value: 'apple' }
+                    { name: '🎵 Spotify', value: 'spotify' },
+                    { name: '📺 YouTube Music', value: 'youtube' },
+                    { name: '🍎 Apple Music', value: 'apple' }
                 )),
     async execute(interaction) {
-        const emoji = require('../../utils/emojiConfig');
         const playlistName = interaction.options.getString('playlist');
         const platform = interaction.options.getString('platform');
         await interaction.reply({
-            content: `${emoji.animated.disc} **Export Playlist**\n\n` +
+            content: `📤 **Export Playlist**\n\n` +
                     `Playlist: **${playlistName}**\n` +
                     `Platform: **${platform}**\n\n` +
-                    `${emoji.status.error} Cross-platform integration under development!\n\n' +
+                    '⚠️ Cross-platform integration under development!\n\n' +
                     'Planned features:\n' +
                     '• One-click export to Spotify\n' +
                     '• Automatic playlist sync\n' +
