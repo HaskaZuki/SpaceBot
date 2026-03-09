@@ -58,10 +58,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             voiceStateTimers.delete(newState.guild.id);
         }
         return;
-    }
-
-    // Ignore events triggered by the bot itself joining — Discord cache hasn't
-    // updated with other members yet, causing a false "empty channel" detection.
+    }
     if (newState.member?.id === botId && !oldState.channelId) return;
 
     const voiceChannel = botMember.voice.channel;

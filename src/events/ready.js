@@ -1,3 +1,4 @@
+const emoji = require('./utils/emojiConfig');
 const { ActivityType } = require('discord.js');
 const { restoreAllSessions } = require('../utils/sessionManager');
 
@@ -10,7 +11,7 @@ module.exports = {
         const guildCount = client.guilds.cache.size;
 
         console.log(`Ready! Logged in as ${client.user.tag}`);
-        console.log(`📊 Shard ${shardId}/${totalShards} | ${guildCount} servers`);
+        console.log(`${emoji.ui.charts} Shard ${shardId}/${totalShards} | ${guildCount} servers`);
 
         client.user.setPresence({
             activities: [{

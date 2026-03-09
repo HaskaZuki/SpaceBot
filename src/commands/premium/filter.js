@@ -1,3 +1,4 @@
+const emoji = require('../utils/emojiConfig');
 const { SlashCommandBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 const filterPresets = {
@@ -47,14 +48,14 @@ module.exports = {
         }
         if (filter === 'off') {
             playerState.player.setFilters({});
-            await interaction.reply({ content: '🎚️ Filters disabled.', flags: 64 });
+            await interaction.reply({ content: '${emoji.ui.gear} Filters disabled.', flags: 64 });
         } else {
             const preset = filterPresets[filter];
             if (!preset) {
                 return interaction.reply({ content: 'Unknown filter type.', flags: 64 });
             }
             playerState.player.setFilters(preset);
-            await interaction.reply({ content: `🎚️ Applied **${filter}** filter!`, flags: 64 });
+            await interaction.reply({ content: `${emoji.ui.gear} Applied **${filter}** filter!`, flags: 64 });
         }
     },
 };

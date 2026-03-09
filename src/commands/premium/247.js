@@ -1,3 +1,4 @@
+const emoji = require('../utils/emojiConfig');
 const { SlashCommandBuilder } = require('discord.js');
 const GuildConfig = require('../../models/GuildConfig');
 module.exports = {
@@ -10,7 +11,7 @@ module.exports = {
         if (!config) return interaction.editReply('Guild config not found.');
         const UserSettings = require('../../models/UserSettings');
         const userSettings = await UserSettings.findOne({ userId: interaction.user.id });        if (!userSettings || !userSettings.isPremium) {
-            return interaction.editReply('🚫 You must be a **Premium User** to toggle 24/7 mode.');
+            return interaction.editReply('${emoji.status.error} You must be a **Premium User** to toggle 24/7 mode.');
         }
         config.alwaysOn = !config.alwaysOn;
         await config.save();

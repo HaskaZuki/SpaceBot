@@ -1,3 +1,4 @@
+const emoji = require('../../../../utils/emojiConfig');
 import React, { useState, useEffect, useRef } from 'react';
 import { useSocket } from '../../context/SocketContext';
 import './PersistentPlayer.css';
@@ -27,7 +28,7 @@ function PersistentPlayer() {
           {track?.artwork ? (
             <img src={track.artwork} alt={track.title} className="player-artwork" />
           ) : (
-            <div className="player-artwork-placeholder">🎵</div>
+            <div className="player-artwork-placeholder">${emoji.animated.notes}</div>
           )}
           <div className="player-track-details">
             <span className="player-track-title">{track?.title || 'No track playing'}</span>

@@ -63,7 +63,7 @@ module.exports = {
                         result = await node.rest.resolve(fallbackQuery);
                         if (result && result.loadType === 'search' && result.data && result.data.length > 0) {
                             const sourceName = Object.values(sourceConfig).find(s => s.prefix === fallbackPrefix)?.emoji || fallbackPrefix;
-                            console.log(`✅ Found results on fallback source: ${sourceName}`);
+                            console.log(`${emoji.status.success} Found results on fallback source: ${sourceName}`);
                             break;
                         }
                     } catch (e) {

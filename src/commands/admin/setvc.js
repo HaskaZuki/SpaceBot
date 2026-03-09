@@ -34,7 +34,7 @@ module.exports = {
             if (subcommand === 'view') {
                 if (!config.allowedVoiceChannels || config.allowedVoiceChannels.length === 0) {
                     return interaction.reply({ 
-                        content: '📋 No voice channel restriction is set.\nBot can join any voice channel.\nUse `/setvc set` to restrict to one channel.', 
+                        content: '${emoji.animated.notes} No voice channel restriction is set.\nBot can join any voice channel.\nUse `/setvc set` to restrict to one channel.', 
                         flags: 64 
                     });
                 }
@@ -42,12 +42,12 @@ module.exports = {
                 const channel = interaction.guild.channels.cache.get(channelId);
                 if (!channel) {
                     return interaction.reply({ 
-                        content: '⚠️ Restricted voice channel no longer exists.\nUse `/setvc set` to configure a new one.', 
+                        content: '${emoji.status.error} Restricted voice channel no longer exists.\nUse `/setvc set` to configure a new one.', 
                         flags: 64 
                     });
                 }
                 return interaction.reply({ 
-                    content: `📋 Bot is restricted to: ${channel}`, 
+                    content: `${emoji.animated.notes} Bot is restricted to: ${channel}`, 
                     flags: 64 
                 });
             }
@@ -72,7 +72,7 @@ module.exports = {
                     const currentChannel = interaction.guild.channels.cache.get(currentChannelId);
                     if (currentChannel) {
                         return interaction.reply({ 
-                            content: `⚠️ Voice channel restriction is already set to ${currentChannel}!\n\n` +
+                            content: `${emoji.status.error} Voice channel restriction is already set to ${currentChannel}!\n\n` +
                                     `Only **one** voice channel can be set.\n` +
                                     `To change:\n` +
                                     `1. Use \`/setvc unset\` to remove current restriction\n` +

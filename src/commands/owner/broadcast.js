@@ -11,7 +11,7 @@ module.exports = {
         const client = interaction.client;
         const embedData = {
             color: 0x6366f1,
-            title: '📢 SpaceBot Announcement',
+            title: '${emoji.animated.notes} SpaceBot Announcement',
             description: message,
             footer: { text: 'From the SpaceBot Team' },
             timestamp: new Date().toISOString()
@@ -66,6 +66,6 @@ module.exports = {
             }
         }
         const shardInfo = client.shard ? ` (${client.shard.count} shards)` : '';
-        await interaction.editReply(`📢 **Announcement sent!${shardInfo}**\n${emoji.status.success} Sent: **${totalSent}**\n${emoji.status.error} Failed: **${totalFailed}**`);
+        await interaction.editReply(`${emoji.animated.notes} **Announcement sent!${shardInfo}**\n${emoji.status.success} Sent: **${totalSent}**\n${emoji.status.error} Failed: **${totalFailed}**`);
     },
 };

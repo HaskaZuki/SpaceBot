@@ -1,3 +1,4 @@
+const emoji = require('../utils/emojiConfig');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,7 +9,7 @@ module.exports = {
         const shardInfo = client.shard ? `Shutting down all ${client.shard.count} shards...` : 'Shutting down...';
         const embed = new EmbedBuilder()
             .setColor('#ff0000')
-            .setTitle('⚠️ Shutting Down...')
+            .setTitle('${emoji.status.error} Shutting Down...')
             .setDescription(`**${shardInfo}**\n\nBot is shutting down gracefully. Goodbye!`)
             .addFields(
                 { name: 'Initiated By', value: `${interaction.user.tag}`, inline: true },

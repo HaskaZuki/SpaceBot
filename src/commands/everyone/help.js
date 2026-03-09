@@ -74,7 +74,7 @@ const COMMANDS = {
 
 const CATS = {
     music:   { label: 'Music',    icon: emoji.animated.notes,   color: 0xE91E63, perm: 'Everyone' },
-    dj:      { label: 'DJ',       icon: '🎚️',                   color: 0x9C27B0, perm: 'DJ Role / Admin' },
+    dj:      { label: 'DJ',       icon: '${emoji.ui.gear}',                   color: 0x9C27B0, perm: 'DJ Role / Admin' },
     playback:{ label: 'Playback', icon: '▶️',                    color: 0x3F51B5, perm: 'DJ Role / Admin' },
     premium: { label: 'Premium',  icon: emoji.animated.premium, color: 0xF1C40F, perm: 'Premium' },
     admin:   { label: 'Admin',    icon: emoji.ui.gear,          color: 0x95A5A6, perm: 'Administrator' },

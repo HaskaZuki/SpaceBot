@@ -20,7 +20,7 @@ module.exports = {
         const sourceName = track.info.sourceName || 'default';
         const sourceIcon = emoji.getSourceIcon(sourceName);
         const progressBar = isStream
-            ? '🔴 **LIVE STREAM**'
+            ? '${emoji.status.error} **LIVE STREAM**'
             : `${musicPlayer.createProgressBar(position, duration)} \`${musicPlayer.formatTime(position)} / ${musicPlayer.formatTime(duration)}\``;
         const loopMode = playerState.loop || 'off';
         const loopDisplay = emoji.getLoopDisplay(loopMode);

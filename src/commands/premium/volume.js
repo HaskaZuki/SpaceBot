@@ -1,3 +1,4 @@
+const emoji = require('../utils/emojiConfig');
 const { SlashCommandBuilder } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
         const playerState = musicPlayer.players.get(guildId);
         if (playerState && playerState.player) {
             playerState.player.setGlobalVolume(volume);
-            await interaction.reply({ content: `🔊 Volume set to **${volume}%**`, flags: 64 });
+            await interaction.reply({ content: `${emoji.animated.notes} Volume set to **${volume}%**`, flags: 64 });
         } else {
             await interaction.reply({ content: 'No music is playing.', flags: 64 });
         }

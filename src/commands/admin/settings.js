@@ -90,14 +90,14 @@ module.exports = {
                         .setCustomId('settings_reset_confirm')
                         .setLabel('Yes, reset everything')
                         .setStyle(ButtonStyle.Danger)
-                        .setEmoji('⚠️'),
+                        .setEmoji('${emoji.status.error}'),
                     new ButtonBuilder()
                         .setCustomId('settings_reset_cancel')
                         .setLabel('Cancel')
                         .setStyle(ButtonStyle.Secondary)
                 );
                 const reply = await interaction.reply({
-                    content: '⚠️ **Are you sure you want to reset ALL settings to default?**\n\n' +
+                    content: '${emoji.status.error} **Are you sure you want to reset ALL settings to default?**\n\n' +
                              'This will reset:\n' +
                              '• Language → English\n' +
                              '• Volume → 50%\n' +

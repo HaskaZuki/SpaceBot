@@ -129,14 +129,11 @@ module.exports = {
         const guild = client.guilds.cache.get(guildId);
         const botCurrentChannel = guild?.members?.me?.voice?.channelId;
 
-        if (player && botCurrentChannel === voiceChannelId) {
-            // Bot already in the right channel and player exists — reuse it
+        if (player && botCurrentChannel === voiceChannelId) {
             playerState.player = player;
             console.log('[DEBUG] Reusing existing player in voice channel');
-        } else {
-            // Need to join (or rejoin from a different channel)
-            if (botCurrentChannel) {
-                // Bot is stuck in a channel (state mismatch) — force leave first
+        } else {
+            if (botCurrentChannel) {
                 console.log('[DEBUG] Bot still in channel but player stale, force-leaving first...');
                 try { await client.shoukaku.leaveVoiceChannel(guildId); } catch (_) {}
                 await new Promise(r => setTimeout(r, 500));
@@ -183,9 +180,7 @@ module.exports = {
         player.on('start', () => {
             console.log('[DEBUG] Playback started - audio should be playing');
         });
-        track.requestedBy = requestedBy;
-
-        // Debug: Log queue state before checking isFirst
+        track.requestedBy = requestedBy;
         console.log(`[DEBUG musicPlayer.js] Before isFirst check - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
         
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;

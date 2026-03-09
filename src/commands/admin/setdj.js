@@ -32,19 +32,19 @@ module.exports = {
             if (subcommand === 'view') {
                 if (!config.djRoleId) {
                     return interaction.reply({ 
-                        content: '📋 No DJ role is currently set.\nUse `/setdj set` to configure one.', 
+                        content: '${emoji.animated.notes} No DJ role is currently set.\nUse `/setdj set` to configure one.', 
                         flags: 64 
                     });
                 }
                 const role = interaction.guild.roles.cache.get(config.djRoleId);
                 if (!role) {
                     return interaction.reply({ 
-                        content: '⚠️ DJ role was set but no longer exists.\nUse `/setdj set` to configure a new one.', 
+                        content: '${emoji.status.error} DJ role was set but no longer exists.\nUse `/setdj set` to configure a new one.', 
                         flags: 64 
                     });
                 }
                 return interaction.reply({ 
-                    content: `📋 Current DJ Role: ${role}`, 
+                    content: `${emoji.animated.notes} Current DJ Role: ${role}`, 
                     flags: 64 
                 });
             }
@@ -68,7 +68,7 @@ module.exports = {
                     const currentRole = interaction.guild.roles.cache.get(config.djRoleId);
                     if (currentRole) {
                         return interaction.reply({ 
-                            content: `⚠️ DJ Role is already set to ${currentRole}!\n\n` +
+                            content: `${emoji.status.error} DJ Role is already set to ${currentRole}!\n\n` +
                                     `To change the DJ role, you must first unset it:\n` +
                                     `1. Use \`/setdj unset\` to remove current DJ role\n` +
                                     `2. Then use \`/setdj set\` to set a new role`, 

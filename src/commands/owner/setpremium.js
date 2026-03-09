@@ -30,7 +30,7 @@ module.exports = {
                       .setDescription('Set status')
                       .setRequired(true)
                       .addChoices(
-                          { name: '💎 Premium', value: 'premium' },
+                          { name: '${emoji.premium.diamond} Premium', value: 'premium' },
                           { name: '🆓 Free', value: 'free' }
                       ))
                .addStringOption(opt => 
@@ -47,7 +47,7 @@ module.exports = {
                       .setDescription('Set status')
                       .setRequired(true)
                       .addChoices(
-                          { name: '💎 Premium', value: 'premium' },
+                          { name: '${emoji.premium.diamond} Premium', value: 'premium' },
                           { name: '🆓 Free (Revoke/Punish)', value: 'free' }
                       ))
                .addStringOption(opt => 
@@ -87,7 +87,7 @@ module.exports = {
                     user.isPremium = false;
                     user.premiumExpiresAt = null;
                     await user.save();
-                    return interaction.reply({ content: `🚫 **User Premium Revoked** for <@${targetId}> (${targetId}). Status set to **Free**.`, flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.error} **User Premium Revoked** for <@${targetId}> (${targetId}). Status set to **Free**.`, flags: 64 });
                 }
             } else if (subcommand === 'server') {
                 let guild = await GuildConfig.findOne({ guildId: targetId });
@@ -106,7 +106,7 @@ module.exports = {
                     guild.alwaysOn = false;
                     guild.autoPlay = false;
                     await guild.save();
-                    return interaction.reply({ content: `🚫 **Server Premium Revoked** for Guild ID: \`${targetId}\`.\n⚠️ Premium features (24/7, Autoplay) have been disabled.`, flags: 64 });
+                    return interaction.reply({ content: `${emoji.status.error} **Server Premium Revoked** for Guild ID: \`${targetId}\`.\n${emoji.status.error} Premium features (24/7, Autoplay) have been disabled.`, flags: 64 });
                 }
             }
         } catch (error) {

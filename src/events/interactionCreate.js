@@ -121,14 +121,14 @@ module.exports = {
                     const hasRole = interaction.member.roles.cache.has(config.djRoleId);
                     if (!hasRole && !isAdmin) {
                         return interaction.reply({ 
-                            content: `🚫 You need the <@&${config.djRoleId}> role to use this command!`, 
+                            content: `${emoji.status.error} You need the <@&${config.djRoleId}> role to use this command!`, 
                             flags: 64 
                         });
                     }
                 } else {
                     if (!isAdmin) {
                         return interaction.reply({ 
-                            content: `🚫 No DJ role has been configured. Only **Administrators** can use this command.\nAn admin can set a DJ role using \`/setdj\`.`, 
+                            content: `${emoji.status.error} No DJ role has been configured. Only **Administrators** can use this command.\nAn admin can set a DJ role using \`/setdj\`.`, 
                             flags: 64 
                         });
                     }
@@ -137,7 +137,7 @@ module.exports = {
             if (command.category === 'admin') {
                 if (!interaction.member.permissions.has('Administrator')) {
                      return interaction.reply({ 
-                        content: `🚫 You need **Administrator** permission to use this command!`, 
+                        content: `${emoji.status.error} You need **Administrator** permission to use this command!`, 
                         flags: 64 
                     });
                 }
@@ -150,7 +150,7 @@ module.exports = {
                 if (interaction.user.id !== ownerId) {
                     console.warn(`[OWNER CHECK] Denied: user=${interaction.user.id}, expected=${ownerId || 'NOT SET'}`);
                     return interaction.reply({
-                        content: `🔒 **Owner-Only Command**\n\nThe \`/${interaction.commandName}\` command is restricted to the **Bot Owner** only and cannot be used by regular users.\n\nIf you need assistance, please contact the bot owner.`,
+                        content: `${emoji.status.error} **Owner-Only Command**\n\nThe \`/${interaction.commandName}\` command is restricted to the **Bot Owner** only and cannot be used by regular users.\n\nIf you need assistance, please contact the bot owner.`,
                         flags: 64
                     });
                 }

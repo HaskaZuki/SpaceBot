@@ -17,12 +17,12 @@ module.exports = {
         const userSettings = await UserSettings.findOne({ userId: interaction.user.id });
         if (!userSettings || !userSettings.isPremium) {
             return interaction.reply({
-                content: '🔒 **History is a Premium-Only feature!**\n\n' +
+                content: '${emoji.status.error} **History is a Premium-Only feature!**\n\n' +
                     'Premium features:\n' +
-                    '• 📊 Full listening history\n' +
-                    '• 📈 Statistics & analytics\n' +
+                    '• ${emoji.ui.charts} Full listening history\n' +
+                    '• ${emoji.ui.charts} Statistics & analytics\n' +
                     '• ⭐ Unlimited favorites\n' +
-                    '• 🎚️ Advanced audio filters\n\n' +
+                    '• ${emoji.ui.gear} Advanced audio filters\n\n' +
                     'Upgrade your account to Premium!',
                 flags: 64
             });
@@ -37,7 +37,7 @@ module.exports = {
                 .limit(limit)
                 .lean();
             if (recentTracks.length === 0) {
-                return interaction.editReply('📊 Your listening history is empty! Play some music to build your history.');
+                return interaction.editReply('${emoji.ui.charts} Your listening history is empty! Play some music to build your history.');
             }
             const [totalStats] = await PlayHistory.aggregate([
                 { $match: { userId, guildId } },
