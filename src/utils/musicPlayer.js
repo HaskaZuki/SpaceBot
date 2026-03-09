@@ -102,13 +102,13 @@ module.exports = {
                         if ((result.loadType === 'track' && result.data) || 
                             (result.loadType === 'search' && result.data && result.data.length > 0) ||
                             (result.loadType === 'playlist' && result.data && result.data.tracks && result.data.tracks.length > 0)) {
-                            console.log(`✅ Found results using ${source.name}`);
+                            console.log(` Found results using ${source.name}`);
                             break;
                         }
                     }
-                    console.log(`⚠️ No results from ${source.name}, trying next...`);
+                    console.log(` No results from ${source.name}, trying next...`);
                 } catch (e) {
-                    console.log(`❌ ${source.name} error: ${e.message || e.error || e.toString()}, trying next...`);
+                    console.log(` ${source.name} error: ${e.message || e.error || e.toString()}, trying next...`);
                     continue;
                 }
             }
@@ -173,7 +173,7 @@ module.exports = {
             }
         });
         player.on('exception', async (data) => {
-            console.error('❌ Playback exception:', data);
+            console.error(' Playback exception:', data);
             await module.exports.playNext(client, guildId);
         });
         player.on('stuck', (data) => {
@@ -248,13 +248,13 @@ module.exports = {
                 }
             });
             player.on('exception', async (data) => {
-                console.error('❌ Playback exception:', data);
+                console.error(' Playback exception:', data);
                 if (playerState.currentTrack && playerState.currentTrack.info) {
                     const trackTitle = playerState.currentTrack.info.title;
                     const trackAuthor = playerState.currentTrack.info.author;
                     const currentSource = playerState.currentTrack.info.sourceName;
                     const searchQuery = `${trackAuthor} ${trackTitle}`;
-                    console.log(`🔄 Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})`);
+                    console.log(` Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})`);
                     const altSources = ['scsearch', 'ytmsearch', 'ytsearch', 'spsearch']
                         .filter(s => !currentSource?.includes(s.replace('search', '')));
                     for (const sourcePrefix of altSources) {
@@ -264,7 +264,7 @@ module.exports = {
                             console.log(`  Trying ${sourcePrefix}:${searchQuery}...`);
                             const result = await node.rest.resolve(`${sourcePrefix}:${searchQuery}`);
                             if (result && result.data && result.data.length > 0) {
-                                console.log(`✅ Found alternative using ${sourcePrefix}, retrying playback...`);
+                                console.log(` Found alternative using ${sourcePrefix}, retrying playback...`);
                                 playerState.currentTrack = result.data[0];
                                 player.playTrack({ track: { encoded: result.data[0].encoded } });
                                 module.exports.updateDashboard(client, guildId);
@@ -275,7 +275,7 @@ module.exports = {
                             continue;
                         }
                     }
-                    console.log('⚠️ No alternative found, skipping to next track');
+                    console.log(' No alternative found, skipping to next track');
                 }
                 module.exports.playNext(client, guildId);
             });
@@ -537,6 +537,6 @@ module.exports = {
         const progress = Math.min(Math.round((current / total) * barLength), barLength);
         const before = '▬'.repeat(Math.max(progress, 0));
         const after = '▬'.repeat(Math.max(barLength - progress - 1, 0));
-        return `${before}🔘${after}`;
+        return `${before}•${after}`;
     }
 };

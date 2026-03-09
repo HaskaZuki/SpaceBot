@@ -1,4 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const emoji = require('./emojiConfig');
+
 module.exports = {
     createMusicEmbed: (guildConfig, track, queue, status = 'Playing') => {
         const embed = new EmbedBuilder()
@@ -16,11 +18,11 @@ module.exports = {
         }
         const row = new ActionRowBuilder()
             .addComponents(
-                new ButtonBuilder().setCustomId('play_pause').setEmoji('⏯️').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('stop').setEmoji('⏹️').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('skip').setEmoji('⏭️').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('loop').setEmoji('🔁').setStyle(ButtonStyle.Secondary),
-                new ButtonBuilder().setCustomId('shuffle').setEmoji('🔀').setStyle(ButtonStyle.Secondary)
+                new ButtonBuilder().setCustomId('play_pause').setEmoji(emoji.controls.play).setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('stop').setEmoji(emoji.ui.home).setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('skip').setEmoji(emoji.controls.next).setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('loop').setEmoji(emoji.controls.loopTrack).setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder().setCustomId('shuffle').setEmoji(emoji.controls.shuffle).setStyle(ButtonStyle.Secondary)
             );
         return { embeds: [embed], components: [row] };
     }

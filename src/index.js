@@ -77,7 +77,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
                 const currentVoiceChannel = currentBotMember.voice.channel;
                 const currentHumans = currentVoiceChannel.members.filter(m => !m.user.bot);
                 if (currentHumans.size === 0) {
-                    console.log(`🚪 Auto-disconnecting from ${newState.guild.name} - no users for 30s`);
+                    console.log(` Auto-disconnecting from ${newState.guild.name} - no users for 30s`);
                     const musicPlayer = require('./utils/musicPlayer');
                     const GuildConfig = require('./models/GuildConfig');
                     try {
@@ -115,7 +115,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         }
     } else {
         if (voiceStateTimers.has(guildId)) {
-            console.log(`✅ Cancelling auto-disconnect timer for ${newState.guild.name} - user joined`);
+            console.log(` Cancelling auto-disconnect timer for ${newState.guild.name} - user joined`);
             clearTimeout(voiceStateTimers.get(guildId));
             voiceStateTimers.delete(guildId);
         }

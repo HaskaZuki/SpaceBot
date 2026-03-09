@@ -193,7 +193,7 @@ async function restoreAllSessions(client) {
             }
 
             await clearSession(guildId);
-            console.log(`[Session] ✅ Restored session for ${guild.name}`);
+            console.log(`[Session]  Restored session for ${guild.name}`);
 
         } catch (err) {
             console.error(`[Session] Error restoring session for guild ${guildId}:`, err.message);
