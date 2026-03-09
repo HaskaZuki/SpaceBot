@@ -54,30 +54,21 @@ module.exports = {
                 const thumbnail = result.track.info?.artworkUrl || result.track.info?.thumbnail || null;
                 const requester = interaction.user;
                 const requesterName = requester.displayName || requester.username;
-                const requesterAvatar = requester.displayAvatarURL({ size: 32 });
-                const botAvatar = interaction.client.user.displayAvatarURL({ size: 64 });
-                
-                // Debug: Check queue state
+
         const playerState = musicPlayer.getQueue(guildId);
         console.log(`[DEBUG play.js] Queue state - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
         
         if (result.isFirst) {
                     const nowPlayingEmbed = new EmbedBuilder()
                         .setColor('#7C3AED')
-                        .setAuthor({ name: 'SpaceMusic', iconURL: botAvatar })
                         .setTitle('Now Playing')
                         .setDescription(`[${title}](${url})`)
-                        .setFooter({ text: `Requested by ${requesterName}`, iconURL: requesterAvatar });
-                    if (thumbnail) nowPlayingEmbed.setThumbnail(thumbnail);
                     await interaction.editReply({ embeds: [nowPlayingEmbed] });
                 } else {
                     const queueEmbed = new EmbedBuilder()
                         .setColor('#3B82F6')
-                        .setAuthor({ name: 'SpaceMusic', iconURL: botAvatar })
                         .setTitle('Added to Queue')
                         .setDescription(`[${title}](${url})`)
-                        .setFooter({ text: `Requested by ${requesterName}`, iconURL: requesterAvatar });
-                    if (thumbnail) queueEmbed.setThumbnail(thumbnail);
                     await interaction.editReply({ embeds: [queueEmbed] });
                 }
             } else {
