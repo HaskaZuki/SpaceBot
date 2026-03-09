@@ -28,7 +28,7 @@
     "opusscript": "^0.0.8",
     "passport": "^0.7.0",
     "passport-discord": "^0.1.4",
-    "shoukaku": "^4.2.0",
+    "shoukaku": "^4.3.0",
     "socket.io": "^4.7.4"
   }
 }
