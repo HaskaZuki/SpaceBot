@@ -11,7 +11,7 @@ module.exports = {
         config.announceSongs = !config.announceSongs;
         await config.save();
         await interaction.reply({ 
-            content: 'Song announcements are now **${config.announceSongs ? 'ENABLED' : 'DISABLED'}**.',
+            content: `Song announcements are now **${config.announceSongs ? 'ENABLED' : 'DISABLED'}**.`,
             flags: 64 
         });
     },

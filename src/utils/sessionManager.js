@@ -184,7 +184,7 @@ async function restoreAllSessions(client) {
                         const embed = new EmbedBuilder()
                             .setColor(0x5865F2)
                             .setDescription(
-                                '${emoji.animated.notes} Bot restarted — resuming your session in <#${voiceChannelId}>.\n` +
+                                `${emoji.animated.notes} Bot restarted — resuming your session in <#${voiceChannelId}>.\n` +
                                 `${emoji.controls.play} **${currentTrack ? currentTrack.info?.title || 'Unknown Track' : 'Next in queue'}**`
                             );
                         await textChannel.send({ embeds: [embed] });

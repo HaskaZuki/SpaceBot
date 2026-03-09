@@ -58,7 +58,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             voiceStateTimers.delete(newState.guild.id);
         }
         return;
-    }
+    }
+
+
     if (newState.member?.id === botId && !oldState.channelId) return;
 
     const voiceChannel = botMember.voice.channel;
@@ -112,7 +114,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         }
     } else {
         if (voiceStateTimers.has(guildId)) {
-            console.log(' Cancelling auto-disconnect timer for ${newState.guild.name} - user joined');
+            console.log(`Cancelling auto-disconnect timer for ${newState.guild.name} - user joined`);
             clearTimeout(voiceStateTimers.get(guildId));
             voiceStateTimers.delete(guildId);
         }
