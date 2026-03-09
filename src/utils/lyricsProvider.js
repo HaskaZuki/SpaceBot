@@ -5,7 +5,7 @@ async function fetchFromLyricsOvh(artist, title) {
         try {
             const cleanArtist = encodeURIComponent(artist.trim());
             const cleanTitle = encodeURIComponent(title.trim());
-            const url = `https://api.lyrics.ovh/v1/${cleanArtist}/${cleanTitle}`;
+            const url = 'https://api.lyrics.ovh/v1/${cleanArtist}/${cleanTitle}';
             https.get(url, (res) => {
                 let data = '';
                 res.on('data', (chunk) => {
@@ -58,7 +58,7 @@ async function getLyrics(artist, title) {
         const cleanedTitle = cleanTitle(title);
         if (!cleanedArtist || !cleanedTitle) {
             return { error: 'Invalid artist or title' };
-        }        console.log(`[Lyrics] Fetching lyrics for: ${cleanedArtist} - ${cleanedTitle}`);
+        }        console.log('[Lyrics] Fetching lyrics for: ${cleanedArtist} - ${cleanedTitle}');
         const lyrics = await fetchFromLyricsOvh(cleanedArtist, cleanedTitle);
         if (lyrics) {            const truncated = lyrics.length > 4000 
                 ? lyrics.substring(0, 4000) + '\n\n...(lyrics truncated)'

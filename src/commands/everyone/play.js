@@ -30,7 +30,7 @@ module.exports = {
         const nodes = [...interaction.client.shoukaku.nodes.values()];
         const node = nodes.find(n => n.state === 1);
         if (!node || nodes.length === 0) {
-            console.log(`[PLAY] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}`).join(', ')}`);
+            console.log('[PLAY] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}').join(', ')}');
             return interaction.reply({ 
                 content: i18n.get(lang, 'common.error') + ' (Lavalink Offline)', 
                 flags: 64 
@@ -56,13 +56,13 @@ module.exports = {
                 const requesterName = requester.displayName || requester.username;
 
         const playerState = musicPlayer.getQueue(guildId);
-        console.log(`[DEBUG play.js] Queue state - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
+        console.log(`[DEBUG play.js] Queue state - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}');
         
         if (result.isFirst) {
                     const nowPlayingEmbed = new EmbedBuilder()
                         .setColor('#7C3AED')
                         .setTitle('Now Playing')
-                        .setDescription(`[${title}](${url})`)
+                        .setDescription('[${title}](${url})`)
                     await interaction.editReply({ embeds: [nowPlayingEmbed] });
                 } else {
                     const queueEmbed = new EmbedBuilder()

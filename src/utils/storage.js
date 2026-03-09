@@ -13,7 +13,7 @@ module.exports = {
             }
             return null;
         } catch (error) {
-            console.error(`[Storage] Error getting ${collection} for ${userId}:`, error);
+            console.error('[Storage] Error getting ${collection} for ${userId}:', error);
             return null;
         }
     },

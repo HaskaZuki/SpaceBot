@@ -32,7 +32,7 @@ module.exports = {
         musicPlayer.updateDashboard(interaction.client, guildId);
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setDescription(`${emoji.status.success} Removed **${removed.info.title}** from the queue.`)
+            .setDescription('${emoji.status.success} Removed **${removed.info.title}** from the queue.`)
             .setFooter({ text: `Removed by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },

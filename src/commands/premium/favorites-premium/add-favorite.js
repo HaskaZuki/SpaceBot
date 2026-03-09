@@ -28,7 +28,7 @@ module.exports = {
                 });
             }
             const currentTrack = playerState.currentTrack;
-            let userFavorites = await storage.getUser('favorites', userId);
+            let userFavorites = await storage.getUser(`favorites`, userId);
             if (!userFavorites) {
                 userFavorites = {
                     userId,
@@ -57,7 +57,7 @@ module.exports = {
                     info: currentTrack.info,
                     addedAt: new Date().toISOString()
                 });
-                const success = await storage.setUser('favorites', userId, userFavorites);
+                const success = await storage.setUser(`favorites`, userId, userFavorites);
                 if (success) {
                     await interaction.reply({
                         content: `${emoji.premium.star} Added to favorites: **${currentTrack.info.title}**\n\n` +
@@ -70,7 +70,7 @@ module.exports = {
                     });
                 }
             } catch (saveError) {
-                console.error('Save favorite error:', saveError);
+                console.error(`Save favorite error:`, saveError);
                 await interaction.reply({
                     content: `${emoji.status.error} An error occurred while saving your favorite!`,
                     flags: MessageFlags.Ephemeral

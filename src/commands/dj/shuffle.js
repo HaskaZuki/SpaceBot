@@ -18,7 +18,7 @@ module.exports = {
         await musicPlayer.shuffleQueue(interaction.client, guildId);
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setDescription(`${emoji.controls.shuffle} Queue **shuffled** — **${playerState.queue.length}** tracks reordered.`)
+            .setDescription('${emoji.controls.shuffle} Queue **shuffled** — **${playerState.queue.length}** tracks reordered.`)
             .setFooter({ text: `Shuffled by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },

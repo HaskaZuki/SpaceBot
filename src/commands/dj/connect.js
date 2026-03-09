@@ -18,7 +18,7 @@ module.exports = {
         const existingPlayer = musicPlayer.players.get(guildId);
         if (existingPlayer?.player) {
             return interaction.reply({
-                content: `${emoji.status.error} I'm already connected to a voice channel!`,
+                content: `${emoji.status.error} I`m already connected to a voice channel!`,
                 flags: MessageFlags.Ephemeral
             });
         }

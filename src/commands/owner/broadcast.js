@@ -65,7 +65,7 @@ module.exports = {
                 }
             }
         }
-        const shardInfo = client.shard ? ` (${client.shard.count} shards)` : '';
-        await interaction.editReply(`${emoji.animated.notes} **Announcement sent!${shardInfo}**\n${emoji.status.success} Sent: **${totalSent}**\n${emoji.status.error} Failed: **${totalFailed}**`);
+        const shardInfo = client.shard ? ' (${client.shard.count} shards)' : '';
+        await interaction.editReply('${emoji.animated.notes} **Announcement sent!${shardInfo}**\n${emoji.status.success} Sent: **${totalSent}**\n${emoji.status.error} Failed: **${totalFailed}**`);
     },
 };

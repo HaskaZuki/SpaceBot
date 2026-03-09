@@ -21,10 +21,10 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
                 .setTitle('Not Running in Sharded Mode')
-                .setDescription('The bot is not running with sharding. Use `/shutdown` instead.')
+                .setDescription('The bot is not running with sharding. Use '/shutdown' instead.')
                 .addFields({
                     name: 'Tip',
-                    value: 'Start the bot with `node shard.js` to enable sharding.'
+                    value: 'Start the bot with 'node shard.js' to enable sharding.'
                 })
                 .setTimestamp();
             return interaction.reply({ embeds: [embed], flags: 64 });
@@ -33,10 +33,10 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
                 .setTitle('Restarting All Shards...')
-                .setDescription(`Restarting all **${client.shard.count}** shards. This may take a moment.`)
+                .setDescription('Restarting all **${client.shard.count}** shards. This may take a moment.')
                 .addFields(
                     { name: 'Initiated By', value: interaction.user.tag, inline: true },
-                    { name: 'Total Shards', value: `${client.shard.count}`, inline: true },
+                    { name: 'Total Shards', value: '${client.shard.count}', inline: true },
                     { name: 'Expected Downtime', value: '10-30 seconds', inline: true }
                 )
                 .setFooter({ text: 'All shards will reconnect automatically' })
@@ -62,18 +62,18 @@ module.exports = {
                     .setDescription(`${emoji.status.error} Shard ID must be between **0** and **${client.shard.count - 1}**.`)
                     .addFields({
                         name: 'Current Shards',
-                        value: `Total: ${client.shard.count} (IDs: 0-${client.shard.count - 1})`
+                        value: 'Total: ${client.shard.count} (IDs: 0-${client.shard.count - 1})`
                     })
                     .setTimestamp();
                 return interaction.reply({ embeds: [embed], flags: 64 });
             }
             const embed = new EmbedBuilder()
                 .setColor('#ff9900')
-                .setTitle(`Restarting Shard ${shardId}...`)
-                .setDescription(`Restarting shard **${shardId}** of **${client.shard.count}**.`)
+                .setTitle('Restarting Shard ${shardId}...`)
+                .setDescription(`Restarting shard **${shardId}** of **${client.shard.count}**.')
                 .addFields(
                     { name: 'Initiated By', value: interaction.user.tag, inline: true },
-                    { name: 'Shard ID', value: `${shardId}`, inline: true },
+                    { name: 'Shard ID', value: '${shardId}`, inline: true },
                     { name: 'Expected Downtime', value: '5-10 seconds', inline: true }
                 )
                 .setFooter({ text: 'Other shards will remain online' })

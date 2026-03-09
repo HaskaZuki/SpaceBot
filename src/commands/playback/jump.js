@@ -23,7 +23,7 @@ module.exports = {
             if (!playerCheck.valid) {
                 return interaction.reply({ content: `${emoji.status.error} ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
             }
-            const position = interaction.options.getInteger('position');
+            const position = interaction.options.getInteger(`position`);
             const queueIndex = position - 1;
             if (!isValidPosition(position, playerState.queue.length)) {
                 return interaction.reply({ 
@@ -39,7 +39,7 @@ module.exports = {
                     content: `${emoji.controls.skip} Jumping to position **${position}**: **${targetTrack.info.title}**\nSkipped **${skippedTracks.length}** track(s)`
                 });
             } catch (jumpError) {
-                console.error('Jump error:', jumpError);
+                console.error(`Jump error:`, jumpError);
                 await interaction.reply({ 
                     content: `${emoji.status.error} Failed to jump to track!`, 
                     flags: MessageFlags.Ephemeral

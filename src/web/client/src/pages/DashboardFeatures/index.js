@@ -124,13 +124,13 @@ function DashboardFeatures() {
             <div key={idx} className="feature-category">
               <div className="category-header">
                 <div className="category-icon" style={{ background: category.color }}>
-                  <i className={`fas ${category.icon}`}></i>
+                  <i className={'fas ${category.icon}`}></i>
                 </div>
                 <h2>{category.category}</h2>
               </div>
               <div className="category-items">
                 {category.items.map((item, itemIdx) => (
-                  <div key={itemIdx} className={`feature-item ${item.highlight ? 'highlight' : ''}`}>
+                  <div key={itemIdx} className={`feature-item ${item.highlight ? 'highlight' : ''}'}>
                     <div className="feature-icon">
                       <i className={`fas ${item.icon}`}></i>
                     </div>

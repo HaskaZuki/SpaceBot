@@ -24,7 +24,7 @@ module.exports = {
             if (!playerCheck.valid) {
                 return interaction.reply({ content: `${emoji.status.error} ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
             }
-            const seconds = interaction.options.getInteger('seconds') || 10;
+            const seconds = interaction.options.getInteger(`seconds`) || 10;
             const rewindMs = seconds * 1000;
             const currentPosition = playerState.player.position || 0;
             const newPosition = Math.max(0, currentPosition - rewindMs);
@@ -34,7 +34,7 @@ module.exports = {
                     content: `${emoji.controls.rewind} Rewound **${seconds}s** to **${formatTime(newPosition)}**`
                 });
             } catch (seekError) {
-                console.error('Rewind error:', seekError);
+                console.error(`Rewind error:`, seekError);
                 await interaction.reply({ 
                     content: `${emoji.status.error} Failed to rewind. This track may not support seeking.`, 
                     flags: MessageFlags.Ephemeral

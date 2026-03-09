@@ -20,8 +20,8 @@ module.exports = {
         const sourceName = track.info.sourceName || 'default';
         const sourceIcon = emoji.getSourceIcon(sourceName);
         const progressBar = isStream
-            ? '${emoji.status.error} **LIVE STREAM**'
-            : `${musicPlayer.createProgressBar(position, duration)} \`${musicPlayer.formatTime(position)} / ${musicPlayer.formatTime(duration)}\``;
+            ? '${emoji.status.error} **LIVE STREAM**`
+            : `${musicPlayer.createProgressBar(position, duration)} \`${musicPlayer.formatTime(position)} / ${musicPlayer.formatTime(duration)}\'';
         const loopMode = playerState.loop || 'off';
         const loopDisplay = emoji.getLoopDisplay(loopMode);
         const queueLength = playerState.queue?.length || 0;
@@ -42,13 +42,13 @@ module.exports = {
             .setColor('#7C3AED')
             .setAuthor({ name: 'SpaceMusic', iconURL: botAvatar })
             .setTitle(`${emoji.animated.disc} Now Playing`)
-            .setDescription(`**[${track.info.title}](${track.info.uri || '#'})**`)
+            .setDescription(`**[${track.info.title}](${track.info.uri || '#'})**')
             .addFields(
                 { name: 'Progress', value: progressBar, inline: false },
                 { name: 'Artist', value: track.info.author || 'Unknown', inline: true },
-                { name: 'Source', value: `${sourceIcon} ${sourceName}`, inline: true },
+                { name: 'Source', value: '${sourceIcon} ${sourceName}', inline: true },
                 { name: 'Loop', value: loopDisplay, inline: true },
-                { name: 'Queue', value: `${queueLength} track${queueLength !== 1 ? 's' : ''}`, inline: true }
+                { name: 'Queue', value: '${queueLength} track${queueLength !== 1 ? 's' : ''}`, inline: true }
             )
             .setFooter({ text: `Requested by ${requestedByText}`, iconURL: requestedByIcon });
         if (track.info.artworkUrl) {

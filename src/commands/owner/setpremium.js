@@ -81,7 +81,7 @@ module.exports = {
                     user.isPremium = true;
                     user.premiumExpiresAt = expiresAt;
                     await user.save();
-                    const timeInfo = expiresAt ? `until <t:${Math.floor(expiresAt.getTime()/1000)}:F>` : '**Lifetime**';
+                    const timeInfo = expiresAt ? 'until <t:${Math.floor(expiresAt.getTime()/1000)}:F>' : '**Lifetime**';
                     return interaction.reply({ content: `${emoji.status.success} **User Premium Activated** for <@${targetId}> (${targetId})\n📅 Duration: ${timeInfo}`, flags: 64 });
                 } else {
                     user.isPremium = false;
@@ -98,7 +98,7 @@ module.exports = {
                     guild.isPremium = true;
                     guild.premiumExpiresAt = expiresAt;
                     await guild.save();
-                    const timeInfo = expiresAt ? `until <t:${Math.floor(expiresAt.getTime()/1000)}:F>` : '**Lifetime**';
+                    const timeInfo = expiresAt ? 'until <t:${Math.floor(expiresAt.getTime()/1000)}:F>' : '**Lifetime**';
                     return interaction.reply({ content: `${emoji.status.success} **Server Premium Activated** for Guild ID: \`${targetId}\`\n📅 Duration: ${timeInfo}`, flags: 64 });
                 } else {
                     guild.isPremium = false;

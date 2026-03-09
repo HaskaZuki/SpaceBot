@@ -6,14 +6,14 @@ module.exports = {
         .setDescription('[OWNER] Gracefully shutdown the bot'),
     async execute(interaction) {
         const client = interaction.client;
-        const shardInfo = client.shard ? `Shutting down all ${client.shard.count} shards...` : 'Shutting down...';
+        const shardInfo = client.shard ? 'Shutting down all ${client.shard.count} shards...' : 'Shutting down...';
         const embed = new EmbedBuilder()
             .setColor('#ff0000')
             .setTitle(`${emoji.status.error} Shutting Down...`)
             .setDescription(`**${shardInfo}**\n\nBot is shutting down gracefully. Goodbye!`)
             .addFields(
-                { name: 'Initiated By', value: `${interaction.user.tag}`, inline: true },
-                { name: 'Sharding', value: client.shard ? `Shard ${client.shard.ids[0]}/${client.shard.count}` : 'No Sharding', inline: true }
+                { name: 'Initiated By', value: '${interaction.user.tag}', inline: true },
+                { name: 'Sharding', value: client.shard ? 'Shard ${client.shard.ids[0]}/${client.shard.count}' : 'No Sharding', inline: true }
             )
             .setTimestamp();
         await interaction.reply({ embeds: [embed], flags: 64 });

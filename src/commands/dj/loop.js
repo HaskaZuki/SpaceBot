@@ -18,7 +18,7 @@ module.exports = {
         const loopDisplay = emoji.getLoopDisplay(mode);
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setDescription(`Loop mode set to: **${loopDisplay}**`)
+            .setDescription('Loop mode set to: **${loopDisplay}**`)
             .setFooter({ text: `Changed by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },

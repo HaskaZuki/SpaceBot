@@ -507,7 +507,7 @@ module.exports = (client) => {
             if ((settings.playlists || []).length >= maxPlaylists) {
                 return res.status(403).json({ 
                     success: false, 
-                    message: `Playlist limit reached (${maxPlaylists}). ${!isPremium ? 'Upgrade to Premium for more!' : ''}`,
+                    message: 'Playlist limit reached (${maxPlaylists}). ${!isPremium ? 'Upgrade to Premium for more!' : ''}',
                     requiresPremium: !isPremium
                 });
             }
@@ -640,7 +640,7 @@ module.exports = (client) => {
                     break;
             }
             await settings.save();
-            res.json({ success: true, message: `${type} cleared successfully` });
+            res.json({ success: true, message: '${type} cleared successfully' });
         } catch (err) {
             res.status(500).json({ success: false, message: err.message });
         }
@@ -678,7 +678,7 @@ module.exports = (client) => {
                     return {
                         rank: index + 1,
                         userId: entry._id,
-                        username: user?.username || `User#${entry._id.slice(0, 8)}`,
+                        username: user?.username || 'User#${entry._id.slice(0, 8)}',
                         avatar: user?.avatar || null,
                         trackCount: entry.trackCount,
                         totalDuration: entry.totalDuration,

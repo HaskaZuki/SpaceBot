@@ -24,7 +24,7 @@ module.exports = {
             config[type] = val;
             await config.save();
             const typeName = type === 'maxSongDuration' ? 'Duration' : 'Count';
-            await interaction.reply(`${emoji.status.success} ${typeName} limit set to **${val}** ${type === 'maxSongDuration' ? 'seconds' : 'songs'}`);
+            await interaction.reply('${emoji.status.success} ${typeName} limit set to **${val}** ${type === 'maxSongDuration' ? 'seconds' : 'songs'}`);
         } catch (error) {
             console.error('limit error:', error);
             await interaction.reply({ content: 'Failed to update limit.', flags: 64 });

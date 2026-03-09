@@ -11,7 +11,7 @@ router.get('/callback', (req, res, next) => {
         if (err) {
             console.error('OAuth error:', err.message);
             if (err.message && err.message.includes('rate limit')) {
-                return res.status(429).send(`
+                return res.status(429).send('
                     <html><body style="background:#1a1a2e;color:#fff;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;text-align:center">
                         <div><h2>⏳ Too Many Login Attempts</h2><p>Discord is rate limiting requests. Please wait a moment and try again.</p>
                         <a href="${DASHBOARD_URL}/auth/discord" style="color:#5865F2;margin-top:1rem;display:inline-block">Try Again</a></div>
@@ -23,14 +23,14 @@ router.get('/callback', (req, res, next) => {
         if (!user) return res.redirect(`${DASHBOARD_URL}/`);
         req.logIn(user, (loginErr) => {
             if (loginErr) return next(loginErr);
-            return res.redirect(`${DASHBOARD_URL}/dashboard`);
+            return res.redirect(`${DASHBOARD_URL}/dashboard');
         });
     })(req, res, next);
 });
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) return next(err);
-        res.redirect(`${DASHBOARD_URL}/`);
+        res.redirect('${DASHBOARD_URL}/`);
     });
 });
 router.get('/user', async (req, res) => {

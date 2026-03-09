@@ -18,10 +18,10 @@ module.exports = {
         const queueCount = playerState.queue?.length || 0;
         await musicPlayer.stopPlayer(interaction.client, guildId);
         const embed = new EmbedBuilder()
-            .setColor('#7C3AED')
+            .setColor(`#7C3AED`)
             .setDescription(
                 `${emoji.controls.pause} Playback **stopped** and queue cleared.` +
-                (queueCount > 0 ? ` Removed **${queueCount}** track${queueCount !== 1 ? 's' : ''}.` : '')
+                (queueCount > 0 ? ` Removed **${queueCount}** track${queueCount !== 1 ? 's' : ''}.' : '')
             )
             .setFooter({ text: `Stopped by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });

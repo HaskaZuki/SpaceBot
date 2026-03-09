@@ -18,7 +18,7 @@ module.exports = {
         playerState.player.seekTo(0);
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
-            .setDescription(`${emoji.controls.play} Replaying **${playerState.currentTrack.info.title}** from the beginning.`)
+            .setDescription('${emoji.controls.play} Replaying **${playerState.currentTrack.info.title}** from the beginning.`)
             .setFooter({ text: `Replayed by ${interaction.user.displayName || interaction.user.username}` });
         await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
     },

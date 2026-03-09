@@ -39,7 +39,7 @@ module.exports = {
                         await interaction.followUp({ content: `${emoji.controls.loopQueue} Loop mode set to: **${mode}**`, flags: 64 }).catch(() => {});
                         break;
                     }
-                    case 'shuffle':
+                    case `shuffle`:
                         await musicPlayer.shuffleQueue(interaction.client, guildId);
                         await interaction.followUp({ content: `${emoji.controls.shuffle} Queue shuffled!`, flags: 64 }).catch(() => {});
                         break;
@@ -79,7 +79,7 @@ module.exports = {
                         flags: 64
                     });
                 } catch (error) {
-                    console.error('Play from search error:', error);
+                    console.error(`Play from search error:`, error);
                     await interaction.followUp({
                         content: `${emoji.status.error} Failed to add track to queue.`,
                         flags: 64
@@ -94,7 +94,7 @@ module.exports = {
             try {
                 await command.autocomplete(interaction);
             } catch (error) {
-                console.error('Autocomplete error:', error.message);
+                console.error(`Autocomplete error:`, error.message);
             }
             return;
         }
@@ -155,7 +155,7 @@ module.exports = {
                     });
                 }
             }
-            if (command.category === 'premium') {
+            if (command.category === `premium`) {
                 const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
                 if (!config || !config.isPremium) {
                     return interaction.reply({ 
@@ -167,7 +167,7 @@ module.exports = {
             try {
                 await command.execute(interaction);
             } catch (error) {
-                console.error('Command execution error:', error);
+                console.error(`Command execution error:`, error);
                 try {
                     if (interaction.replied || interaction.deferred) {
                         await interaction.followUp({ content: `${emoji.status.error} There was an error executing this command!`, flags: 64 });

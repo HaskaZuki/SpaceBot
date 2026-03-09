@@ -140,7 +140,7 @@ module.exports = (client, io) => {
             }
             await playerState.player.setGlobalVolume(volume);
             io.to(guildId).emit('player:update', { action: 'volumeChanged', volume });
-            res.json({ success: true, message: `Volume set to ${volume}%` });
+            res.json({ success: true, message: 'Volume set to ${volume}%' });
         } catch (error) {
             console.error('Volume error:', error);
             res.status(500).json({ message: error.message });
@@ -151,7 +151,7 @@ module.exports = (client, io) => {
         try {
             const mode = await musicPlayer.setLoop(client, guildId);
             io.to(guildId).emit('player:update', { action: 'loopChanged', mode });
-            res.json({ success: true, message: `Loop mode: ${mode}`, mode });
+            res.json({ success: true, message: 'Loop mode: ${mode}', mode });
         } catch (error) {
             console.error('Loop error:', error);
             res.status(500).json({ message: error.message });

@@ -74,8 +74,8 @@ const COMMANDS = {
 
 const CATS = {
     music:   { label: 'Music',    icon: emoji.animated.notes,   color: 0xE91E63, perm: 'Everyone' },
-    dj:      { label: 'DJ',       icon: '${emoji.ui.gear}',                   color: 0x9C27B0, perm: 'DJ Role / Admin' },
-    playback:{ label: 'Playback', icon: '▶️',                    color: 0x3F51B5, perm: 'DJ Role / Admin' },
+    dj:      { label: 'DJ',       icon: emoji.ui.gear,          color: 0x9C27B0, perm: 'DJ Role / Admin' },
+    playback:{ label: 'Playback', icon: emoji.controls.play,    color: 0x3F51B5, perm: 'DJ Role / Admin' },
     premium: { label: 'Premium',  icon: emoji.animated.premium, color: 0xF1C40F, perm: 'Premium' },
     admin:   { label: 'Admin',    icon: emoji.ui.gear,          color: 0x95A5A6, perm: 'Administrator' },
 };
@@ -99,18 +99,18 @@ function buildOverview() {
     const lines = CAT_ORDER.map(cat => {
         const c = CATS[cat];
         const count = (g[cat] || []).length;
-        return `${c.icon}  **${c.label}** — ${count} commands  ·  *${c.perm}*`;
+        return '${c.icon}  **${c.label}** — ${count} commands  ·  *${c.perm}*';
     });
 
     return new EmbedBuilder()
         .setColor(0x5865F2)
         .setAuthor({ name: 'SpaceBot — Command Help', iconURL: 'https://cdn.discordapp.com/emojis/1475168921169428622.gif' })
         .setDescription(
-            `Use the buttons below to browse each category.\n` +
-            `Type \`/help command:<name>\` for full details on any command.\n\n` +
+            'Use the buttons below to browse each category.\n' +
+            `Type \`/help command:<name>\' for full details on any command.\n\n' +
             lines.join('\n')
         )
-        .setFooter({ text: `${total} total commands  ·  Buttons expire in 3 min` });
+        .setFooter({ text: '${total} total commands  ·  Buttons expire in 3 min` });
 }
 
 function buildCategory(catKey) {
@@ -146,8 +146,8 @@ function buildDetail(name) {
         .setAuthor({ name: `/${name}` })
         .setDescription(`${cmd.desc}\n\u200b`)
         .addFields(
-            { name: 'Usage',      value: `\`${cmd.usage}\``,  inline: true },
-            { name: 'Category',   value: `${c.icon} ${c.label}`, inline: true },
+            { name: 'Usage',      value: '\`${cmd.usage}\'',  inline: true },
+            { name: 'Category',   value: '${c.icon} ${c.label}`, inline: true },
             { name: 'Permission', value: c.perm,              inline: true },
         )
         .setFooter({ text: 'Use /help to see all commands' });
@@ -159,7 +159,7 @@ function buildButtons(userId, activeCat) {
         const c = CATS[cat];
         row.addComponents(
             new ButtonBuilder()
-                .setCustomId(`help:${userId}:${cat}`)
+                .setCustomId('help:${userId}:${cat}`)
                 .setEmoji(c.icon)
                 .setLabel(c.label)
                 .setStyle(cat === activeCat ? ButtonStyle.Primary : ButtonStyle.Secondary)
@@ -174,7 +174,7 @@ function buildDisabledButtons() {
         const c = CATS[cat];
         row.addComponents(
             new ButtonBuilder()
-                .setCustomId(`help:expired:${cat}`)
+                .setCustomId(`help:expired:${cat}')
                 .setEmoji(c.icon)
                 .setLabel(c.label)
                 .setStyle(ButtonStyle.Secondary)
@@ -204,7 +204,7 @@ module.exports = {
             .filter(name => name.includes(query) || COMMANDS[name].desc.toLowerCase().includes(query))
             .slice(0, 25)
             .map(name => ({
-                name: `/${name}  —  ${COMMANDS[name].desc.slice(0, 60)}`,
+                name: '/${name}  —  ${COMMANDS[name].desc.slice(0, 60)}`,
                 value: name,
             }));
         await interaction.respond(results);
@@ -218,10 +218,10 @@ module.exports = {
                 const suggestions = Object.keys(COMMANDS)
                     .filter(n => n.includes(cmdName))
                     .slice(0, 4)
-                    .map(n => `\`/${n}\``);
+                    .map(n => '\'/${n}\``);
                 return interaction.reply({
                     content: `${emoji.status.error} Command \`/${cmdName}\` not found.` +
-                        (suggestions.length ? `\n\nDid you mean: ${suggestions.join(', ')}?` : ''),
+                        (suggestions.length ? `\n\nDid you mean: ${suggestions.join(', ')}?' : ''),
                     flags: MessageFlags.Ephemeral,
                 });
             }
@@ -238,7 +238,7 @@ module.exports = {
 
         collector.on('collect', async btn => {
             if (btn.user.id !== interaction.user.id) {
-                return btn.reply({ content: `${emoji.status.error} This menu isn't yours.`, flags: MessageFlags.Ephemeral });
+                return btn.reply({ content: '${emoji.status.error} This menu isn't yours.', flags: MessageFlags.Ephemeral });
             }
             const [, , cat] = btn.customId.split(':');
             await btn.update({

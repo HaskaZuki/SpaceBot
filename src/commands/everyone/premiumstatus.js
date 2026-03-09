@@ -21,14 +21,14 @@ module.exports = {
                 { 
                     name: `User Status (${interaction.user.username})`, 
                     value: isUserPrem 
-                        ? `${emoji.status.success} **Premium Active**\nExpires: ${userSettings.premiumExpiresAt ? new Date(userSettings.premiumExpiresAt).toDateString() : '**Lifetime**'}`
+                        ? `${emoji.status.success} **Premium Active**\nExpires: ${userSettings.premiumExpiresAt ? new Date(userSettings.premiumExpiresAt).toDateString() : `**Lifetime**`}`
                         : `${emoji.status.error} **Free Plan**`,
                     inline: false 
                 },
                 { 
                     name: `Server Status (${interaction.guild.name})`, 
                     value: isServerPrem 
-                        ? `${emoji.status.success} **Premium Active**\nExpires: ${guildConfig.premiumExpiresAt ? new Date(guildConfig.premiumExpiresAt).toDateString() : '**Lifetime**'}`
+                        ? `${emoji.status.success} **Premium Active**\nExpires: ${guildConfig.premiumExpiresAt ? new Date(guildConfig.premiumExpiresAt).toDateString() : `**Lifetime**`}`
                         : `${emoji.status.error} **Free Plan**`,
                     inline: false 
                 }

@@ -73,7 +73,7 @@ async function applyFilter(player, filter) {
         if (typeof filter === 'string') {
             const preset = FILTER_PRESETS[filter.toLowerCase()];
             if (!preset) {
-                throw new Error(`Unknown filter: ${filter}`);
+                throw new Error('Unknown filter: ${filter}');
             }
             filterConfig = { ...preset };
             delete filterConfig.name;

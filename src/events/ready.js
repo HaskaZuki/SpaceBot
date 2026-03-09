@@ -29,7 +29,7 @@ module.exports = {
                 console.log('[Session] Lavalink ready — restoring sessions...');
                 await restoreAllSessions(client);
             } else if (attempts < 10) {
-                console.log(`[Session] Waiting for Lavalink... (attempt ${attempts + 1}/10)`);
+                console.log('[Session] Waiting for Lavalink... (attempt ${attempts + 1}/10)`);
                 setTimeout(() => tryRestore(attempts + 1), 3000);
             } else {
                 console.warn('[Session] Lavalink not available after 30s — skipping session restore');

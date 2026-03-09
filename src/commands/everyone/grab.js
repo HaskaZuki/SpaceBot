@@ -17,7 +17,7 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#10B981')
             .setTitle('Song Saved!')
-            .setDescription(`**[${track.info.title}](${track.info.uri})**`)
+            .setDescription('**[${track.info.title}](${track.info.uri})**`)
             .addFields(
                 { name: 'Artist', value: track.info.author || 'Unknown', inline: true },
                 { name: 'Duration', value: duration, inline: true },
@@ -34,7 +34,7 @@ module.exports = {
             await interaction.reply({ content: `${emoji.status.success} Song info sent to your DMs! Check your messages.`, flags: 64 });
         } catch {
             await interaction.reply({ 
-                content: `${emoji.status.error} Couldn't send DM! Make sure your DMs are open for this server.`, 
+                content: `${emoji.status.error} Couldn`t send DM! Make sure your DMs are open for this server.`, 
                 flags: 64 
             });
         }

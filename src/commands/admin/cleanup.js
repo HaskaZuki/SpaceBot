@@ -27,7 +27,7 @@ module.exports = {
             }).catch(() => [0]);
             totalCleaned = results.reduce((acc, count) => acc + count, 0);
         }
-        const shardInfo = client.shard ? ` (${client.shard.count} shards checked)` : '';
+        const shardInfo = client.shard ? ' (${client.shard.count} shards checked)' : '';
         await interaction.editReply({ 
             content: ` **Cleanup complete!${shardInfo}**\n${emoji.status.success} Player state reset\n🗑️ Cleaned up ${totalCleaned} inactive players`,
         });

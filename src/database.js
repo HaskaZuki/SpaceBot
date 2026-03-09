@@ -14,10 +14,10 @@ module.exports = {
                 console.error('${emoji.status.error} MongoDB Connection Error:', err);
             });
             mongoose.connection.on('disconnected', () => {
-                console.warn('${emoji.status.error} MongoDB Disconnected. Attempting to reconnect...');
+                console.warn(`${emoji.status.error} MongoDB Disconnected. Attempting to reconnect...`);
             });
         } catch (error) {
-            console.error('${emoji.status.error} Failed to connect to MongoDB:', error.message);
+            console.error(`${emoji.status.error} Failed to connect to MongoDB:`, error.message);
         }
     }
 };

@@ -13,7 +13,7 @@ module.exports = {
         const hours = Math.floor((uptime % 86400) / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
         const seconds = Math.floor(uptime % 60);
-        const uptimeStr = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        const uptimeStr = '${days}d ${hours}h ${minutes}m ${seconds}s';
         const memUsed = process.memoryUsage();
         const memUsedMB = (memUsed.heapUsed / 1024 / 1024).toFixed(2);
         const memTotalMB = (memUsed.heapTotal / 1024 / 1024).toFixed(2);
@@ -50,41 +50,41 @@ module.exports = {
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             'BOT STATISTICS',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-            `Bot Name: ${client.user.username}`,
+            'Bot Name: ${client.user.username}`,
             `Bot ID: ${client.user.id}`,
             `Loaded Commands: ${client.commands.size}`,
-            `Uptime: ${uptimeStr}`,
+            `Uptime: ${uptimeStr}',
             '',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             'GLOBAL STATISTICS',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-            `Total Servers: ${totalGuilds.toLocaleString()}`,
+            'Total Servers: ${totalGuilds.toLocaleString()}`,
             `Total Users: ${totalUsers.toLocaleString()}`,
             `Voice Connections: ${totalVoiceConnections.toLocaleString()}`,
             `Total Channels: ${totalChannels.toLocaleString()}`,
-            `Total Emojis: ${client.emojis.cache.size.toLocaleString()}`,
+            `Total Emojis: ${client.emojis.cache.size.toLocaleString()}',
             '',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             'SHARD STATISTICS',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-            `This Shard ID: ${shardInfo.id}`,
+            'This Shard ID: ${shardInfo.id}`,
             `This Shard Servers: ${shardInfo.guilds.toLocaleString()}`,
-            `Total Shards: ${shardInfo.total}`,
+            `Total Shards: ${shardInfo.total}',
             '',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             'SYSTEM INFORMATION',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-            `Platform: ${os.platform()} ${os.arch()}`,
+            'Platform: ${os.platform()} ${os.arch()}`,
             `System RAM: ${systemFreeMemMB}GB / ${systemMemMB}GB (Free)`,
             `Bot Memory: ${memUsedMB}MB / ${memTotalMB}MB (Heap)`,
             `CPU Usage: ${avgCpu}% (Average)`,
             `CPU Cores: ${cpus.length}`,
-            `Internal IP: ${internalIP}`,
+            `Internal IP: ${internalIP}',
             '',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
             'SOFTWARE VERSIONS',
             '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━',
-            `Node.js: ${nodeVersion}`,
+            'Node.js: ${nodeVersion}`,
             `V8 Engine: v${v8Version}`,
             `Discord.js: v${djsVersion}`,
         ];
@@ -97,14 +97,14 @@ module.exports = {
                 const status = node.state === 1 ? 'Online' : 'Off  line';
                 const players = node.stats ? node.stats.players : 0;
                 const playing = node.stats ? node.stats.playingPlayers : 0;
-                statsText.push(`${status} ${node.name}`);
-                statsText.push(`   Players: ${players} | Playing: ${playing}`);
+                statsText.push('${status} ${node.name}`);
+                statsText.push(`   Players: ${players} | Playing: ${playing}');
                 if (node.stats) {
                     const cpuLoad = typeof node.stats.cpu === 'object'
                         ? (node.stats.cpu.systemLoad * 100).toFixed(1)
                         : (typeof node.stats.cpu === 'number' ? node.stats.cpu.toFixed(1) : '0.0');
                     const memoryUsed = node.stats.memory ? (node.stats.memory.used / 1024 / 1024).toFixed(0) : '0';
-                    statsText.push(`   CPU: ${cpuLoad}% | Memory: ${memoryUsed}MB`);
+                    statsText.push('   CPU: ${cpuLoad}% | Memory: ${memoryUsed}MB`);
                 }
             });
         } else {
@@ -112,8 +112,8 @@ module.exports = {
             statsText.push('Lavalink: No nodes connected');
         }
         statsText.push('');
-        statsText.push(`WebSocket Ping: ${client.ws.ping}ms`);
-        statsText.push(`Response Time: ${Date.now() - interaction.createdTimestamp}ms`);
+        statsText.push('WebSocket Ping: ${client.ws.ping}ms`);
+        statsText.push(`Response Time: ${Date.now() - interaction.createdTimestamp}ms');
         const embed = new EmbedBuilder()
             .setColor('#6366f1')
             .setTitle('SpaceBot Statistics')

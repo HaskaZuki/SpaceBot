@@ -36,7 +36,7 @@ module.exports = {
                     content: `${emoji.controls.previous} Playing previous track: **${previousTrack.info.title}**`
                 });
             } catch (playError) {
-                console.error('Previous track play error:', playError);
+                console.error(`Previous track play error:`, playError);
                 await interaction.reply({ 
                     content: `${emoji.status.error} Failed to play previous track!`, 
                     flags: MessageFlags.Ephemeral

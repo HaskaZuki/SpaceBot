@@ -24,7 +24,7 @@ module.exports = {
             if (!playerCheck.valid) {
                 return interaction.reply({ content: `${emoji.status.error} ${playerCheck.error}`, flags: MessageFlags.Ephemeral });
             }
-            const seconds = interaction.options.getInteger('seconds') || 10;
+            const seconds = interaction.options.getInteger(`seconds`) || 10;
             const forwardMs = seconds * 1000;
             const currentPosition = playerState.player.position || 0;
             const trackDuration = playerState.currentTrack.info.length;
@@ -42,7 +42,7 @@ module.exports = {
                     content: `${emoji.controls.forward} Fast-forwarded **${seconds}s** to **${formatTime(newPosition)}**`
                 });
             } catch (seekError) {
-                console.error('Forward error:', seekError);
+                console.error(`Forward error:`, seekError);
                 await interaction.reply({ 
                     content: `${emoji.status.error} Failed to fast-forward. This track may not support seeking.`, 
                     flags: MessageFlags.Ephemeral

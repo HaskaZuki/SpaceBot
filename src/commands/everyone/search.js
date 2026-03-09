@@ -30,7 +30,7 @@ module.exports = {
         const nodes = [...interaction.client.shoukaku.nodes.values()];
         const node = nodes.find(n => n.state === 1);
         if (!node || nodes.length === 0) {
-            console.log(`[SEARCH] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}`).join(', ')}`);
+            console.log(`[SEARCH] No ready node. Nodes: ${nodes.map(n => `${n.name}:${n.state}`).join(`, `)}`);
             return interaction.reply({ 
                 content: `${emoji.status.error} Music service is not available. Lavalink server is not connected.`, 
                 flags: 64 
@@ -45,13 +45,13 @@ module.exports = {
                 youtube: { prefix: 'ytsearch', emoji: emoji.sources.youtube }
             };
             const selectedSource = sourceConfig[source] || sourceConfig.youtube;
-            let searchQuery = `${selectedSource.prefix}:${query}`;
+            let searchQuery = '${selectedSource.prefix}:${query}`;
             console.log(`[SEARCH] Trying ${selectedSource.emoji}: ${searchQuery}`);
             let result;
             try {
                 result = await node.rest.resolve(searchQuery);
             } catch (e) {
-                console.log(`[SEARCH] First resolve failed for ${selectedSource.prefix}:`, e.message || e.error || e.toString());
+                console.log(`[SEARCH] First resolve failed for ${selectedSource.prefix}:', e.message || e.error || e.toString());
                 result = null;
             }
             if (!result || result.loadType === 'empty' || result.loadType === 'error' || result.loadType === 'NO_MATCHES') {
@@ -59,7 +59,7 @@ module.exports = {
                     .filter(s => s !== selectedSource.prefix);
                 for (const fallbackPrefix of fallbackSources) {
                     try {
-                        const fallbackQuery = `${fallbackPrefix}:${query}`;
+                        const fallbackQuery = '${fallbackPrefix}:${query}';
                         result = await node.rest.resolve(fallbackQuery);
                         if (result && result.loadType === 'search' && result.data && result.data.length > 0) {
                             const sourceName = Object.values(sourceConfig).find(s => s.prefix === fallbackPrefix)?.emoji || fallbackPrefix;
@@ -75,7 +75,7 @@ module.exports = {
                 return interaction.editReply(`${emoji.status.error} No results found for: **${query}**\n\nTried multiple sources but found nothing. Try a different search term!`);
             }
             let tracks = [];
-            if (result.loadType === 'search') {
+            if (result.loadType === `search`) {
                 tracks = result.data || [];
             } else if (result.data && Array.isArray(result.data)) {
                 tracks = result.data;
@@ -88,20 +88,20 @@ module.exports = {
             const topTracks = tracks.slice(0, 10);
             const embed = new EmbedBuilder()
                 .setColor('#6366f1')
-                .setTitle(`Search Results`)
+                .setTitle('Search Results')
                 .setDescription(`Showing top ${topTracks.length} results for: **${query}**\n\n` +
                     topTracks.map((track, i) => 
                         `**${i + 1}.** [${track.info.title}](${track.info.uri})\n` +
-                        `└ Author: ${track.info.author} • Duration: ${formatDuration(track.info.length)}`
+                        `└ Author: ${track.info.author} • Duration: ${formatDuration(track.info.length)}'
                     ).join('\n\n'))
-                .setFooter({ text: `Select a song to add it to the queue` });
+                .setFooter({ text: 'Select a song to add it to the queue' });
             const selectMenu = new StringSelectMenuBuilder()
-                .setCustomId(`search_select_${interaction.user.id}`)
+                .setCustomId(`search_select_${interaction.user.id}')
                 .setPlaceholder('Select a song to play')
                 .addOptions(
                     topTracks.map((track, i) => ({
                         label: track.info.title.substring(0, 100),
-                        description: `${track.info.author.substring(0, 50)} • ${formatDuration(track.info.length)}`,
+                        description: '${track.info.author.substring(0, 50)} • ${formatDuration(track.info.length)}`,
                         value: i.toString()
                     }))
                 );
@@ -123,7 +123,7 @@ module.exports = {
             }, 60000);
         } catch (error) {
             console.error('Search error:', error);
-            await interaction.editReply(`${emoji.status.error} Failed to search. Error: ${error.message}`);
+            await interaction.editReply('${emoji.status.error} Failed to search. Error: ${error.message}`);
         }
     },
 };

@@ -21,7 +21,7 @@ module.exports = {
         if (!playerState || !playerState.currentTrack) {
             return interaction.reply({ content: `${emoji.status.error} Nothing is currently playing!`, flags: 64 });
         }
-        const position = interaction.options.getInteger('position');
+        const position = interaction.options.getInteger(`position`);
         const queueLength = playerState.queue.length;
         if (queueLength === 0) {
             return interaction.reply({ content: `${emoji.status.error} The queue is empty!`, flags: 64 });
@@ -40,8 +40,8 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor('#7C3AED')
                 .setDescription(
-                    `${emoji.controls.skip} Skipped to position **#${position}** in queue\n` +
-                    `${skippedCount > 0 ? `Removed **${skippedCount}** track${skippedCount !== 1 ? 's' : ''}**\n` : ''}` +
+                    '${emoji.controls.skip} Skipped to position **#${position}** in queue\n` +
+                    `${skippedCount > 0 ? `Removed **${skippedCount}** track${skippedCount !== 1 ? 's' : ''}**\n' : ''}` +
                     `\n${emoji.controls.play} Now playing: **${targetTrack.info.title}**`
                 );
             await interaction.reply({ embeds: [embed] });

@@ -25,7 +25,7 @@ for (const folder of commandFolders) {
         const commandFiles = loadCommandFiles(folderPath);
         for (const filePath of commandFiles) {
             const fileName = path.relative(commandsPath, filePath);
-            console.log(`Processing: ${fileName}`);
+            console.log('Processing: ${fileName}');
             const command = require(filePath);
             if ('data' in command && 'execute' in command) {
                 try {
@@ -36,7 +36,7 @@ for (const folder of commandFolders) {
                         globalCommands.push(jsonData);
                     }
                 } catch (err) {
-                    console.error(`FAILED to process command: ${fileName}`);
+                    console.error('FAILED to process command: ${fileName}`);
                     console.error(err);
                 }
             } else {
@@ -58,7 +58,7 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN);
                 Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.OWNER_GUILD_ID),
                 { body: ownerCommands },
             );
-            console.log(`Successfully reloaded ${ownerData.length} owner-only guild commands.`);
+            console.log(`Successfully reloaded ${ownerData.length} owner-only guild commands.');
             console.log('Owner commands are only visible in the owner guild and protected by OWNER_ID check.');
         } else {            console.warn('[WARNING] OWNER_GUILD_ID not set in .env');
             console.warn('Deploying owner commands globally (they are still protected by OWNER_ID check in the bot).');

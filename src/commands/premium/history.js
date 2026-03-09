@@ -19,8 +19,8 @@ module.exports = {
             return interaction.reply({
                 content: '${emoji.status.error} **History is a Premium-Only feature!**\n\n' +
                     'Premium features:\n' +
-                    '• ${emoji.ui.charts} Full listening history\n' +
-                    '• ${emoji.ui.charts} Statistics & analytics\n' +
+                    '• ${emoji.ui.charts} Full listening history\n` +
+                    `• ${emoji.ui.charts} Statistics & analytics\n' +
                     '• ⭐ Unlimited favorites\n' +
                     '• ${emoji.ui.gear} Advanced audio filters\n\n' +
                     'Upgrade your account to Premium!',
@@ -37,7 +37,7 @@ module.exports = {
                 .limit(limit)
                 .lean();
             if (recentTracks.length === 0) {
-                return interaction.editReply('${emoji.ui.charts} Your listening history is empty! Play some music to build your history.');
+                return interaction.editReply('${emoji.ui.charts} Your listening history is empty! Play some music to build your history.`);
             }
             const [totalStats] = await PlayHistory.aggregate([
                 { $match: { userId, guildId } },
@@ -51,12 +51,12 @@ module.exports = {
             ]);
             const trackList = recentTracks.map((item, idx) => {
                 const timeAgo = getTimeAgo(item.timestamp);
-                const title = item.trackUrl ? `[${item.trackTitle}](${item.trackUrl})` : item.trackTitle;
+                const title = item.trackUrl ? '[${item.trackTitle}](${item.trackUrl})` : item.trackTitle;
                 return `**${idx + 1}.** ${title}\n└ ${item.artist} • ${formatTime(item.duration)} • ${timeAgo}`;
             }).join('\n\n');
             const embed = new EmbedBuilder()
                 .setColor('#e74c3c')
-                .setTitle(`${interaction.user.username}'s Listening History`)
+                .setTitle('${interaction.user.username}`s Listening History`)
                 .setDescription(`${emoji.ui.charts} Your recent listening activity\n\n${trackList}`)
                 .setFooter({
                     text: `Total plays: ${totalStats?.totalPlays || 0} • Total listened: ${formatTime(totalStats?.totalDuration || 0)} • Showing last ${recentTracks.length}`
@@ -72,7 +72,7 @@ module.exports = {
 function getTimeAgo(date) {
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
     if (seconds < 60) return 'just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    if (seconds < 3600) return '${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
     if (seconds < 604800) return `${Math.floor(seconds / 86400)}d ago`;
     return new Date(date).toLocaleDateString();

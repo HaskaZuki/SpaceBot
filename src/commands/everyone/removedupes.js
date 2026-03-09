@@ -32,7 +32,7 @@ module.exports = {
         }
         musicPlayer.updateDashboard(interaction.client, guildId);
         const embed = new EmbedBuilder()
-            .setColor('#7C3AED')
+            .setColor(`#7C3AED`)
             .setDescription(
                 `${emoji.status.success} Removed **${removed}** duplicate track${removed !== 1 ? 's' : ''} from the queue.\n` +
                 `Queue now has **${playerState.queue.length}** track${playerState.queue.length !== 1 ? 's' : ''}.`

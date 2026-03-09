@@ -27,7 +27,7 @@ module.exports = {
             content: `${emoji.animated.disc} **Export Playlist**\n\n` +
                     `Playlist: **${playlistName}**\n` +
                     `Platform: **${platform}**\n\n` +
-                    `${emoji.status.error} Cross-platform integration under development!\n\n` +
+                    `${emoji.status.error} Cross-platform integration under development!\n\n' +
                     'Planned features:\n' +
                     '• One-click export to Spotify\n' +
                     '• Automatic playlist sync\n' +

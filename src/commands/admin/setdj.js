@@ -32,14 +32,14 @@ module.exports = {
             if (subcommand === 'view') {
                 if (!config.djRoleId) {
                     return interaction.reply({ 
-                        content: '${emoji.animated.notes} No DJ role is currently set.\nUse `/setdj set` to configure one.', 
+                        content: '${emoji.animated.notes} No DJ role is currently set.\nUse `/setdj set` to configure one.`, 
                         flags: 64 
                     });
                 }
                 const role = interaction.guild.roles.cache.get(config.djRoleId);
                 if (!role) {
                     return interaction.reply({ 
-                        content: '${emoji.status.error} DJ role was set but no longer exists.\nUse `/setdj set` to configure a new one.', 
+                        content: `${emoji.status.error} DJ role was set but no longer exists.\nUse `/setdj set` to configure a new one.`, 
                         flags: 64 
                     });
                 }

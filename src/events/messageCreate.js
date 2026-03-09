@@ -160,7 +160,7 @@ module.exports = {
                         console.log(`[SETUP] Added to queue: ${result.track.info.title}`);
                     }
                 } catch (error) {
-                    console.error('[SETUP] Error adding song:', error);
+                    console.error(`[SETUP] Error adding song:`, error);
                     const errorMsg = await message.channel.send(`${emoji.status.error} Failed to add song to queue.`);
                     setTimeout(() => errorMsg.delete().catch(() => {}), 5000);
                 }

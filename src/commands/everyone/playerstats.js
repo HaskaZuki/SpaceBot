@@ -25,7 +25,7 @@ module.exports = {
                 }
             ]);
             if (!totalStats || totalStats.totalPlays === 0) {
-                return interaction.editReply(`**${targetUser.username}** has no listening history in this server yet.`);
+                return interaction.editReply('**${targetUser.username}** has no listening history in this server yet.');
             }
             const topSongs = await PlayHistory.aggregate([
                 { $match: { userId: targetUser.id, guildId } },
@@ -53,23 +53,23 @@ module.exports = {
             ]);
             const topSongsText = topSongs.map((s, i) => {
                 const medal = ['1.', '2.', '3.', '4.', '5.'][i];
-                const title = s.url ? `[${s._id}](${s.url})` : s._id;
-                return `${medal} ${title}\n└ ${s.artist} — **${s.plays}** plays`;
+                const title = s.url ? '[${s._id}](${s.url})` : s._id;
+                return `${medal} ${title}\n└ ${s.artist} — **${s.plays}** plays';
             }).join('\n');
             const topArtistsText = topArtists.length > 0
-                ? topArtists.map((a, i) => `${['1st', '2nd', '3rd'][i]} **${a._id}** — ${a.plays} plays`).join('\n')
+                ? topArtists.map((a, i) => '${['1st', '2nd', '3rd'][i]} **${a._id}** — ${a.plays} plays').join('\n')
                 : 'Not enough data';
             const embed = new EmbedBuilder()
                 .setColor('#7C3AED')
-                .setTitle(`${targetUser.username}'s Listening Stats`)
+                .setTitle('${targetUser.username}'s Listening Stats')
                 .setThumbnail(targetUser.displayAvatarURL({ size: 128 }))
                 .addFields(
                     {
                         name: 'Overview',
                         value: [
-                            `**Total Plays:** ${totalStats.totalPlays.toLocaleString()}`,
+                            '**Total Plays:** ${totalStats.totalPlays.toLocaleString()}`,
                             `**Total Listened:** ${formatTime(totalStats.totalDuration)}`,
-                            `**Avg Duration:** ${formatTime(Math.round(totalStats.totalDuration / totalStats.totalPlays))}`
+                            `**Avg Duration:** ${formatTime(Math.round(totalStats.totalDuration / totalStats.totalPlays))}'
                         ].join('\n'),
                         inline: false
                     },
@@ -84,7 +84,7 @@ module.exports = {
                         inline: false
                     }
                 )
-                .setFooter({ text: `Stats for this server` })
+                .setFooter({ text: 'Stats for this server' })
                 .setTimestamp();
             await interaction.editReply({ embeds: [embed] });
         } catch (error) {
