@@ -20,12 +20,12 @@ const io = new Server(server, {
     }
 });
 function minimalFallbackHtml() {
-    return '<!DOCTYPE html><html><head><meta charset="utf-8"><title>SpaceBot</title></head><body style="font-family:sans-serif;max-width:600px;margin:2rem auto;padding:1rem;background:#1a1a2e;color:#eee">
+    return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>SpaceBot</title></head><body style="font-family:sans-serif;max-width:600px;margin:2rem auto;padding:1rem;background:#1a1a2e;color:#eee">
 <h1>SpaceBot Dashboard</h1>
 <p>Client build not deployed. On server run:</p>
 <pre style="background:#0f0f1a;padding:1rem;border-radius:8px">cd src/web/client && npm install && npm run build</pre>
 <p>Then restart the app. <a href="/health" style="color:#5865F2">/health</a></p>
-</body></html>';
+</body></html>`;
 }
 module.exports = (client) => {
     const fs = require('fs');
