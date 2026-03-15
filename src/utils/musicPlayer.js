@@ -79,6 +79,15 @@ module.exports = {
         playerState.voiceChannelId = voiceChannelId;
         let result;
         if (query.startsWith('http')) {
+            // Clean Spotify tracking parameter (?si=...) which confuses LavaSrc
+            const isSpotifyUrl = query.includes('open.spotify.com');
+            if (isSpotifyUrl) {
+                try {
+                    const urlObj = new URL(query);
+                    urlObj.searchParams.delete('si');
+                    query = urlObj.toString();
+                } catch (_) {}
+            }
             console.log(`[DEBUG] Direct URL: ${query}`);
             try {
                 result = await node.rest.resolve(query);
