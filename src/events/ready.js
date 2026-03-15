@@ -20,22 +20,27 @@ module.exports = {
             status: 'online',
         });
 
-        const tryRestore = async (attempts = 0) => {
+        // Check if Lavalink is already connected (e.g. bot restarted after Lavalink was up)
+        const checkAndRestore = async () => {
             const nodes = [...client.shoukaku.nodes.values()];
             const ready = nodes.find(n => n.state === 1);
-
             if (ready) {
                 console.log('[Session] Lavalink ready — restoring sessions...');
                 await restoreAllSessions(client);
-            } else if (attempts < 10) {
-                console.log(`[Session] Waiting for Lavalink... (attempt ${attempts + 1}/10)`);
-                setTimeout(() => tryRestore(attempts + 1), 3000);
-            } else {
-                console.warn('[Session] Lavalink not available after 30s — skipping session restore');
+                return true;
             }
+            return false;
         };
 
-        setTimeout(() => tryRestore(), 5000);
+        // Try immediately, then listen for the ready event for future connections
+        const alreadyReady = await checkAndRestore();
+        if (!alreadyReady) {
+            console.log('[Session] Lavalink not yet ready — waiting for node ready event...');
+            client.shoukaku.once('ready', async (name) => {
+                console.log(`[Session] Lavalink node "${name}" connected — restoring sessions...`);
+                await restoreAllSessions(client);
+            });
+        }
 
         if (client.shard) {
             const broadcastStats = () => {

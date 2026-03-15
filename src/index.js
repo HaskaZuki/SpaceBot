@@ -29,7 +29,7 @@ const shoukaku = new Shoukaku(
         resume: false,
         resumeTimeout: 30,
         resumeByLibrary: false,
-        reconnectTries: -1,
+        reconnectTries: 999,
         reconnectInterval: 10,
         restTimeout: 60000,
         moveOnDisconnect: false,
