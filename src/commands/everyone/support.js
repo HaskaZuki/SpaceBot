@@ -36,7 +36,7 @@ module.exports = {
                         '[Support Server](https://discord.gg/q3aHaNhUgk)\n' +
                         '[Documentation](https://spacebot.me/docs)\n' +
                         '[Website](https://spacebot.me)\n' +
-                        '[Invite](https://discord.com/oauth2/authorize?client_id=710260223536922705&permissions=2482302544&integration_type=0&scope=bot)\n' +
+                        '[Invite](https://discord.com/oauth2/authorize?client_id=710260223536922705&permissions=2639517285699408&integration_type=0&scope=bot)\n' +
                         '**',
                     inline: false
                 }
@@ -58,7 +58,7 @@ module.exports = {
                     new ButtonBuilder()
                     .setLabel('Invite')
                     .setStyle(ButtonStyle.Link)
-                    .setURL('https://discord.com/oauth2/authorize?client_id=710260223536922705&permissions=2482302544&integration_type=0&scope=bot')
+                    .setURL('https://discord.com/oauth2/authorize?client_id=710260223536922705&permissions=2639517285699408&integration_type=0&scope=bot')
             );
         await interaction.reply({ embeds: [embed], components: [row], flags: MessageFlags.Ephemeral });
     },

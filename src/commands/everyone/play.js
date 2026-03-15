@@ -62,13 +62,13 @@ module.exports = {
                     const nowPlayingEmbed = new EmbedBuilder()
                         .setColor('#7C3AED')
                         .setTitle('Now Playing')
-                        .setDescription(`[${title}](${url})`)
+                        .setDescription(`${emoji.animated.disc} | [${title}](${url})`)
                     await interaction.editReply({ embeds: [nowPlayingEmbed] });
                 } else {
                     const queueEmbed = new EmbedBuilder()
                         .setColor('#3B82F6')
                         .setTitle('Added to Queue')
-                        .setDescription(`[${title}](${url})`)
+                        .setDescription(`${emoji.animated.disc} | [${title}](${url})`)
                     await interaction.editReply({ embeds: [queueEmbed] });
                 }
             } else {

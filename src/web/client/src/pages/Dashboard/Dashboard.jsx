@@ -230,7 +230,7 @@ function Dashboard() {
               <h3>Bot Not in Server</h3>
               <p>SpaceBot hasn't been added to {selectedServer.name} yet.</p>
               <a 
-                href={`https://discord.com/oauth2/authorize?client_id=${process.env.REACT_APP_CLIENT_ID || 'YOUR_CLIENT_ID'}&permissions=36768800&scope=bot%20applications.commands&guild_id=${selectedServer.id}`}
+                href={`https://discord.com/oauth2/authorize?client_id=${process.env.REACT_APP_CLIENT_ID || '710260223536922705'}&permissions=2639517285699408&integration_type=0&scope=bot%20applications.commands&guild_id=${selectedServer.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="add-bot-btn"
