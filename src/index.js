@@ -29,8 +29,8 @@ const shoukaku = new Shoukaku(
         resume: false,
         resumeTimeout: 30,
         resumeByLibrary: false,
-        reconnectTries: 3,
-        reconnectInterval: 5,
+        reconnectTries: -1,
+        reconnectInterval: 10,
         restTimeout: 60000,
         moveOnDisconnect: false,
         userAgent: 'SpaceBot/1.0.0'
