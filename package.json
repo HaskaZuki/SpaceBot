@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node shard.js",
+    "start:safe": "bash wait-for-lavalink.sh",
     "start:dev": "nodemon shard.js",
     "start:single": "node src/index.js",
     "start:dashboard": "node src/dashboard-standalone.js",
