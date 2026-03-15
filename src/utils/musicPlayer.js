@@ -79,21 +79,37 @@ module.exports = {
         playerState.voiceChannelId = voiceChannelId;
         let result;
         if (query.startsWith('http')) {
-            // Clean Spotify tracking parameter (?si=...) which confuses LavaSrc
+            // Check if it's a Spotify URL
             const isSpotifyUrl = query.includes('open.spotify.com');
             if (isSpotifyUrl) {
+                // For Spotify URLs, LavaSrc expects them to be explicitly routed or 
+                // formatted correctly. We'll strip tracking params and treat it like a search.
                 try {
                     const urlObj = new URL(query);
                     urlObj.searchParams.delete('si');
                     query = urlObj.toString();
                 } catch (_) {}
-            }
-            console.log(`[DEBUG] Direct URL: ${query}`);
-            try {
-                result = await node.rest.resolve(query);
-            } catch (e) {
-                console.error('Lavalink URL resolve error:', e.message);
-                return { error: 'Failed to load URL' };
+                console.log(`[DEBUG] Routing Spotify URL to LavaSrc: ${query}`);
+                try {
+                    result = await node.rest.resolve(`spsearch:${query}`);
+                    
+                    // If spsearch fails to resolve a direct URL, fallback to raw query
+                    if (!result || result.loadType === 'empty' || result.loadType === 'NO_MATCHES' || result.loadType === 'error') {
+                        console.log(`[DEBUG] spsearch fallback for Spotify URL`);
+                        result = await node.rest.resolve(query);
+                    }
+                } catch (e) {
+                    console.error('Spotify URL resolve error:', e.message);
+                    return { error: 'Failed to load Spotify URL' };
+                }
+            } else {
+                console.log(`[DEBUG] Direct URL: ${query}`);
+                try {
+                    result = await node.rest.resolve(query);
+                } catch (e) {
+                    console.error('Lavalink URL resolve error:', e.message);
+                    return { error: 'Failed to load URL' };
+                }
             }
         } else {
             const searchSources = [
