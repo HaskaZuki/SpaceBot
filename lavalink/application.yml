@@ -48,6 +48,6 @@ plugins:
       deezer: false
       yandexmusic: false
     spotify:
-      clientId: "32044d6999a64f8cb162ef818670e04b"
-      clientSecret: "8647b2af0ddd439fa49c85e6041c3acc"
+      clientId: "b0d03ed498124fa8856851dea26e7fc9"
+      clientSecret: "bc4ec88a567f44a3b0b0c5e71d22184a"
       countryCode: "US"
