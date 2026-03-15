@@ -25,11 +25,13 @@
     "ejs": "^4.0.1",
     "express": "^5.2.1",
     "express-session": "^1.18.2",
+    "isomorphic-unfetch": "^4.0.2",
     "mongoose": "^9.1.5",
     "opusscript": "^0.0.8",
     "passport": "^0.7.0",
     "passport-discord": "^0.1.4",
     "shoukaku": "^4.3.0",
-    "socket.io": "^4.7.4"
+    "socket.io": "^4.7.4",
+    "spotify-url-info": "^3.3.0"
   }
 }
