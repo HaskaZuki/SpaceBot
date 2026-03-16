@@ -52,10 +52,9 @@ plugins:
       - MUSIC
       - ANDROID_TESTSUITE
       - TVHTML5_SIMPLY
-      - WEB
-    potoken:
+    pot:
+      token: "maxNoLzBi1BH-aMGB9ST3VVoSi5_2Z"
       visitorData: "Cgt2eUF4cW9iSTRRUSiGhd7ZbV7K5s="
-      visitorDataToken: "maxNoLzBi1BH-aMGB9ST3VVoSi5_2Z"
   lavasrc:
     providers:
       - "ytsearch:\"%ISRC%\""
