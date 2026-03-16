@@ -51,12 +51,12 @@ plugins:
     clients:
       - MUSIC
       - ANDROID_TESTSUITE
-      - TVHTML5_SIMPLY
     pot:
       token: "maxNoLzBi1BH-aMGB9ST3VVoSi5_2Z"
       visitorData: "Cgt2eUF4cW9iSTRRUSiGhd7ZbV7K5s="
   lavasrc:
     providers:
+      - "scsearch:%QUERY%"
       - "ytsearch:\"%ISRC%\""
       - "ytsearch:%QUERY%"
     sources:
