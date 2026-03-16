@@ -138,8 +138,8 @@ module.exports = {
             const searchSources = [
                 { name: 'YouTube Music', prefix: 'ytmsearch' },
                 { name: 'YouTube', prefix: 'ytsearch' },
-                { name: 'SoundCloud', prefix: 'scsearch' },
-                { name: 'Spotify', prefix: 'spsearch' }
+                { name: 'Spotify', prefix: 'spsearch' },
+                { name: 'SoundCloud', prefix: 'scsearch' }
             ];
             for (const source of searchSources) {
                 try {
@@ -303,7 +303,7 @@ module.exports = {
                     const currentSource = playerState.currentTrack.info.sourceName;
                     const searchQuery = `${trackAuthor} ${trackTitle}`;
                     console.log(` Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})`);
-                    const altSources = ['ytmsearch', 'ytsearch', 'scsearch', 'spsearch']
+                    const altSources = ['ytmsearch', 'ytsearch', 'spsearch', 'scsearch']
                         .filter(s => !currentSource?.includes(s.replace('search', '')));
                     for (const sourcePrefix of altSources) {
                         try {
