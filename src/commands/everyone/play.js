@@ -62,17 +62,14 @@ module.exports = {
                     const nowPlayingEmbed = new EmbedBuilder()
                         .setColor('#7C3AED')
                         .setTitle('Now Playing')
-                        .setDescription(`${emoji.animated.disc} | [${title}](${url})`)
-                        .setFooter({ text: `Requested by ${requesterName}` })
-                        .setTimestamp();
+                        .setDescription(`${emoji.animated.disc} | [${title}](${url}) - Requested by ${requesterName}`)
+                       
                     await interaction.editReply({ embeds: [nowPlayingEmbed] });
                 } else {
                     const queueEmbed = new EmbedBuilder()
                         .setColor('#3B82F6')
                         .setTitle('Added to Queue')
-                        .setDescription(`${emoji.animated.disc} | [${title}](${url})`)
-                        .setFooter({ text: `Requested by ${requesterName}` })
-                        .setTimestamp();
+                        .setDescription(`${emoji.animated.disc} | [${title}](${url}) - Requested by ${requesterName}`)
                     await interaction.editReply({ embeds: [queueEmbed] });
                 }
             } else {
