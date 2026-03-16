@@ -91,10 +91,17 @@ module.exports = {
                     const data = await getPreview(query);
                     if (data && data.title) {
                         const artist = data.artist || '';
-                        const searchQuery = `ytsearch:${artist} ${data.title} audio`;
-                        console.log(`[DEBUG] Scraped Spotify: "${data.title}" by "${artist}". Searching YT: ${searchQuery}`);
+                        const ytQuery = `ytsearch:${artist} ${data.title} audio`;
+                        console.log(`[DEBUG] Scraped Spotify: "${data.title}" by "${artist}". Searching YT: ${ytQuery}`);
                         
-                        result = await node.rest.resolve(searchQuery);
+                        result = await node.rest.resolve(ytQuery);
+
+                        // If YouTube fails (Empty/No Matches/Error), fallback to SoundCloud
+                        if (!result || ['empty', 'NO_MATCHES', 'error'].includes(result?.loadType) || result?.data?.length === 0) {
+                            const scQuery = `scsearch:${artist} ${data.title}`;
+                            console.log(`[DEBUG] YT search failed for scraped Spotify URL. Falling back to SC: ${scQuery}`);
+                            result = await node.rest.resolve(scQuery);
+                        }
                         
                         // Fake the Spotify origin if it found a track
                         if (result && ['track', 'search'].includes(result.loadType) && result.data?.length > 0) {
