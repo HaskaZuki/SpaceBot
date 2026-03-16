@@ -70,4 +70,4 @@ plugins:
       countryCode: "US"
     deezer:
       masterDecryptionKey: "g4el58wc0zvf9na1"
-      arl: "PASTE_YOUR_DEEZER_ARL_HERE"
+      arl: "4ad34c5b9133a8f149e28af6cba7e98e4f6b728bb7c42cc43462a0167f3847afce930aea145132fdbb30b30002440439f4bd960e529e5b64c9840fb2046b731a71a8f28c6de99f660b32c3e6dac5295a2e22c9bf5a3f2718280baed5f6de6eb1"
