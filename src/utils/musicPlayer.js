@@ -220,7 +220,33 @@ module.exports = {
             }
         });
         player.on('exception', async (data) => {
-            console.error(' Playback exception:', data);
+            console.error(' Playback exception:', data?.exception?.message || data);
+            const failedTrack = playerState.currentTrack;
+            if (failedTrack && failedTrack.info) {
+                const sourceName = failedTrack.info.sourceName || '';
+                // Only retry if it failed from youtube (not already a SC fallback)
+                if (sourceName === 'youtube' || sourceName === 'youtubemusic') {
+                    const searchQuery = `${failedTrack.info.author} ${failedTrack.info.title}`;
+                    console.log(`[DEBUG] YouTube stream failed. Retrying via SoundCloud: scsearch:${searchQuery}`);
+                    try {
+                        const retryNode = [...client.shoukaku.nodes.values()].find(n => isNodeReady(n));
+                        if (retryNode) {
+                            const scResult = await retryNode.rest.resolve(`scsearch:${searchQuery}`);
+                            if (scResult && scResult.data && scResult.data.length > 0) {
+                                const scTrack = scResult.data[0];
+                                scTrack.requestedBy = failedTrack.requestedBy;
+                                playerState.currentTrack = scTrack;
+                                console.log(`[DEBUG] Found SC fallback: ${scTrack.info?.title}. Playing now.`);
+                                await player.playTrack({ track: { encoded: scTrack.encoded } });
+                                module.exports.updateDashboard(client, guildId);
+                                return;
+                            }
+                        }
+                    } catch (scErr) {
+                        console.error('[ERROR] SoundCloud fallback also failed:', scErr.message);
+                    }
+                }
+            }
             await module.exports.playNext(client, guildId);
         });
         player.on('stuck', (data) => {
