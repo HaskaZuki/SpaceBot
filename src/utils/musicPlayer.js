@@ -139,7 +139,7 @@ module.exports = {
                 { name: 'Spotify', prefix: 'spsearch' },
                 { name: 'YouTube Music', prefix: 'ytmsearch' },
                 { name: 'YouTube', prefix: 'ytsearch' },
-                { name: 'SoundCloud', prefix: 'scsearch' }
+                { name: 'Deezer', prefix: 'dzsearch' }
             ];
             for (const source of searchSources) {
                 try {
@@ -228,23 +228,23 @@ module.exports = {
                 // Only retry if it failed from youtube (not already a SC fallback)
                 if (sourceName === 'youtube' || sourceName === 'youtubemusic') {
                     const searchQuery = `${failedTrack.info.author} ${failedTrack.info.title}`;
-                    console.log(`[DEBUG] YouTube stream failed. Retrying via SoundCloud: scsearch:${searchQuery}`);
+                    console.log(`[DEBUG] YouTube stream failed. Retrying via Deezer: dzsearch:${searchQuery}`);
                     try {
                         const retryNode = [...client.shoukaku.nodes.values()].find(n => isNodeReady(n));
                         if (retryNode) {
-                            const scResult = await retryNode.rest.resolve(`scsearch:${searchQuery}`);
-                            if (scResult && scResult.data && scResult.data.length > 0) {
-                                const scTrack = scResult.data[0];
-                                scTrack.requestedBy = failedTrack.requestedBy;
-                                playerState.currentTrack = scTrack;
-                                console.log(`[DEBUG] Found SC fallback: ${scTrack.info?.title}. Playing now.`);
-                                await player.playTrack({ track: { encoded: scTrack.encoded } });
+                            const dzResult = await retryNode.rest.resolve(`dzsearch:${searchQuery}`);
+                            if (dzResult && dzResult.data && dzResult.data.length > 0) {
+                                const dzTrack = dzResult.data[0];
+                                dzTrack.requestedBy = failedTrack.requestedBy;
+                                playerState.currentTrack = dzTrack;
+                                console.log(`[DEBUG] Found Deezer fallback: ${dzTrack.info?.title}. Playing now.`);
+                                await player.playTrack({ track: { encoded: dzTrack.encoded } });
                                 module.exports.updateDashboard(client, guildId);
                                 return;
                             }
                         }
-                    } catch (scErr) {
-                        console.error('[ERROR] SoundCloud fallback also failed:', scErr.message);
+                    } catch (dzErr) {
+                        console.error('[ERROR] Deezer fallback also failed:', dzErr.message);
                     }
                 }
             }
@@ -329,7 +329,7 @@ module.exports = {
                     const currentSource = playerState.currentTrack.info.sourceName;
                     const searchQuery = `${trackAuthor} ${trackTitle}`;
                     console.log(` Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})`);
-                    const altSources = ['spsearch', 'ytmsearch', 'ytsearch', 'scsearch']
+                    const altSources = ['spsearch', 'ytmsearch', 'ytsearch', 'dzsearch']
                         .filter(s => !currentSource?.includes(s.replace('search', '')));
                     for (const sourcePrefix of altSources) {
                         try {

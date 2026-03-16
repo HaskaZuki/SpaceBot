@@ -56,15 +56,18 @@ plugins:
       visitorData: "Cgt2eUF4cW9iSTRRUSiGhd7ZbV7K5s="
   lavasrc:
     providers:
-      - "scsearch:%QUERY%"
+      - "dzsearch:%QUERY%"
       - "ytsearch:\"%ISRC%\""
       - "ytsearch:%QUERY%"
     sources:
       spotify: true
       applemusic: false
-      deezer: false
+      deezer: true
       yandexmusic: false
     spotify:
       clientId: "b0d03ed498124fa8856851dea26e7fc9"
       clientSecret: "bc4ec88a567f44a3b0b0c5e71d22184a"
       countryCode: "US"
+    deezer:
+      masterDecryptionKey: "g4el58wc0zvf9na1"
+      arl: "PASTE_YOUR_DEEZER_ARL_HERE"
