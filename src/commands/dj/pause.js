@@ -26,7 +26,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
             .setDescription(`${emoji.controls.pause} Playback **paused**.\nUse \`/resume\` to continue.`)
-            .setFooter({ text: `Paused by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+            .setFooter({ text: `Paused by ${interaction.user.displayName || interaction.user.username}` })
+            .setTimestamp();
+        await interaction.reply({ embeds: [embed] });
     },
 };

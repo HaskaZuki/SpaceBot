@@ -22,6 +22,6 @@ module.exports = {
             .setColor(`#7C3AED`)
             .setDescription(`${emoji.status.success} Cleared **${count}** track${count !== 1 ? 's' : ''} from the queue.`)
             .setFooter({ text: `Cleared by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        await interaction.reply({ embeds: [embed] });
     },
 };

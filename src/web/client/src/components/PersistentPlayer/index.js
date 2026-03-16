@@ -5,13 +5,15 @@ function PersistentPlayer() {
   const { playerState, playPause, skip, setVolume, toggleLoop, connected } = useSocket();
   const [expanded, setExpanded] = useState(false);
   const [visible, setVisible] = useState(false);
-  const progressRef = useRef(null);  const track = playerState?.currentTrack;
+  const progressRef = useRef(null);
+  const track = playerState?.currentTrack;
   const isPlaying = playerState?.isPlaying;
   const volume = playerState?.volume || 100;
   const queue = playerState?.queue || [];
   const progress = playerState?.progress || 0;
   const duration = playerState?.duration || 0;
-  useEffect(() => {    if (connected && track) {
+  useEffect(() => {
+    if (connected && track) {
       setVisible(true);
     } else {
       setVisible(false);

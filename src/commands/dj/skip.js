@@ -24,7 +24,8 @@ module.exports = {
                 `${emoji.controls.next} Skipped **${skippedTitle}**` +
                 (nextTrack ? `\n\nNow playing: **${nextTrack.info.title}**` : '\n\nThe queue is now empty.')
             )
-            .setFooter({ text: `Skipped by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+            .setFooter({ text: `Skipped by ${interaction.user.displayName || interaction.user.username}` })
+            .setTimestamp();
+        await interaction.reply({ embeds: [embed] });
     },
 };

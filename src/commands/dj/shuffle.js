@@ -20,6 +20,6 @@ module.exports = {
             .setColor('#7C3AED')
             .setDescription(`${emoji.controls.shuffle} Queue **shuffled** — **${playerState.queue.length}** tracks reordered.`)
             .setFooter({ text: `Shuffled by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        await interaction.reply({ embeds: [embed] });
     },
 };

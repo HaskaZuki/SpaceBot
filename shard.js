@@ -2,7 +2,7 @@ const { ShardingManager } = require('discord.js');
 const path = require('path');
 require('dotenv').config();
 
-// ─── ANSI Colors ──────────────────────────────────────────────────────────────
+
 const c = {
     reset:  '\x1b[0m',
     bold:   '\x1b[1m',
@@ -21,7 +21,7 @@ const tag  = (color, label) => `${c.bold}${color}[${label}]${c.reset}`;
 const time = () => `${c.gray}${new Date().toLocaleTimeString('en-US', { hour12: false })}${c.reset}`;
 const log  = (label, color, ...msg) => console.log(`${time()} ${tag(color, label)}`, ...msg);
 
-// ─── Banner ───────────────────────────────────────────────────────────────────
+
 function printBanner(totalShards) {
     const version = require('./package.json').version || '1.0.0';
     console.log();
@@ -39,10 +39,10 @@ function printBanner(totalShards) {
     console.log();
 }
 
-// ─── Shard Stats Tracker ──────────────────────────────────────────────────────
+
 const shardStats = new Map(); // shardId -> { guilds, users, ping, ready }
 
-// ─── Manager Setup ────────────────────────────────────────────────────────────
+
 const totalShards = process.env.TOTAL_SHARDS === 'auto'
     ? 'auto'
     : parseInt(process.env.TOTAL_SHARDS) || 1;
@@ -61,7 +61,7 @@ manager.on('shardCreate', (shard) => {
     shardStats.set(shard.id, { guilds: 0, users: 0, ping: -1, ready: false });
     log('SHARD', c.cyan, `${c.bold}#${shard.id}${c.reset} ${c.gray}spawned${c.reset}`);
 
-    // ── Shard Events ──────────────────────────────────────────────────────────
+
     shard.on('ready', () => {
         const stat = shardStats.get(shard.id) || {};
         stat.ready = true;
@@ -92,7 +92,7 @@ manager.on('shardCreate', (shard) => {
         log('ERROR', c.red, `Shard ${c.bold}#${shard.id}${c.reset} ${c.red}error:${c.reset}`, error.message);
     });
 
-    // Broadcast message from shard (e.g. stats updates)
+
     shard.on('message', (msg) => {
         if (msg?.type === 'shardStats') {
             shardStats.set(shard.id, { ...shardStats.get(shard.id), ...msg.data, ready: true });
@@ -100,7 +100,7 @@ manager.on('shardCreate', (shard) => {
     });
 });
 
-// ─── Periodic Stats Table (every 5 min) ───────────────────────────────────────
+
 function printShardTable() {
     const shards = [...shardStats.entries()].sort((a, b) => a[0] - b[0]);
     if (shards.length === 0) return;
@@ -142,13 +142,13 @@ function printShardTable() {
     console.log();
 }
 
-// ─── Spawn ────────────────────────────────────────────────────────────────────
+
 manager.spawn({ timeout: 60_000 })
     .then((shards) => {
         log('MANAGER', c.magenta, `${c.bold}${c.green}All ${shards.size} shard(s) spawned successfully${c.reset}`);
-        // Print summary table after all shards are up
+
         setTimeout(printShardTable, 3000);
-        // Re-print every 5 minutes so console stays fresh
+
         setInterval(printShardTable, 5 * 60_000);
     })
     .catch((err) => {
@@ -156,7 +156,7 @@ manager.spawn({ timeout: 60_000 })
         process.exit(1);
     });
 
-// ─── Process Signal Handling ──────────────────────────────────────────────────
+
 process.on('unhandledRejection', (reason) => {
     log('ERROR', c.red, 'Unhandled rejection:', reason?.message || reason);
 });

@@ -23,7 +23,8 @@ module.exports = {
         function buildEmbed(page) {
             const start = page * ITEMS_PER_PAGE;
             const end = Math.min(start + ITEMS_PER_PAGE, queue.length);
-            const pageItems = queue.slice(start, end);            const currentTrack = playerState.currentTrack;
+            const pageItems = queue.slice(start, end);
+            const currentTrack = playerState.currentTrack;
             const currentTitle = currentTrack?.info?.title || 'Unknown Track';
             const currentUri = currentTrack?.info?.uri || '';
             const nowPlayingText = currentTrack 
@@ -38,7 +39,8 @@ module.exports = {
                 .setColor('#6366f1')
                 .setTitle('Music Queue')
                 .setDescription(`${nowPlayingText}\n\n${upNextTitle}\n${upNextContent}`)
-                .setFooter({ text: `Page ${page + 1}/${totalPages} • ${queue.length} tracks • Loop: ${playerState.loop || 'off'}` });
+                .setFooter({ text: `Page ${page + 1}/${totalPages} • ${queue.length} tracks • Loop: ${playerState.loop || 'off'}` })
+                .setTimestamp();
         }
         function buildButtons(page, userId) {
             const row = new ActionRowBuilder().addComponents(
@@ -58,8 +60,7 @@ module.exports = {
         const components = totalPages > 1 ? [buildButtons(currentPage, interaction.user.id)] : [];
         const reply = await interaction.reply({ 
             embeds: [buildEmbed(currentPage)], 
-            components,
-            flags: MessageFlags.Ephemeral
+            components
         });
         if (totalPages <= 1) return;
         const collector = reply.createMessageComponentCollector({ time: 120_000 });
@@ -80,7 +81,7 @@ module.exports = {
         collector.on('end', async () => {
             try {
                 await interaction.editReply({ components: [] });
-            } catch {            }
+            } catch {            }
         });
     },
 };

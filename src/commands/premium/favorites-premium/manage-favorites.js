@@ -104,7 +104,8 @@ module.exports = {
                 collector.on('end', async () => {
                     try {
                         await interaction.editReply({ components: [] });
-                    } catch {                    }
+                    } catch {
+                    }
                 });
             } else if (subcommand === 'play') {
                 const guildId = interaction.guild.id;

@@ -36,12 +36,12 @@ module.exports = {
                         break;
                     case 'loop': {
                         const mode = await musicPlayer.setLoop(interaction.client, guildId);
-                        await interaction.followUp({ content: `${emoji.controls.loopQueue} Loop mode set to: **${mode}**`, flags: 64 }).catch(() => {});
+                        await interaction.followUp({ content: `${emoji.controls.loopQueue} Loop mode set to: **${mode}**` }).catch(() => {});
                         break;
                     }
                     case `shuffle`:
                         await musicPlayer.shuffleQueue(interaction.client, guildId);
-                        await interaction.followUp({ content: `${emoji.controls.shuffle} Queue shuffled!`, flags: 64 }).catch(() => {});
+                        await interaction.followUp({ content: `${emoji.controls.shuffle} Queue shuffled!` }).catch(() => {});
                         break;
                 }
             } catch (error) {
@@ -74,10 +74,13 @@ module.exports = {
                         searchData.textChannel
                     );
                     delete global.searchCache[userId];
-                    await interaction.followUp({
-                        content: `${emoji.status.success} Added to queue: **${selectedTrack.info.title}** by ${selectedTrack.info.author}`,
-                        flags: 64
-                    });
+                    const embed = new require('discord.js').EmbedBuilder()
+                        .setColor('#3B82F6')
+                        .setTitle('Added to Queue')
+                        .setDescription(`${emoji.status.success} | [${selectedTrack.info.title}](${selectedTrack.info.uri || '#'})`)
+                        .setFooter({ text: `Requested by ${interaction.user.displayName || interaction.user.username}` })
+                        .setTimestamp();
+                    await interaction.followUp({ embeds: [embed], flags: 64 });
                 } catch (error) {
                     console.error(`Play from search error:`, error);
                     await interaction.followUp({

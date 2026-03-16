@@ -54,13 +54,16 @@ function cleanArtist(artist) {
         .trim();
 }
 async function getLyrics(artist, title) {
-    try {        const cleanedArtist = cleanArtist(artist);
+    try {
+        const cleanedArtist = cleanArtist(artist);
         const cleanedTitle = cleanTitle(title);
         if (!cleanedArtist || !cleanedTitle) {
             return { error: 'Invalid artist or title' };
-        }        console.log('[Lyrics] Fetching lyrics for: ${cleanedArtist} - ${cleanedTitle}');
+        }
+        console.log('[Lyrics] Fetching lyrics for: ${cleanedArtist} - ${cleanedTitle}');
         const lyrics = await fetchFromLyricsOvh(cleanedArtist, cleanedTitle);
-        if (lyrics) {            const truncated = lyrics.length > 4000 
+        if (lyrics) {
+            const truncated = lyrics.length > 4000 
                 ? lyrics.substring(0, 4000) + '\n\n...(lyrics truncated)'
                 : lyrics;
             return {
@@ -69,19 +72,22 @@ async function getLyrics(artist, title) {
                 artist: cleanedArtist,
                 title: cleanedTitle
             };
-        }        return { error: 'Lyrics not found' };
+        }
+        return { error: 'Lyrics not found' };
     } catch (error) {
         console.error('Error getting lyrics:', error);
         return { error: 'Failed to fetch lyrics' };
     }
 }
 async function searchLyrics(query) {
-    try {        const parts = query.split('-').map(p => p.trim());
+    try {
+        const parts = query.split('-').map(p => p.trim());
         let artist, title;
         if (parts.length >= 2) {
             artist = parts[0];
             title = parts.slice(1).join(' ');
-        } else {            artist = 'Unknown';
+        } else {
+            artist = 'Unknown';
             title = query;
         }
         return await getLyrics(artist, title);

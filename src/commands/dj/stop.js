@@ -23,7 +23,8 @@ module.exports = {
                 `${emoji.controls.pause} Playback **stopped** and queue cleared.` +
                 (queueCount > 0 ? ` Removed **${queueCount}** track${queueCount !== 1 ? 's' : ''}.` : '')
             )
-            .setFooter({ text: `Stopped by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+            .setFooter({ text: `Stopped by ${interaction.user.displayName || interaction.user.username}` })
+            .setTimestamp();
+        await interaction.reply({ embeds: [embed] });
     },
 };

@@ -41,6 +41,6 @@ module.exports = {
             .setColor('#7C3AED')
             .setDescription(`${emoji.navigation.arrow} Moved **${item.info.title}** from position **${from + 1}** to **${to + 1}**.`)
             .setFooter({ text: `Moved by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+        await interaction.reply({ embeds: [embed] });
     },
 };

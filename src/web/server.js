@@ -29,7 +29,8 @@ function minimalFallbackHtml() {
 }
 module.exports = (client) => {
     const fs = require('fs');
-    const mongoose = require('mongoose');    app.get('/health', (req, res) => {
+    const mongoose = require('mongoose');
+    app.get('/health', (req, res) => {
         res.status(200).send('ok');
     });
     passport.serializeUser((user, done) => done(null, user));
@@ -109,7 +110,8 @@ module.exports = (client) => {
     if (!hasBuild) {
         console.warn('[Dashboard] No client build at', indexHtml, '- run: cd src/web/client && npm run build');
     }
-    app.use(express.static(clientBuildPath));    app.use('/', (req, res, next) => {
+    app.use(express.static(clientBuildPath));
+    app.use('/', (req, res, next) => {
         if (req.path.startsWith('/api') || req.path.startsWith('/auth')) return next();
         if (hasBuild) {
             return res.sendFile(indexHtml, (err) => {
@@ -121,7 +123,8 @@ module.exports = (client) => {
         }
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.status(200).send(minimalFallbackHtml());
-    });    app.use((err, req, res, next) => {
+    });
+    app.use((err, req, res, next) => {
         console.error('[Dashboard] 500 at', req.method, req.path, err?.stack || err);
         if (!res.headersSent) res.status(500).send('Internal Server Error');
     });

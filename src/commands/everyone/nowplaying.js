@@ -54,6 +54,7 @@ module.exports = {
         if (track.info.artworkUrl) {
             embed.setThumbnail(track.info.artworkUrl);
         }
+        embed.setTimestamp();
         await interaction.reply({ embeds: [embed] });
     },
 };

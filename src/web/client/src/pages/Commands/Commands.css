@@ -148,6 +148,7 @@
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding-bottom: 0.25rem;
+  padding-right: 2rem; /* Added to fix right-most tab cutoff on mobile */
 }
 
 .category-tabs::-webkit-scrollbar {

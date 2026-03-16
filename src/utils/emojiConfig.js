@@ -21,6 +21,7 @@ module.exports = {
         spotify: '<:spotify:1475168210423906484>',
         soundcloud: '<:sound_cloud:1475168572266381474>',
         apple: '<:appless:1475168309333721270>',
+        deezer: '<a:disc:1475168869105795132>',
     },
     controls: {
         play: '<:play:1475169672847687811>',
@@ -61,7 +62,7 @@ module.exports = {
             soundcloud: this.sources.soundcloud,
             applemusic: this.sources.apple,
             apple: this.sources.apple,
-            deezer: this.sources.apple, // fallback to apple
+            deezer: this.sources.deezer, // updated from apple
             default: this.animated.notes
         };
         return sourceMap[sourceName?.toLowerCase()] || sourceMap.default;

@@ -26,7 +26,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
             .setDescription(`${emoji.controls.play} Playback **resumed**.`)
-            .setFooter({ text: `Resumed by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+            .setFooter({ text: `Resumed by ${interaction.user.displayName || interaction.user.username}` })
+            .setTimestamp();
+        await interaction.reply({ embeds: [embed] });
     },
 };

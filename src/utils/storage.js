@@ -5,7 +5,8 @@ module.exports = {
         try {
             if (collection === 'playlists') {
                 let settings = await UserSettings.findOne({ userId });
-                if (!settings) return null;                return {
+                if (!settings) return null;
+                return {
                     userId: settings.userId,
                     playlists: settings.playlists || [],
                     maxPlaylists: settings.maxPlaylists || 10
@@ -19,7 +20,8 @@ module.exports = {
     },
     setUser: async (collection, userId, userData) => {
         try {
-            if (collection === 'playlists') {                await UserSettings.findOneAndUpdate(
+            if (collection === 'playlists') {
+                await UserSettings.findOneAndUpdate(
                     { userId },
                     { 
                         userId,

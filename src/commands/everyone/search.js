@@ -94,7 +94,8 @@ module.exports = {
                         `**${i + 1}.** [${track.info.title}](${track.info.uri})\n` +
                         `└ Author: ${track.info.author} • Duration: ${formatDuration(track.info.length)}`
                     ).join('\n\n'))
-                .setFooter({ text: 'Select a song to add it to the queue' });
+                .setFooter({ text: 'Select a song to add it to the queue' })
+                .setTimestamp();
             const selectMenu = new StringSelectMenuBuilder()
                 .setCustomId(`search_select_${interaction.user.id}`)
                 .setPlaceholder('Select a song to play')

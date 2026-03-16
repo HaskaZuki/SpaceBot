@@ -115,7 +115,7 @@ function Status() {
           </div>
         ) : shardData ? (
           <>
-            {/* Summary Cards */}
+            {}
             <div className="status-summary">
               <div className="summary-card">
                 <div className="summary-icon servers">
@@ -160,7 +160,7 @@ function Status() {
               </div>
             </div>
 
-            {/* Services */}
+            {}
             <div className="services-section">
               <h3>Services</h3>
               <div className="services-grid">
@@ -198,7 +198,7 @@ function Status() {
               </div>
             </div>
 
-            {/* Shard Cards */}
+            {}
             <div className="shards-section">
               <h3>Shard Status</h3>
               <p className="shards-description">Each shard handles a portion of servers. Hover over a shard to see details.</p>
@@ -243,7 +243,7 @@ function Status() {
               </div>
             </div>
 
-            {/* Legend */}
+            {}
             <div className="status-legend">
               <div className="legend-item">
                 <span className="legend-dot" style={{ background: '#22c55e' }} />

@@ -20,7 +20,7 @@ module.exports = {
             status: 'online',
         });
 
-        // Check if Lavalink is already connected (e.g. bot restarted after Lavalink was up)
+
         const checkAndRestore = async () => {
             const nodes = [...client.shoukaku.nodes.values()];
             const ready = nodes.find(n => n.state === 1);
@@ -32,7 +32,7 @@ module.exports = {
             return false;
         };
 
-        // Try immediately, then listen for the ready event for future connections
+
         const alreadyReady = await checkAndRestore();
         if (!alreadyReady) {
             console.log('[Session] Lavalink not yet ready — waiting for node ready event...');

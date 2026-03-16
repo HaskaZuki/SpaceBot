@@ -79,12 +79,12 @@ module.exports = {
         playerState.voiceChannelId = voiceChannelId;
         let result;
         if (query.startsWith('http')) {
-            // Check if it's a Spotify URL
+
             const isSpotifyUrl = query.includes('open.spotify.com');
             if (isSpotifyUrl) {
                 console.log(`[DEBUG] Scraping Spotify metadata for URL: ${query}`);
                 try {
-                    // Lazy load spotify-url-info scraper
+
                     const fetch = require('isomorphic-unfetch');
                     const { getPreview } = require('spotify-url-info')(fetch);
                     
@@ -96,23 +96,23 @@ module.exports = {
                         
                         result = await node.rest.resolve(ytQuery);
 
-                        // If YouTube fails (Empty/No Matches/Error), fallback to SoundCloud
+
                         if (!result || ['empty', 'NO_MATCHES', 'error'].includes(result?.loadType) || result?.data?.length === 0) {
                             const scQuery = `scsearch:${artist} ${data.title}`;
                             console.log(`[DEBUG] YT search failed for scraped Spotify URL. Falling back to SC: ${scQuery}`);
                             result = await node.rest.resolve(scQuery);
                         }
                         
-                        // Fake the Spotify origin if it found a track
+
                         if (result && ['track', 'search'].includes(result.loadType) && result.data?.length > 0) {
                              const track = result.loadType === 'track' ? result.data : result.data[0];
-                             // Attach original Spotify info to track for the UI
+
                              track.info.title = data.title;
                              track.info.author = artist || track.info.author;
                              if (data.image) track.info.artworkUrl = data.image;
                              track.info.uri = query; // Original Spotify URL
                              
-                             // Re-wrap the result since we modified it
+
                              result = {
                                  loadType: 'track',
                                  data: track
@@ -137,9 +137,9 @@ module.exports = {
         } else {
             const searchSources = [
                 { name: 'Spotify', prefix: 'spsearch' },
+                { name: 'Deezer', prefix: 'dzsearch' },
                 { name: 'YouTube Music', prefix: 'ytmsearch' },
-                { name: 'YouTube', prefix: 'ytsearch' },
-                { name: 'Deezer', prefix: 'dzsearch' }
+                { name: 'YouTube', prefix: 'ytsearch' }
             ];
             for (const source of searchSources) {
                 try {
@@ -178,13 +178,13 @@ module.exports = {
         const botCurrentChannel = guild?.members?.me?.voice?.channelId;
 
         if (player && botCurrentChannel === voiceChannelId) {
-            // Bot already in the right channel and player exists — reuse it
+
             playerState.player = player;
             console.log('[DEBUG] Reusing existing player in voice channel');
         } else {
-            // Need to join (or rejoin from a different channel)
+
             if (botCurrentChannel) {
-                // Bot is stuck in a channel (state mismatch) — force leave first
+
                 console.log('[DEBUG] Bot still in channel but player stale, force-leaving first...');
                 try { await client.shoukaku.leaveVoiceChannel(guildId); } catch (_) {}
                 await new Promise(r => setTimeout(r, 500));
@@ -225,7 +225,7 @@ module.exports = {
             const failedTrack = playerState.currentTrack;
             if (failedTrack && failedTrack.info) {
                 const sourceName = failedTrack.info.sourceName || '';
-                // Only retry if it failed from youtube (not already a SC fallback)
+
                 if (sourceName === 'youtube' || sourceName === 'youtubemusic') {
                     const searchQuery = `${failedTrack.info.author} ${failedTrack.info.title}`;
                     console.log(`[DEBUG] YouTube stream failed. Retrying via Deezer: dzsearch:${searchQuery}`);
@@ -259,7 +259,7 @@ module.exports = {
         });
         track.requestedBy = requestedBy;
 
-        // Debug: Log queue state before checking isFirst
+
         console.log(`[DEBUG musicPlayer.js] Before isFirst check - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
         
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
@@ -329,7 +329,7 @@ module.exports = {
                     const currentSource = playerState.currentTrack.info.sourceName;
                     const searchQuery = `${trackAuthor} ${trackTitle}`;
                     console.log(` Trying to find alternative for "${trackTitle}" (failed source: ${currentSource})`);
-                    const altSources = ['spsearch', 'ytmsearch', 'ytsearch', 'dzsearch']
+                    const altSources = ['spsearch', 'dzsearch', 'ytmsearch', 'ytsearch']
                         .filter(s => !currentSource?.includes(s.replace('search', '')));
                     for (const sourcePrefix of altSources) {
                         try {

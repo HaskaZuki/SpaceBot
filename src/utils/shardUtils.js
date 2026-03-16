@@ -1,5 +1,6 @@
 
-async function getTotalGuildCount(client) {    if (!client.shard) return client.guilds.cache.size;
+async function getTotalGuildCount(client) {
+    if (!client.shard) return client.guilds.cache.size;
     try {
         const results = await client.shard.broadcastEval(c => c.guilds.cache.size);
         return results.reduce((acc, count) => acc + count, 0);
@@ -8,7 +9,8 @@ async function getTotalGuildCount(client) {    if (!client.shard) return client
         return client.guilds.cache.size;
     }
 }
-async function getTotalUserCount(client) {    if (!client.shard) return client.users.cache.size;
+async function getTotalUserCount(client) {
+    if (!client.shard) return client.users.cache.size;
     try {
         const results = await client.shard.broadcastEval(c => c.users.cache.size);
         return results.reduce((acc, count) => acc + count, 0);
@@ -17,7 +19,8 @@ async function getTotalUserCount(client) {    if (!client.shard) return client.
         return client.users.cache.size;
     }
 }
-async function getTotalVoiceConnections(client) {    if (!client.shard) {
+async function getTotalVoiceConnections(client) {
+    if (!client.shard) {
         return client.shoukaku?.players?.size || 0;
     }
     try {
@@ -28,7 +31,8 @@ async function getTotalVoiceConnections(client) {    if (!client.shard) {
         return client.shoukaku?.players?.size || 0;
     }
 }
-async function getTotalChannelCount(client) {    if (!client.shard) return client.channels.cache.size;
+async function getTotalChannelCount(client) {
+    if (!client.shard) return client.channels.cache.size;
     try {
         const results = await client.shard.broadcastEval(c => c.channels.cache.size);
         return results.reduce((acc, count) => acc + count, 0);

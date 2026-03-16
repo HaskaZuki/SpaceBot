@@ -1,11 +1,15 @@
 
 function parseTime(timeStr) {
     if (!timeStr || typeof timeStr !== 'string') return null;
-    const parts = timeStr.trim().split(':').map(Number);    if (parts.some(isNaN)) return null;
+    const parts = timeStr.trim().split(':').map(Number);
+    if (parts.some(isNaN)) return null;
     let milliseconds = 0;
-    if (parts.length === 1) {        milliseconds = parts[0] * 1000;
-    } else if (parts.length === 2) {        milliseconds = (parts[0] * 60 + parts[1]) * 1000;
-    } else if (parts.length === 3) {        milliseconds = (parts[0] * 3600 + parts[1] * 60 + parts[2]) * 1000;
+    if (parts.length === 1) {
+        milliseconds = parts[0] * 1000;
+    } else if (parts.length === 2) {
+        milliseconds = (parts[0] * 60 + parts[1]) * 1000;
+    } else if (parts.length === 3) {
+        milliseconds = (parts[0] * 3600 + parts[1] * 60 + parts[2]) * 1000;
     } else {
         return null;
     }
@@ -62,7 +66,8 @@ function validateVoiceState(member, guild) {
     if (!botMember) {
         return { valid: false, error: 'Bot member not found' };
     }
-    const botVoiceChannel = botMember.voice?.channel;    if (botVoiceChannel && botVoiceChannel.id !== member.voice.channel.id) {
+    const botVoiceChannel = botMember.voice?.channel;
+    if (botVoiceChannel && botVoiceChannel.id !== member.voice.channel.id) {
         return { valid: false, error: 'You must be in the same voice channel as the bot!' };
     }
     return { valid: true, channel: member.voice.channel };

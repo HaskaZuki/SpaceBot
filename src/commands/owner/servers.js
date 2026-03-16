@@ -91,7 +91,8 @@ module.exports = {
         collector.on('end', async () => {
             try {
                 await interaction.editReply({ components: [] });
-            } catch {            }
+            } catch {
+            }
         });
     },
 };

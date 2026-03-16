@@ -19,7 +19,8 @@ module.exports = {
         const embed = new EmbedBuilder()
             .setColor('#7C3AED')
             .setDescription(`Loop mode set to: **${loopDisplay}**`)
-            .setFooter({ text: `Changed by ${interaction.user.displayName || interaction.user.username}` });
-        await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+            .setFooter({ text: `Changed by ${interaction.user.displayName || interaction.user.username}` })
+            .setTimestamp();
+        await interaction.reply({ embeds: [embed] });
     },
 };
