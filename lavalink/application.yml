@@ -60,7 +60,7 @@ plugins:
       - "ytsearch:\"%ISRC%\""
       - "ytsearch:%QUERY%"
     sources:
-      spotify: false
+      spotify: true
       applemusic: false
       deezer: false
       yandexmusic: false
