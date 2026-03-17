@@ -4,14 +4,14 @@ server: # REST and WS server
   
 lavalink:
   plugins:
-    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.4.0"
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.8.1"
       repository: "https://maven.lavalink.dev/releases"
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.2"
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.0"
       repository: "https://maven.lavalink.dev/releases"
   server:
     password: "youshallnotpass"
     sources:
-      youtube: false
+      youtube: true
       bandcamp: true
       soundcloud: true
       twitch: true
@@ -49,25 +49,24 @@ plugins:
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
     clients:
-      - MUSIC
-      - ANDROID_TESTSUITE
+      - WEB_REMIX
     pot:
       token: "maxNoLzBi1BH-aMGB9ST3VVoSi5_2Z"
       visitorData: "Cgt2eUF4cW9iSTRRUSiGhd7ZbV7K5s="
   lavasrc:
     providers:
-      - "dzsearch:%QUERY%"
       - "ytsearch:\"%ISRC%\""
       - "ytsearch:%QUERY%"
+      - "dzsearch:%QUERY%"
     sources:
-      spotify: true
+      spotify: ${LAVASRC_SPOTIFY_ENABLED:false}
       applemusic: false
-      deezer: true
+      deezer: ${LAVASRC_DEEZER_ENABLED:false}
       yandexmusic: false
     spotify:
-      clientId: "b0d03ed498124fa8856851dea26e7fc9"
-      clientSecret: "bc4ec88a567f44a3b0b0c5e71d22184a"
+      clientId: "${SPOTIFY_CLIENT_ID:}"
+      clientSecret: "${SPOTIFY_CLIENT_SECRET:}"
       countryCode: "US"
     deezer:
-      masterDecryptionKey: "g4el58wc0zvf9na1"
-      arl: "4ad34c5b9133a8f149e28af6cba7e98e4f6b728bb7c42cc43462a0167f3847afce930aea145132fdbb30b30002440439f4bd960e529e5b64c9840fb2046b731a71a8f28c6de99f660b32c3e6dac5295a2e22c9bf5a3f2718280baed5f6de6eb1"
+      masterDecryptionKey: "${DEEZER_MASTER_DECRYPTION_KEY:g4el58wc0zvf9na1}"
+      arl: "${DEEZER_ARL:}"
