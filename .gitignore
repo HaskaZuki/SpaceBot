@@ -23,6 +23,7 @@ Thumbs.db
 
 # Lavalink
 *.jar
+lavalink/lavalink.env
 
 # Package lock (optional - keep if you want deterministic installs)
 # package-lock.json

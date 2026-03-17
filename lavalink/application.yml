@@ -11,7 +11,7 @@ lavalink:
   server:
     password: "youshallnotpass"
     sources:
-      youtube: true
+      youtube: false
       bandcamp: true
       soundcloud: true
       twitch: true
@@ -37,7 +37,7 @@ lavalink:
     useSeekGhosting: true
     youtubePlaylistLoadLimit: 6
     playerUpdateInterval: 5
-    youtubeSearchEnabled: true
+    youtubeSearchEnabled: false
     soundcloudSearchEnabled: true
     gc-warnings: true
 
@@ -48,8 +48,6 @@ plugins:
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
-    clients:
-      - WEB_REMIX
     pot:
       token: "maxNoLzBi1BH-aMGB9ST3VVoSi5_2Z"
       visitorData: "Cgt2eUF4cW9iSTRRUSiGhd7ZbV7K5s="
