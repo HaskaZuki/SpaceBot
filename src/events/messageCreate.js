@@ -111,11 +111,21 @@ module.exports = {
             }
             const config = await GuildConfig.findOne({ guildId: message.guild.id });
             if (config && config.musicChannelId && message.channel.id === config.musicChannelId) {
-                const query = message.content.trim();
+                let query = message.content.trim();
                 if (!query || query.length === 0) {
                     await message.delete().catch(() => {});
                     return;
                 }
+
+                // Strip "play " prefix — so "play bohemian rhapsody" → "bohemian rhapsody"
+                if (query.toLowerCase().startsWith('play ')) {
+                    query = query.slice(5).trim();
+                }
+                if (!query) {
+                    await message.delete().catch(() => {});
+                    return;
+                }
+
                 const member = message.member;
                 if (!member.voice?.channel) {
                     const reply = await message.reply(`${emoji.status.error} You must be in a voice channel to queue songs!`);
@@ -157,7 +167,14 @@ module.exports = {
                         const errorMsg = await message.channel.send(`${emoji.status.error} ${result.error}`);
                         setTimeout(() => errorMsg.delete().catch(() => {}), 5000);
                     } else if (result && result.track) {
-                        console.log(`[SETUP] Added to queue: ${result.track.info.title}`);
+                        const title = result.track.info?.title || query;
+                        const url = result.track.info?.uri || null;
+                        const label = result.isFirst ? `${emoji.controls.play} Now Playing` : `${emoji.animated.disc} Added to Queue`;
+                        const confirmation = await message.channel.send(
+                            `${label}: **[${title}](${url || '#'})** — <@${message.author.id}>`
+                        );
+                        setTimeout(() => confirmation.delete().catch(() => {}), 8000);
+                        console.log(`[SETUP] ${result.isFirst ? 'Now playing' : 'Queued'}: ${title}`);
                     }
                 } catch (error) {
                     console.error(`[SETUP] Error adding song:`, error);

@@ -25,17 +25,10 @@ module.exports = {
                         .setDescription('Position of track to remove (see /favorites list)')
                         .setMinValue(1)
                         .setRequired(true))),
+    category: 'premium',
     async execute(interaction) {
         const userId = interaction.user.id;
         const subcommand = interaction.options.getSubcommand();
-        const UserSettings = require('../../../models/UserSettings');
-        const userSettings = await UserSettings.findOne({ userId });
-        if (!userSettings || !userSettings.isPremium) {
-             return interaction.reply({
-                 content: `${emoji.premium.star} **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to manage favorites.`,
-                 flags: MessageFlags.Ephemeral
-             });
-        }
         try {
             const userFavorites = await storage.getUser('favorites', userId);
             if (!userFavorites || userFavorites.favorites.length === 0) {

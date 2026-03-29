@@ -34,12 +34,8 @@ module.exports = {
                     { name: 'Tremolo', value: 'tremolo' },
                     { name: 'OFF', value: 'off' }
                 )),
+    category: 'premium',
     async execute(interaction) {
-        const UserSettings = require('../../models/UserSettings');
-        const userSettings = await UserSettings.findOne({ userId: interaction.user.id });
-        if (!userSettings || !userSettings.isPremium) {
-            return interaction.reply({ content: 'Filters are restricted to **Premium Users**.', flags: 64 });
-        }
         const filter = interaction.options.getString('type');
         const guildId = interaction.guild.id;
         const playerState = musicPlayer.players.get(guildId);

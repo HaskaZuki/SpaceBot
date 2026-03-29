@@ -12,21 +12,8 @@ module.exports = {
                 .setMinValue(5)
                 .setMaxValue(50)
                 .setRequired(false)),
+    category: 'premium',
     async execute(interaction) {
-        const UserSettings = require('../../models/UserSettings');
-        const userSettings = await UserSettings.findOne({ userId: interaction.user.id });
-        if (!userSettings || !userSettings.isPremium) {
-            return interaction.reply({
-                content: '🔒 **History is a Premium-Only feature!**\n\n' +
-                    'Premium features:\n' +
-                    '• 📊 Full listening history\n' +
-                    '• 📈 Statistics & analytics\n' +
-                    '• ⭐ Unlimited favorites\n' +
-                    '• 🎚️ Advanced audio filters\n\n' +
-                    'Upgrade your account to Premium!',
-                flags: 64
-            });
-        }
         const limit = interaction.options.getInteger('limit') || 10;
         const guildId = interaction.guild.id;
         const userId = interaction.user.id;

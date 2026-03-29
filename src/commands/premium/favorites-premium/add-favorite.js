@@ -7,17 +7,10 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('favorite')
         .setDescription('Add current track to your favorites'),
+    category: 'premium',
     async execute(interaction) {
         const userId = interaction.user.id;
         const guildId = interaction.guild.id;
-        const UserSettings = require('../../../models/UserSettings');
-        const userSettings = await UserSettings.findOne({ userId });
-        if (!userSettings || !userSettings.isPremium) {
-             return interaction.reply({
-                 content: `${emoji.premium.star} **Favorites are a Premium-Only feature!**\n\nUpgrade your account to Premium to save unlimited tracks.`,
-                 flags: MessageFlags.Ephemeral
-             });
-        }
         try {
             const playerState = musicPlayer.players.get(guildId);
             const playerCheck = validatePlayerState(playerState, { requireTrack: true });
