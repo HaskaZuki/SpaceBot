@@ -48,9 +48,11 @@ plugins:
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
-    pot:
-      token: "maxNoLzBi1BH-aMGB9ST3VVoSi5_2Z"
-      visitorData: "Cgt2eUF4cW9iSTRRUSiGhd7ZbV7K5s="
+    clients:
+      - MUSIC
+      - ANDROID
+      - IOS
+      - WEB_EMBEDDED
   lavasrc:
     providers:
       - "ytsearch:\"%ISRC%\""
