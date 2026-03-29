@@ -190,10 +190,11 @@ module.exports = {
                 await new Promise(r => setTimeout(r, 500));
             }
             try {
+                const shardId = client.shard ? client.shard.ids[0] : 0;
                 player = await client.shoukaku.joinVoiceChannel({
                     guildId: guildId,
                     channelId: voiceChannelId,
-                    shardId: 0,
+                    shardId,
                     deaf: true,
                     mute: false
                 });
@@ -235,12 +236,17 @@ module.exports = {
                             const dzResult = await retryNode.rest.resolve(`dzsearch:${searchQuery}`);
                             if (dzResult && dzResult.data && dzResult.data.length > 0) {
                                 const dzTrack = dzResult.data[0];
-                                dzTrack.requestedBy = failedTrack.requestedBy;
-                                playerState.currentTrack = dzTrack;
-                                console.log(`[DEBUG] Found Deezer fallback: ${dzTrack.info?.title}. Playing now.`);
-                                await player.playTrack({ track: { encoded: dzTrack.encoded } });
-                                module.exports.updateDashboard(client, guildId);
-                                return;
+                                const dzEncoded = dzTrack.encoded || dzTrack.track;
+                                if (!dzEncoded) {
+                                    console.error('[ERROR] Deezer fallback track has no encoded field. Skipping.');
+                                } else {
+                                    dzTrack.requestedBy = failedTrack.requestedBy;
+                                    playerState.currentTrack = dzTrack;
+                                    console.log(`[DEBUG] Found Deezer fallback: ${dzTrack.info?.title}. Playing now.`);
+                                    await player.playTrack({ track: { encoded: dzEncoded } });
+                                    module.exports.updateDashboard(client, guildId);
+                                    return;
+                                }
                             }
                         }
                     } catch (dzErr) {
@@ -294,10 +300,11 @@ module.exports = {
                 await new Promise(r => setTimeout(r, 500));
             }
             try {
+                const shardId = client.shard ? client.shard.ids[0] : 0;
                 player = await client.shoukaku.joinVoiceChannel({
                     guildId: guildId,
                     channelId: voiceChannelId,
-                    shardId: 0,
+                    shardId,
                     deaf: true,
                     mute: false
                 });
@@ -338,9 +345,14 @@ module.exports = {
                             console.log(`  Trying ${sourcePrefix}:${searchQuery}...`);
                             const result = await node.rest.resolve(`${sourcePrefix}:${searchQuery}`);
                             if (result && result.data && result.data.length > 0) {
+                                const altEncoded = result.data[0].encoded || result.data[0].track;
+                                if (!altEncoded) {
+                                    console.error(`[ERROR] Alternative track from ${sourcePrefix} has no encoded. Skipping.`);
+                                    continue;
+                                }
                                 console.log(` Found alternative using ${sourcePrefix}, retrying playback...`);
                                 playerState.currentTrack = result.data[0];
-                                player.playTrack({ track: { encoded: result.data[0].encoded } });
+                                player.playTrack({ track: { encoded: altEncoded } });
                                 module.exports.updateDashboard(client, guildId);
                                 return;
                             }

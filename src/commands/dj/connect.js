@@ -31,10 +31,11 @@ module.exports = {
                     flags: MessageFlags.Ephemeral
                 });
             }
+            const shardId = interaction.client.shard ? interaction.client.shard.ids[0] : 0;
             const player = await interaction.client.shoukaku.joinVoiceChannel({
                 guildId,
                 channelId: voiceChannel.id,
-                shardId: 0,
+                shardId,
                 deaf: true,
                 mute: false
             });

@@ -11,20 +11,32 @@ const client = new Client({
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMembers,
         GatewayIntentBits.GuildVoiceStates,
-        GatewayIntentBits.GuildMessages
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
     ]
 });
 client.commands = new Collection();
-const shoukaku = new Shoukaku(
-    new Connectors.DiscordJS(client),
-    [{
-        name: 'Public-Node',
+const lavalinkNodes = [
+    {
+        name: 'Primary-Node',
         url: process.env.LAVALINK_HOST 
             ? `${process.env.LAVALINK_HOST}:${process.env.LAVALINK_PORT || 2333}`
             : '127.0.0.1:2333',
         auth: process.env.LAVALINK_PASSWORD || 'youshallnotpass',
         secure: process.env.LAVALINK_SECURE === 'true'
-    }],
+    }
+];
+if (process.env.LAVALINK_HOST2) {
+    lavalinkNodes.push({
+        name: 'Fallback-Node',
+        url: `${process.env.LAVALINK_HOST2}:${process.env.LAVALINK_PORT2 || 2333}`,
+        auth: process.env.LAVALINK_PASSWORD2 || 'youshallnotpass',
+        secure: process.env.LAVALINK_SECURE2 === 'true'
+    });
+}
+const shoukaku = new Shoukaku(
+    new Connectors.DiscordJS(client),
+    lavalinkNodes,
     {
         resume: false,
         resumeTimeout: 30,

@@ -128,13 +128,6 @@ module.exports = {
                             flags: 64 
                         });
                     }
-                } else {
-                    if (!isAdmin) {
-                        return interaction.reply({ 
-                            content: `${emoji.status.error} No DJ role has been configured. Only **Administrators** can use this command.\nAn admin can set a DJ role using \`/setdj\`.`, 
-                            flags: 64 
-                        });
-                    }
                 }
             }
             if (command.category === 'admin') {
