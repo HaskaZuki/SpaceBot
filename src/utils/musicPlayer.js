@@ -136,10 +136,11 @@ module.exports = {
             }
         } else {
             const searchSources = [
-                { name: 'Spotify', prefix: 'spsearch' },
-                { name: 'Deezer', prefix: 'dzsearch' },
                 { name: 'YouTube Music', prefix: 'ytmsearch' },
-                { name: 'YouTube', prefix: 'ytsearch' }
+                { name: 'YouTube', prefix: 'ytsearch' },
+                { name: 'SoundCloud', prefix: 'scsearch' },
+                { name: 'Spotify', prefix: 'spsearch' },
+                { name: 'Deezer', prefix: 'dzsearch' }
             ];
             for (const source of searchSources) {
                 try {
