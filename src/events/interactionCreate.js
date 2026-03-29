@@ -152,12 +152,18 @@ module.exports = {
                 }
             }
             if (command.category === `premium`) {
-                const config = await GuildConfig.findOne({ guildId: interaction.guild.id });
-                if (!config || !config.isPremium) {
-                    return interaction.reply({ 
-                        content: `${emoji.status.error} This server must be **Premium** to use this command!\n${emoji.premium.diamond} Contact the bot owner to upgrade to Premium.`, 
-                        flags: 64 
-                    });
+                const config = channelConfig;
+                const guildIsPremium = config && config.isPremium;
+                if (!guildIsPremium) {
+                    const UserSettings = require('../models/UserSettings');
+                    const userSettings = await UserSettings.findOne({ userId: interaction.user.id });
+                    const userIsPremium = userSettings && userSettings.isPremium;
+                    if (!userIsPremium) {
+                        return interaction.reply({
+                            content: `${emoji.premium.diamond} **Premium Required**\n\nThis command is only available for:\n• **Premium Users** — upgrade your account\n• **Premium Servers** — contact the bot owner to upgrade this server\n\nContact the bot owner to get Premium access!`,
+                            flags: 64
+                        });
+                    }
                 }
             }
             try {
