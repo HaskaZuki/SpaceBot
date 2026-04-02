@@ -1,4 +1,3 @@
-const { createMusicEmbed } = require('./embedBuilder');
 const { EmbedBuilder } = require('discord.js');
 const GuildConfig = require('../models/GuildConfig');
 const PlayHistory = require('../models/PlayHistory');
@@ -512,25 +511,6 @@ module.exports = {
     },
     updateDashboard: async (client, guildId) => {
         try {
-            const config = await GuildConfig.findOne({ guildId });
-            if (config && config.musicChannelId && config.musicMessageId) {
-                const channel = client.channels.cache.get(config.musicChannelId);
-                if (channel) {
-                    try {
-                        const message = await channel.messages.fetch(config.musicMessageId);
-                        if (message) {
-                            const playerState = players.get(guildId);
-                            const status = playerState && playerState.currentTrack ? 'Playing' : 'Idle';
-                            const { embeds, components } = createMusicEmbed(config, playerState?.currentTrack, playerState?.queue || [], status);
-                            await message.edit({ embeds, components });
-                        }
-                    } catch (msgErr) {
-                        if (msgErr.code === 10008) {
-                            await GuildConfig.updateOne({ guildId }, { $unset: { musicMessageId: '' } });
-                        }
-                    }
-                }
-            }
             if (client.dashboardIO) {
                 client.dashboardIO.to(guildId).emit('player:update', {
                     action: 'stateChanged',

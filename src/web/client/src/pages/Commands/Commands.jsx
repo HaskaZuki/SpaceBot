@@ -401,14 +401,6 @@ const allCommands = [
     examples: ['/settings view', '/settings reset']
   },
   {
-    name: 'setup',
-    description: 'Set up a dedicated music channel with player embed and controls',
-    usage: '/setup',
-    category: 'admin',
-    options: [],
-    examples: ['/setup']
-  },
-  {
     name: 'setdj',
     description: 'Set, unset, or view the DJ role that controls music commands',
     usage: '/setdj <set|unset|view> [role]',

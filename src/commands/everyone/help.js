@@ -57,7 +57,6 @@ const COMMANDS = {
     skipto:            { desc: 'Skip to any position in the queue',                  usage: '/skipto <position>',      cat: 'premium' },
 
     settings:          { desc: 'View or change server settings',                     usage: '/settings <action>',      cat: 'admin' },
-    setup:             { desc: 'Set up a dedicated music channel',                   usage: '/setup',                  cat: 'admin' },
     setdj:             { desc: 'Set the DJ role for this server',                    usage: '/setdj <role>',           cat: 'admin' },
     setvc:             { desc: 'Restrict bot to specific voice channels',             usage: '/setvc <action>',         cat: 'admin' },
     setcommandchannel: { desc: 'Lock commands to one text channel',                  usage: '/setcommandchannel',      cat: 'admin' },
@@ -224,9 +223,9 @@ function buildTutorial() {
             {
                 name: `${emoji.ui.gear}  Step 3 — Server Setup (Admins)`,
                 value:
-                    '`/setup` — Create a dedicated music text channel\n' +
-                    '`/setdj <role>` — Set who can use DJ commands\n' +
-                    '`/setvc <add|remove> <channel>` — Restrict bot to specific voice channels',
+                    '`/setdj <set|unset|view> [role]` — Set who can use DJ controls\n' +
+                    '`/setvc <set|unset|view> [channel]` — Restrict bot to a voice channel\n'+
+                    '`/setcommandchannel <set|clear|status> [channel]` — Lock commands to one channel',
                 inline: false,
             },
             {
