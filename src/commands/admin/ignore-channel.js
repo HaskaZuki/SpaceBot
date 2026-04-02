@@ -47,7 +47,7 @@ module.exports = {
         }
         const channel = interaction.options.getChannel('channel');
         if (sub === 'add') {
-            if (config.ignoredChannels.includes(channel.id)) {
+            if ((config.ignoredChannels || []).includes(channel.id)) {
                 return interaction.reply({
                     content: `${emoji.status.error} ${channel} is already ignored!`,
                     flags: MessageFlags.Ephemeral
@@ -62,7 +62,7 @@ module.exports = {
             return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
         }
         if (sub === 'remove') {
-            if (!config.ignoredChannels.includes(channel.id)) {
+            if (!(config.ignoredChannels || []).includes(channel.id)) {
                 return interaction.reply({
                     content: `${emoji.status.error} ${channel} is not in the ignore list!`,
                     flags: MessageFlags.Ephemeral

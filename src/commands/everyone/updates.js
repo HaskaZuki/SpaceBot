@@ -25,7 +25,7 @@ module.exports = {
                         '• Dashboard prefix setting removed'
                 },
                 {
-                    name: `${emoji.status.notes} How to Use`,
+                    name: `${emoji.animated.notes} How to Use`,
                     value:
                         '• Type `/` in chat to see all commands\n' +
                         '• Use `/play <song>` to start playing music\n' +
@@ -33,7 +33,7 @@ module.exports = {
                         '• Mention the bot: `@SpaceBot play <song>`'
                 },
                 {
-                    name: `${emoji.status.premium} Premium Features`,
+                    name: `${emoji.animated.premium} Premium Features`,
                     value:
                         '• Audio filters, 24/7 mode, favorites\n' +
                         '• Lyrics sync, listening history\n' +
@@ -41,14 +41,14 @@ module.exports = {
                         '• Use `/premiumstatus` to check your tier'
                 },
                 {
-                    name: `${emoji.status.link} Links`,
+                    name: `${emoji.ui.link} Links`,
                     value:
                         '[Dashboard](https://spacebot.me/dashboard) • ' +
-                        '[Support Server](https://discord.gg/spacebot) • ' +
+                        '[Support Server](https://discord.gg/CFRKf8mXe4) • ' +
                         '[Commands List](https://spacebot.me/commands)'
                 }
             )
-            .setFooter({ text: 'SpaceBot — Slash Commands Edition' })
+            .setFooter({ text: 'SpaceBot EST.' })
             .setTimestamp();
         await interaction.reply({ embeds: [embed] });
     },

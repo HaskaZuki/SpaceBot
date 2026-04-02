@@ -22,6 +22,7 @@ module.exports = {
                 .setName('view')
                 .setDescription('View the current DJ role'))
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
+    category: 'admin',
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
         try {
@@ -64,22 +65,14 @@ module.exports = {
             }
             if (subcommand === 'set') {
                 const role = interaction.options.getRole('role');
-                if (config.djRoleId) {
-                    const currentRole = interaction.guild.roles.cache.get(config.djRoleId);
-                    if (currentRole) {
-                        return interaction.reply({ 
-                            content: `⚠️ DJ Role is already set to ${currentRole}!\n\n` +
-                                    `To change the DJ role, you must first unset it:\n` +
-                                    `1. Use \`/setdj unset\` to remove current DJ role\n` +
-                                    `2. Then use \`/setdj set\` to set a new role`, 
-                            flags: 64 
-                        });
-                    }
-                }
+                const previousRoleId = config.djRoleId;
                 config.djRoleId = role.id;
                 await config.save();
+                const previousNotice = previousRoleId && previousRoleId !== role.id
+                    ? `\nPrevious role has been replaced.`
+                    : '';
                 await interaction.reply({ 
-                    content: `${emoji.status.success} Successfully set the DJ role to ${role}.\n` +
+                    content: `${emoji.status.success} Successfully set the DJ role to ${role}.${previousNotice}\n` +
                             `Users with this role can now use DJ commands.`, 
                     ephemeral: false 
                 });

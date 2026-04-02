@@ -92,11 +92,14 @@ const allCommands = [
   },
   {
     name: 'export-playlist',
-    description: 'Export a playlist to a shareable text file',
-    usage: '/export-playlist <name>',
+    description: 'Export a playlist as clickable search links for Spotify, YouTube Music, or Apple Music',
+    usage: '/export-playlist <playlist> <platform>',
     category: 'everyone',
-    options: [{ name: 'name', type: 'String', required: true, desc: 'Playlist name to export' }],
-    examples: ['/export-playlist MyVibes']
+    options: [
+      { name: 'playlist', type: 'String', required: true, desc: 'Playlist name to export' },
+      { name: 'platform', type: 'String', required: true, desc: 'spotify, youtube, or apple' }
+    ],
+    examples: ['/export-playlist MyVibes spotify', '/export-playlist Chill apple']
   },
   {
     name: 'playerstats',
@@ -121,6 +124,14 @@ const allCommands = [
     category: 'everyone',
     options: [],
     examples: ['/ping']
+  },
+  {
+    name: 'support',
+    description: 'Get the support server invite link and useful links',
+    usage: '/support',
+    category: 'everyone',
+    options: [],
+    examples: ['/support']
   },
   {
     name: 'updates',
@@ -222,12 +233,28 @@ const allCommands = [
     examples: ['/replay']
   },
   {
+    name: 'forceskip',
+    description: 'Force-skip the current track, bypassing any active voteskip',
+    usage: '/forceskip',
+    category: 'dj',
+    options: [],
+    examples: ['/forceskip']
+  },
+  {
     name: 'leave',
     description: 'Disconnect the bot from the voice channel',
     usage: '/leave',
     category: 'dj',
     options: [],
     examples: ['/leave']
+  },
+  {
+    name: 'connect',
+    description: 'Make the bot join your current voice channel',
+    usage: '/connect',
+    category: 'dj',
+    options: [],
+    examples: ['/connect']
   },
   {
     name: 'forward',
@@ -358,14 +385,6 @@ const allCommands = [
     examples: ['/history']
   },
   {
-    name: 'lyrics-sync',
-    description: 'View synchronized lyrics that highlight the current line being played',
-    usage: '/lyrics-sync',
-    category: 'premium',
-    options: [],
-    examples: ['/lyrics-sync']
-  },
-  {
     name: 'skipto',
     description: 'Skip to a specific position in the queue, removing all tracks before it',
     usage: '/skipto <position>',
@@ -391,22 +410,44 @@ const allCommands = [
   },
   {
     name: 'setdj',
-    description: 'Set or remove the DJ role for music controls',
-    usage: '/setdj <role>',
+    description: 'Set, unset, or view the DJ role that controls music commands',
+    usage: '/setdj <set|unset|view> [role]',
     category: 'admin',
-    options: [{ name: 'role', type: 'Role', required: true, desc: 'Role to assign as DJ' }],
-    examples: ['/setdj @DJ']
+    options: [
+      { name: 'subcommand', type: 'String', required: true, desc: 'set, unset, or view' },
+      { name: 'role', type: 'Role', required: false, desc: 'Role to assign as DJ (required for set)' }
+    ],
+    examples: ['/setdj set @DJ', '/setdj unset', '/setdj view']
   },
   {
     name: 'setvc',
-    description: 'Restrict bot to specific voice channels',
-    usage: '/setvc <action> [channel]',
+    description: 'Restrict the bot to a specific voice channel, or remove the restriction',
+    usage: '/setvc <set|unset|view> [channel]',
     category: 'admin',
     options: [
-      { name: 'action', type: 'String', required: true, desc: 'add, remove, list, or clear' },
-      { name: 'channel', type: 'Channel', required: false, desc: 'Voice channel to add/remove' }
+      { name: 'subcommand', type: 'String', required: true, desc: 'set, unset, or view' },
+      { name: 'channel', type: 'Channel', required: false, desc: 'Voice channel (required for set)' }
     ],
-    examples: ['/setvc add #music-vc', '/setvc list']
+    examples: ['/setvc set #music-vc', '/setvc unset', '/setvc view']
+  },
+  {
+    name: 'setcommandchannel',
+    description: 'Restrict all bot commands to one specific text channel (whitelist mode)',
+    usage: '/setcommandchannel <set|clear|status> [channel]',
+    category: 'admin',
+    options: [
+      { name: 'subcommand', type: 'String', required: true, desc: 'set, clear, or status' },
+      { name: 'channel', type: 'Channel', required: false, desc: 'Channel to restrict to (required for set)' }
+    ],
+    examples: ['/setcommandchannel set #bot-commands', '/setcommandchannel clear']
+  },
+  {
+    name: 'removedupes',
+    description: 'Remove duplicate tracks from the current queue',
+    usage: '/removedupes',
+    category: 'admin',
+    options: [],
+    examples: ['/removedupes']
   },
   {
     name: 'language',

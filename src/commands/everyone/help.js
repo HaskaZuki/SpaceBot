@@ -54,7 +54,6 @@ const COMMANDS = {
     'add-favorite':    { desc: 'Save current track to your favorites',               usage: '/add-favorite',           cat: 'premium' },
     'manage-favorites':{ desc: 'View, play, or remove favorites',                    usage: '/manage-favorites',       cat: 'premium' },
     history:           { desc: 'View your listening history',                        usage: '/history',                cat: 'premium' },
-    'lyrics-sync':     { desc: 'Synchronized karaoke-style lyrics',                  usage: '/lyrics-sync',            cat: 'premium' },
     skipto:            { desc: 'Skip to any position in the queue',                  usage: '/skipto <position>',      cat: 'premium' },
 
     settings:          { desc: 'View or change server settings',                     usage: '/settings <action>',      cat: 'admin' },
@@ -154,10 +153,10 @@ function buildDetail(name) {
 }
 
 function buildButtons(userId, activeCat) {
-    const row = new ActionRowBuilder();
+    const row1 = new ActionRowBuilder();
     for (const cat of CAT_ORDER) {
         const c = CATS[cat];
-        row.addComponents(
+        row1.addComponents(
             new ButtonBuilder()
                 .setCustomId(`help:${userId}:${cat}`)
                 .setEmoji(c.icon)
@@ -165,14 +164,21 @@ function buildButtons(userId, activeCat) {
                 .setStyle(cat === activeCat ? ButtonStyle.Primary : ButtonStyle.Secondary)
         );
     }
-    return row;
+    const row2 = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId(`help:${userId}:tutorial`)
+            .setEmoji(emoji.ui.help)
+            .setLabel('Quick Start Tutorial')
+            .setStyle(activeCat === 'tutorial' ? ButtonStyle.Success : ButtonStyle.Secondary)
+    );
+    return [row1, row2];
 }
 
 function buildDisabledButtons() {
-    const row = new ActionRowBuilder();
+    const row1 = new ActionRowBuilder();
     for (const cat of CAT_ORDER) {
         const c = CATS[cat];
-        row.addComponents(
+        row1.addComponents(
             new ButtonBuilder()
                 .setCustomId(`help:expired:${cat}`)
                 .setEmoji(c.icon)
@@ -181,7 +187,65 @@ function buildDisabledButtons() {
                 .setDisabled(true)
         );
     }
-    return row;
+    const row2 = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId('help:expired:tutorial')
+            .setEmoji(emoji.ui.help)
+            .setLabel('Quick Start Tutorial')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(true)
+    );
+    return [row1, row2];
+}
+
+function buildTutorial() {
+    return new EmbedBuilder()
+        .setColor(0x5865F2)
+        .setAuthor({ name: 'SpaceBot — Quick Start Guide', iconURL: 'https://cdn.discordapp.com/emojis/1475168921169428622.gif' })
+        .setDescription(`Welcome to SpaceBot! Here's how to get started in under a minute.\n\u200b`)
+        .addFields(
+            {
+                name: `${emoji.controls.play}  Step 1 — Play Music`,
+                value:
+                    'Use `/play <song name or URL>` to start playing music.\n' +
+                    'Supports YouTube, Spotify, SoundCloud, and Apple Music links.\n' +
+                    'Example: `/play Blinding Lights`',
+                inline: false,
+            },
+            {
+                name: `${emoji.controls.next}  Step 2 — Skip & Control`,
+                value:
+                    '`/skip` — Skip the current track\n' +
+                    '`/pause` / `/resume` — Pause or resume\n' +
+                    '`/queue` — See what\'s queued up\n' +
+                    '`/stop` — Stop and clear the queue',
+                inline: false,
+            },
+            {
+                name: `${emoji.ui.gear}  Step 3 — Server Setup (Admins)`,
+                value:
+                    '`/setup` — Create a dedicated music text channel\n' +
+                    '`/setdj <role>` — Set who can use DJ commands\n' +
+                    '`/setvc <add|remove> <channel>` — Restrict bot to specific voice channels',
+                inline: false,
+            },
+            {
+                name: `${emoji.animated.premium}  Step 4 — Premium Features`,
+                value:
+                    'Premium unlocks audio filters, 24/7 mode, favorites, history, and more.\n' +
+                    'Use `/premiumstatus` to check if your server has premium.\n' +
+                    '[Get Premium →](https://spacebot.me)',
+                inline: false,
+            },
+            {
+                name: `${emoji.ui.help}  Need Help?`,
+                value:
+                    'Use `/help command:<name>` for detailed info on any command.\n' +
+                    'Join the [Support Server](https://discord.gg/CFRKf8mXe4) if you\'re stuck.',
+                inline: false,
+            }
+        )
+        .setFooter({ text: 'SpaceBot • Use the category buttons to explore all commands' });
 }
 
 
@@ -230,7 +294,7 @@ module.exports = {
 
         const reply = await interaction.reply({
             embeds: [buildOverview()],
-            components: [buildButtons(interaction.user.id, null)],
+            components: buildButtons(interaction.user.id, null),
             flags: MessageFlags.Ephemeral,
         });
 
@@ -241,15 +305,22 @@ module.exports = {
                 return btn.reply({ content: `${emoji.status.error} This menu isn't yours.`, flags: MessageFlags.Ephemeral });
             }
             const [, , cat] = btn.customId.split(':');
-            await btn.update({
-                embeds: [buildCategory(cat)],
-                components: [buildButtons(interaction.user.id, cat)],
-            });
+            if (cat === 'tutorial') {
+                await btn.update({
+                    embeds: [buildTutorial()],
+                    components: buildButtons(interaction.user.id, 'tutorial'),
+                });
+            } else {
+                await btn.update({
+                    embeds: [buildCategory(cat)],
+                    components: buildButtons(interaction.user.id, cat),
+                });
+            }
         });
 
         collector.on('end', async () => {
             try {
-                await interaction.editReply({ components: [buildDisabledButtons()] });
+                await interaction.editReply({ components: buildDisabledButtons() });
             } catch {  }
         });
     },

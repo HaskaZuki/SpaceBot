@@ -178,6 +178,12 @@ module.exports = {
         const guild = client.guilds.cache.get(guildId);
         const botCurrentChannel = guild?.members?.me?.voice?.channelId;
 
+        const guildConfig = await GuildConfig.findOne({ guildId });
+        if (guildConfig?.allowedVoiceChannels?.length > 0 && !guildConfig.allowedVoiceChannels.includes(voiceChannelId)) {
+            const allowedMention = guildConfig.allowedVoiceChannels.map(id => `<#${id}>`).join(', ');
+            return { error: `I can only join the restricted voice channel: ${allowedMention}` };
+        }
+
         if (player && botCurrentChannel === voiceChannelId) {
 
             playerState.player = player;

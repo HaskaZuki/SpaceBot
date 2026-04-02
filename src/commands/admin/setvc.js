@@ -23,6 +23,7 @@ module.exports = {
                 .setName('view')
                 .setDescription('View current voice channel restriction'))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+    category: 'admin',
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();
         const guildId = interaction.guild.id;
@@ -67,24 +68,14 @@ module.exports = {
             }
             if (subcommand === 'set') {
                 const channel = interaction.options.getChannel('channel');
-                if (config.allowedVoiceChannels && config.allowedVoiceChannels.length > 0) {
-                    const currentChannelId = config.allowedVoiceChannels[0];
-                    const currentChannel = interaction.guild.channels.cache.get(currentChannelId);
-                    if (currentChannel) {
-                        return interaction.reply({ 
-                            content: `⚠️ Voice channel restriction is already set to ${currentChannel}!\n\n` +
-                                    `Only **one** voice channel can be set.\n` +
-                                    `To change:\n` +
-                                    `1. Use \`/setvc unset\` to remove current restriction\n` +
-                                    `2. Then use \`/setvc set\` to set a new channel`, 
-                            flags: 64 
-                        });
-                    }
-                }
+                const previousId = config.allowedVoiceChannels?.[0];
                 config.allowedVoiceChannels = [channel.id];
                 await config.save();
+                const previousNotice = previousId && previousId !== channel.id
+                    ? `\nPrevious restriction has been replaced.`
+                    : '';
                 await interaction.reply({ 
-                    content: `${emoji.status.success} Bot restricted to voice channel: ${channel}\n` +
+                    content: `${emoji.status.success} Bot restricted to voice channel: ${channel}.${previousNotice}\n` +
                             `The bot will only join this voice channel.`, 
                     ephemeral: false 
                 });

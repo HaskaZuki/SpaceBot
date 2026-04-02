@@ -105,13 +105,14 @@ module.exports = {
             const command = interaction.client.commands.get(interaction.commandName);
             if (!command) return;
             const channelConfig = await GuildConfig.findOne({ guildId: interaction.guild.id });
-            if (channelConfig?.commandChannelId && interaction.channel.id !== channelConfig.commandChannelId) {
+            const isMusicChannel = channelConfig?.musicChannelId && interaction.channel.id === channelConfig.musicChannelId;
+            if (channelConfig?.commandChannelId && interaction.channel.id !== channelConfig.commandChannelId && !isMusicChannel) {
                 return interaction.reply({
                     content: `${emoji.status.error} Bot commands are only allowed in <#${channelConfig.commandChannelId}>.`,
                     flags: 64
                 });
             }
-            if (!channelConfig?.commandChannelId && channelConfig?.ignoredChannels?.includes(interaction.channel.id)) {
+            if (!channelConfig?.commandChannelId && !isMusicChannel && channelConfig?.ignoredChannels?.includes(interaction.channel.id)) {
                 return interaction.reply({
                     content: `${emoji.status.error} Bot commands are disabled in this channel.`,
                     flags: 64
