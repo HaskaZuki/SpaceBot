@@ -1,3 +1,4 @@
+const { EmbedBuilder } = require('discord.js');
 const musicPlayer = require('../utils/musicPlayer');
 const GuildConfig = require('../models/GuildConfig');
 const emoji = require('../utils/emojiConfig');
@@ -74,7 +75,7 @@ module.exports = {
                         searchData.textChannel
                     );
                     delete global.searchCache[userId];
-                    const embed = new require('discord.js').EmbedBuilder()
+                    const embed = new EmbedBuilder()
                         .setColor('#3B82F6')
                         .setTitle('Added to Queue')
                         .setDescription(`${emoji.status.success} | [${selectedTrack.info.title}](${selectedTrack.info.uri || '#'})`)
