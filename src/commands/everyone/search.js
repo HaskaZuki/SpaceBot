@@ -21,7 +21,7 @@ module.exports = {
                 )),
     async execute(interaction) {
         const query = interaction.options.getString('query');
-        const source = interaction.options.getString('source') || 'youtube';
+        const source = interaction.options.getString('source') || 'spotify';
         const guildId = interaction.guild.id;
         const member = interaction.member;
         if (!member.voice.channel) {
@@ -55,7 +55,7 @@ module.exports = {
                 result = null;
             }
             if (!result || result.loadType === 'empty' || result.loadType === 'error' || result.loadType === 'NO_MATCHES') {
-                const fallbackSources = ['scsearch', 'ytmsearch', 'ytsearch', 'spsearch']
+                const fallbackSources = ['spsearch', 'ytmsearch', 'ytsearch', 'scsearch']
                     .filter(s => s !== selectedSource.prefix);
                 for (const fallbackPrefix of fallbackSources) {
                     try {
