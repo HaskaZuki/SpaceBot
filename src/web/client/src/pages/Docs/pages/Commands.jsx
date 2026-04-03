@@ -71,12 +71,12 @@ const categories = [
     permission: 'Premium Server',
     commands: [
       { name: '/volume', desc: 'Adjust playback volume (1–200%)' },
-      { name: '/filter', desc: 'Apply an audio filter to playback' },
-      { name: '/bassboost', desc: 'Toggle bass boost effect' },
-      { name: '/nightcore', desc: 'Toggle nightcore (faster + higher pitch)' },
-      { name: '/vaporwave', desc: 'Toggle vaporwave (slower + lower pitch)' },
-      { name: '/demon', desc: 'Toggle demon voice effect (deep pitch shift)' },
-      { name: '/speed', desc: 'Adjust playback speed (0.5–2.0x)' },
+      { name: '/filter', desc: 'Apply dynamic audio filters to playback (like bassboost, speed, etc)' },
+
+
+
+
+
       { name: '/247', desc: 'Toggle 24/7 mode — stay in VC when idle' },
       { name: '/autoplay', desc: 'Auto-play similar tracks when queue ends' },
       { name: '/add-favorite', desc: 'Save the current track to your favorites' },

@@ -304,46 +304,7 @@ const allCommands = [
     options: [{ name: 'type', type: 'String', required: true, desc: 'Filter type to apply' }],
     examples: ['/filter bassboost', '/filter nightcore']
   },
-  {
-    name: 'bassboost',
-    description: 'Toggle bass boost effect on the current playback',
-    usage: '/bassboost',
-    category: 'premium',
-    options: [],
-    examples: ['/bassboost']
-  },
-  {
-    name: 'nightcore',
-    description: 'Toggle nightcore effect (faster + higher pitch)',
-    usage: '/nightcore',
-    category: 'premium',
-    options: [],
-    examples: ['/nightcore']
-  },
-  {
-    name: 'vaporwave',
-    description: 'Toggle vaporwave effect (slower + lower pitch)',
-    usage: '/vaporwave',
-    category: 'premium',
-    options: [],
-    examples: ['/vaporwave']
-  },
-  {
-    name: 'demon',
-    description: 'Toggle demon voice effect (deep pitch shift)',
-    usage: '/demon',
-    category: 'premium',
-    options: [],
-    examples: ['/demon']
-  },
-  {
-    name: 'speed',
-    description: 'Adjust the playback speed of the current track',
-    usage: '/speed <rate>',
-    category: 'premium',
-    options: [{ name: 'rate', type: 'Number', required: true, desc: 'Speed multiplier (0.5-2.0)' }],
-    examples: ['/speed 1.5', '/speed 0.75']
-  },
+
   {
     name: '247',
     description: 'Toggle 24/7 mode — bot stays in voice channel even when idle',

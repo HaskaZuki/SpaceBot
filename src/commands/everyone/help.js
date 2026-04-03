@@ -44,11 +44,7 @@ const COMMANDS = {
 
     volume:            { desc: 'Set playback volume (1–200%)',                       usage: '/volume <level>',         cat: 'premium' },
     filter:            { desc: 'Apply an audio filter',                              usage: '/filter <type>',          cat: 'premium' },
-    bassboost:         { desc: 'Toggle bass boost effect',                           usage: '/bassboost',              cat: 'premium' },
-    nightcore:         { desc: 'Toggle nightcore effect',                            usage: '/nightcore',              cat: 'premium' },
-    vaporwave:         { desc: 'Toggle vaporwave effect',                            usage: '/vaporwave',              cat: 'premium' },
-    demon:             { desc: 'Toggle demon voice effect',                          usage: '/demon',                  cat: 'premium' },
-    speed:             { desc: 'Adjust playback speed (0.5–2.0×)',                   usage: '/speed <rate>',           cat: 'premium' },
+
     '247':             { desc: 'Toggle 24/7 — stay in VC when idle',                 usage: '/247',                    cat: 'premium' },
     autoplay:          { desc: 'Toggle auto-play when queue ends',                   usage: '/autoplay',               cat: 'premium' },
     'add-favorite':    { desc: 'Save current track to your favorites',               usage: '/add-favorite',           cat: 'premium' },

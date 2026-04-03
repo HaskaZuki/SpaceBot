@@ -45,9 +45,8 @@ const commandCategories = [
     icon: 'fa-crown',
     color: '#ffd60a',
     commands: [
-      { name: '/filter', desc: 'Apply audio filters (bassboost, nightcore, etc)', usage: '/filter <type>', premium: true },
+      { name: '/filter', desc: 'Apply audio filters (bassboost, nightcore, etc)', usage: '/filter <type> [level]', premium: true },
       { name: '/volume', desc: 'Adjust playback volume (1-200%)', usage: '/volume <1-200>', premium: true },
-      { name: '/speed', desc: 'Adjust playback speed', usage: '/speed <0.5-2.0>', premium: true },
       { name: '/247', desc: 'Keep bot in voice channel 24/7', usage: '/247', premium: true },
       { name: '/autoplay', desc: 'Auto-play similar songs when queue ends', usage: '/autoplay', premium: true },
       { name: '/history', desc: 'View your listening history', usage: '/history', premium: true },
