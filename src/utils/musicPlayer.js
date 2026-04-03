@@ -331,14 +331,15 @@ module.exports = {
                 console.log('[DEBUG] Playback started (playTrackDirect) - audio should be playing');
             });
         }
+        const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
         playerState.queue.push(track);
-        console.log(`[DEBUG] Queue length after push: ${playerState.queue.length}, currentTrack: ${!!playerState.currentTrack}`);
-        if (!playerState.currentTrack && playerState.queue.length === 1) {
+        console.log(`[DEBUG] Queue length after push: ${playerState.queue.length}, currentTrack: ${!!playerState.currentTrack}, isFirst: ${isFirst}`);
+        if (isFirst) {
             await module.exports.playNext(client, guildId);
         } else {
              module.exports.updateDashboard(client, guildId);
         }
-        return { track };
+        return { track, isFirst };
     },
     playNext: async (client, guildId) => {
         const playerState = players.get(guildId);

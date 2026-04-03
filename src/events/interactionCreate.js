@@ -75,12 +75,15 @@ module.exports = {
                         searchData.textChannel
                     );
                     delete global.searchCache[userId];
+                    const title = selectedTrack.info.title;
+                    const url = selectedTrack.info.uri || '#';
+                    const requesterName = interaction.user.displayName || interaction.user.username;
+                    
                     const embed = new EmbedBuilder()
-                        .setColor('#3B82F6')
-                        .setTitle('Added to Queue')
-                        .setDescription(`${emoji.status.success} | [${selectedTrack.info.title}](${selectedTrack.info.uri || '#'})`)
-                        .setFooter({ text: `Requested by ${interaction.user.displayName || interaction.user.username}` })
-                        .setTimestamp();
+                        .setColor(result.isFirst ? '#7C3AED' : '#3B82F6')
+                        .setTitle(result.isFirst ? 'Now Playing' : 'Added to Queue')
+                        .setDescription(`${emoji.animated.disc} | [${title}](${url}) - Requested by ${requesterName}`);
+                        
                     await interaction.followUp({ embeds: [embed], flags: 64 });
                 } catch (error) {
                     console.error(`Play from search error:`, error);
