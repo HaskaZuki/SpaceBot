@@ -221,23 +221,27 @@ module.exports = {
         player.on('start', () => {
             console.log('[DEBUG] Playback started - audio should be playing');
         });
-        track.requestedBy = requestedBy;
+        const isPlaylist = result.loadType === 'playlist';
+        const playlistName = isPlaylist && result.data?.info?.name ? result.data.info.name : null;
 
-
-        console.log(`[DEBUG musicPlayer.js] Before isFirst check - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
-        
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
 
-        console.log(`[DEBUG musicPlayer.js] isFirst value: ${isFirst}`);
+        if (isPlaylist) {
+            tracks.forEach(t => {
+                t.requestedBy = requestedBy;
+                playerState.queue.push(t);
+            });
+        } else {
+            track.requestedBy = requestedBy;
+            playerState.queue.push(track);
+        }
 
-        playerState.queue.push(track);
-        
         if (isFirst) {
             await module.exports.playNext(client, guildId);
         } else {
             module.exports.updateDashboard(client, guildId);
         }
-        return { track, isFirst };
+        return { track, isFirst, isPlaylist, playlistName, tracksLoaded: isPlaylist ? tracks.length : 1 };
     },
     playTrackDirect: async (client, guildId, voiceChannelId, track, textChannel) => {
         const nodes = [...client.shoukaku.nodes.values()];

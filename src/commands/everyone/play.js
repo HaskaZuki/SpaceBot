@@ -58,20 +58,22 @@ module.exports = {
         const playerState = musicPlayer.getQueue(guildId);
         console.log(`[DEBUG play.js] Queue state - currentTrack: ${playerState.currentTrack ? 'exists' : 'null'}, queue length: ${playerState.queue.length}`);
         
-        if (result.isFirst) {
-                    const nowPlayingEmbed = new EmbedBuilder()
-                        .setColor('#7C3AED')
-                        .setTitle('Now Playing')
-                        .setDescription(`${emoji.animated.disc} | [${title}](${url}) - Requested by ${requesterName}`)
-                       
-                    await interaction.editReply({ embeds: [nowPlayingEmbed] });
-                } else {
-                    const queueEmbed = new EmbedBuilder()
-                        .setColor('#3B82F6')
-                        .setTitle('Added to Queue')
-                        .setDescription(`${emoji.animated.disc} | [${title}](${url}) - Requested by ${requesterName}`)
-                    await interaction.editReply({ embeds: [queueEmbed] });
+                let description = '';
+                if (result.isPlaylist) {
+                    const plName = result.playlistName || 'Unknown Playlist';
+                    const plUrl = query.startsWith('http') ? query : '#';
+                    description += `**Play Playlist** [${plName}](${plUrl}) - Requested by ${requesterName}\n\n`;
+                    description += `**${result.isFirst ? 'Now Playing' : 'Added to Queue'}**\n`;
                 }
+
+                description += `${emoji.animated.disc} | [${title}](${url}) - Requested by ${requesterName}`;
+
+                const embed = new EmbedBuilder()
+                    .setColor(result.isFirst ? '#7C3AED' : '#3B82F6')
+                    .setTitle(result.isPlaylist ? 'Playlist Loaded' : (result.isFirst ? 'Now Playing' : 'Added to Queue'))
+                    .setDescription(description);
+
+                await interaction.editReply({ embeds: [embed] });
             } else {
                 await interaction.editReply({ content: `${emoji.status.error} No results found.` });
             }
