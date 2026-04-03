@@ -14,8 +14,11 @@ const extractTracks = (result) => {
     if (result.loadType === 'search' && result.data && Array.isArray(result.data)) {
         return result.data;
     }
-    if (result.loadType === 'playlist' && result.data?.tracks) {
+    if ((result.loadType === 'playlist' || result.loadType === 'PLAYLIST_LOADED') && result.data?.tracks) {
         return result.data.tracks;
+    }
+    if (result.loadType === 'PLAYLIST_LOADED' && result.tracks) {
+        return result.tracks;
     }
     if (result.tracks && Array.isArray(result.tracks)) {
         return result.tracks;
@@ -101,7 +104,7 @@ module.exports = {
                     if (result && result.loadType !== 'empty' && result.loadType !== 'NO_MATCHES' && result.loadType !== 'error') {
                         if ((result.loadType === 'track' && result.data) || 
                             (result.loadType === 'search' && result.data && result.data.length > 0) ||
-                            (result.loadType === 'playlist' && result.data && result.data.tracks && result.data.tracks.length > 0)) {
+                            ((result.loadType === 'playlist' || result.loadType === 'PLAYLIST_LOADED') && ((result.data && result.data.tracks && result.data.tracks.length > 0) || (result.tracks && result.tracks.length > 0)))) {
                             console.log(` Found results using ${source.name}`);
                             break;
                         }
@@ -221,8 +224,8 @@ module.exports = {
         player.on('start', () => {
             console.log('[DEBUG] Playback started - audio should be playing');
         });
-        const isPlaylist = result.loadType === 'playlist';
-        const playlistName = isPlaylist && result.data?.info?.name ? result.data.info.name : null;
+        const isPlaylist = result.loadType === 'playlist' || result.loadType === 'PLAYLIST_LOADED';
+        const playlistName = isPlaylist ? (result.data?.info?.name || result.playlistInfo?.name || null) : null;
 
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
 
