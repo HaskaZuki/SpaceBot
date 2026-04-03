@@ -78,60 +78,12 @@ module.exports = {
         playerState.voiceChannelId = voiceChannelId;
         let result;
         if (query.startsWith('http')) {
-
-            const isSpotifyUrl = query.includes('open.spotify.com');
-            if (isSpotifyUrl) {
-                console.log(`[DEBUG] Scraping Spotify metadata for URL: ${query}`);
-                try {
-
-                    const fetch = require('isomorphic-unfetch');
-                    const { getPreview } = require('spotify-url-info')(fetch);
-                    
-                    const data = await getPreview(query);
-                    if (data && data.title) {
-                        const artist = data.artist || '';
-                        const ytQuery = `ytsearch:${artist} ${data.title} audio`;
-                        console.log(`[DEBUG] Scraped Spotify: "${data.title}" by "${artist}". Searching YT: ${ytQuery}`);
-                        
-                        result = await node.rest.resolve(ytQuery);
-
-
-                        if (!result || ['empty', 'NO_MATCHES', 'error'].includes(result?.loadType) || result?.data?.length === 0) {
-                            const scQuery = `scsearch:${artist} ${data.title}`;
-                            console.log(`[DEBUG] YT search failed for scraped Spotify URL. Falling back to SC: ${scQuery}`);
-                            result = await node.rest.resolve(scQuery);
-                        }
-                        
-
-                        if (result && ['track', 'search'].includes(result.loadType) && result.data?.length > 0) {
-                             const track = result.loadType === 'track' ? result.data : result.data[0];
-
-                             track.info.title = data.title;
-                             track.info.author = artist || track.info.author;
-                             if (data.image) track.info.artworkUrl = data.image;
-                             track.info.uri = query; // Original Spotify URL
-                             
-
-                             result = {
-                                 loadType: 'track',
-                                 data: track
-                             };
-                        }
-                    } else {
-                        throw new Error("Could not extract metadata from Spotify URL");
-                    }
-                } catch (e) {
-                    console.error('Spotify scraping error:', e.message);
-                    return { error: 'Failed to extract Spotify data. Make sure it is a valid public track or playlist.' };
-                }
-            } else {
-                console.log(`[DEBUG] Direct URL: ${query}`);
-                try {
-                    result = await node.rest.resolve(query);
-                } catch (e) {
-                    console.error('Lavalink URL resolve error:', e.message);
-                    return { error: 'Failed to load URL' };
-                }
+            console.log(`[DEBUG] Direct URL: ${query}`);
+            try {
+                result = await node.rest.resolve(query);
+            } catch (e) {
+                console.error('Lavalink URL resolve error:', e.message);
+                return { error: 'Failed to load URL' };
             }
         } else {
             const searchSources = [
