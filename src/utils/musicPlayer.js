@@ -2,6 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const GuildConfig = require('../models/GuildConfig');
 const PlayHistory = require('../models/PlayHistory');
 const emoji = require('./emojiConfig');
+const { fetchSpotifyPlaylist } = require('./spotifyApi');
 const players = new Map();
 const isNodeReady = (node) => {
     return node && node.state === 1;
@@ -80,6 +81,39 @@ module.exports = {
 
         playerState.voiceChannelId = voiceChannelId;
         let result;
+        const spotifyPlaylistMatch = query.match(/open\.spotify\.com\/playlist\/([a-zA-Z0-9]+)/);
+        if (spotifyPlaylistMatch && process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
+            const playlistId = spotifyPlaylistMatch[1];
+            console.log(`[DEBUG] Spotify playlist detected, fetching directly from API: ${playlistId}`);
+            try {
+                const { playlistName, tracks: spotifyTracks } = await fetchSpotifyPlaylist(playlistId);
+                if (!spotifyTracks || spotifyTracks.length === 0) {
+                    return { error: 'Spotify playlist is empty or could not be loaded.' };
+                }
+                const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
+                let firstTrack = null;
+                for (const st of spotifyTracks) {
+                    const searchQuery = st.isrc
+                        ? `ytsearch:"${st.isrc}"`
+                        : `ytsearch:${st.artist} ${st.title}`;
+                    try {
+                        const r = await node.rest.resolve(searchQuery);
+                        const t = r?.data?.[0] || (r?.data && !Array.isArray(r.data) ? r.data : null);
+                        if (t) {
+                            t.requestedBy = requestedBy;
+                            playerState.queue.push(t);
+                            if (!firstTrack) firstTrack = t;
+                        }
+                    } catch (_) {}
+                }
+                if (!firstTrack) return { error: 'Could not load any tracks from this Spotify playlist.' };
+                if (isFirst) await module.exports.playNext(client, guildId);
+                else module.exports.updateDashboard(client, guildId);
+                return { track: firstTrack, isFirst, isPlaylist: true, playlistName, tracksLoaded: spotifyTracks.length };
+            } catch (err) {
+                console.error('[Spotify API] Failed to fetch playlist directly, falling back to Lavalink:', err.message);
+            }
+        }
         if (query.startsWith('http')) {
             console.log(`[DEBUG] Direct URL: ${query}`);
             try {
