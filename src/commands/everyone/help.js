@@ -17,10 +17,10 @@ const COMMANDS = {
     playlist:          { desc: 'Create, load, and manage playlists',                 usage: '/playlist <action>',      cat: 'music' },
     'export-playlist': { desc: 'Export a playlist to a shareable file',              usage: '/export-playlist <name>', cat: 'music' },
     removedupes:       { desc: 'Remove duplicate tracks from the queue',             usage: '/removedupes',            cat: 'music' },
-    premiumstatus:     { desc: 'Check the premium status of this server',            usage: '/premiumstatus',          cat: 'music' },
-    support:           { desc: 'Get the support server invite link',                 usage: '/support',                cat: 'music' },
-    ping:              { desc: "Check the bot's latency",                            usage: '/ping',                   cat: 'music' },
-    updates:           { desc: 'View the latest bot updates',                        usage: '/updates',                cat: 'music' },
+    premiumstatus:     { desc: 'Check the premium status of this server',            usage: '/premiumstatus',          cat: 'general' },
+    support:           { desc: 'Get the support server invite link',                 usage: '/support',                cat: 'general' },
+    ping:              { desc: "Check the bot's latency",                            usage: '/ping',                   cat: 'general' },
+    updates:           { desc: 'View the latest bot updates',                        usage: '/updates',                cat: 'general' },
 
     pause:             { desc: 'Pause the current track',                            usage: '/pause',                  cat: 'dj' },
     resume:            { desc: 'Resume paused playback',                             usage: '/resume',                 cat: 'dj' },
@@ -67,6 +67,7 @@ const COMMANDS = {
 };
 
 const CATS = {
+    general: { label: 'General',  icon: emoji.ui.home,          color: 0x5865F2, perm: 'Everyone' },
     music:   { label: 'Music',    icon: emoji.animated.notes,   color: 0xE91E63, perm: 'Everyone' },
     dj:      { label: 'DJ',       icon: emoji.ui.gear,          color: 0x9C27B0, perm: 'DJ Role / Admin' },
     playback:{ label: 'Playback', icon: emoji.controls.play,    color: 0x3F51B5, perm: 'DJ Role / Admin' },
@@ -74,7 +75,7 @@ const CATS = {
     admin:   { label: 'Admin',    icon: emoji.ui.gear,          color: 0x95A5A6, perm: 'Administrator' },
 };
 
-const CAT_ORDER = ['music', 'dj', 'playback', 'premium', 'admin'];
+const CAT_ORDER = ['general', 'music', 'dj', 'playback', 'premium', 'admin'];
 
 
 function grouped() {
@@ -149,40 +150,44 @@ function buildDetail(name) {
 
 function buildButtons(userId, activeCat) {
     const row1 = new ActionRowBuilder();
-    for (const cat of CAT_ORDER) {
+    const row2 = new ActionRowBuilder();
+    const half = Math.ceil(CAT_ORDER.length / 2);
+    for (let i = 0; i < CAT_ORDER.length; i++) {
+        const cat = CAT_ORDER[i];
         const c = CATS[cat];
-        row1.addComponents(
-            new ButtonBuilder()
-                .setCustomId(`help:${userId}:${cat}`)
-                .setEmoji(c.icon)
-                .setLabel(c.label)
-                .setStyle(cat === activeCat ? ButtonStyle.Primary : ButtonStyle.Secondary)
-        );
+        const btn = new ButtonBuilder()
+            .setCustomId(`help:${userId}:${cat}`)
+            .setEmoji(c.icon)
+            .setLabel(c.label)
+            .setStyle(cat === activeCat ? ButtonStyle.Primary : ButtonStyle.Secondary);
+        (i < half ? row1 : row2).addComponents(btn);
     }
-    const row2 = new ActionRowBuilder().addComponents(
+    const row3 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId(`help:${userId}:tutorial`)
             .setEmoji(emoji.ui.help)
             .setLabel('Quick Start Tutorial')
             .setStyle(activeCat === 'tutorial' ? ButtonStyle.Success : ButtonStyle.Secondary)
     );
-    return [row1, row2];
+    return [row1, row2, row3];
 }
 
 function buildDisabledButtons() {
     const row1 = new ActionRowBuilder();
-    for (const cat of CAT_ORDER) {
+    const row2 = new ActionRowBuilder();
+    const half = Math.ceil(CAT_ORDER.length / 2);
+    for (let i = 0; i < CAT_ORDER.length; i++) {
+        const cat = CAT_ORDER[i];
         const c = CATS[cat];
-        row1.addComponents(
-            new ButtonBuilder()
-                .setCustomId(`help:expired:${cat}`)
-                .setEmoji(c.icon)
-                .setLabel(c.label)
-                .setStyle(ButtonStyle.Secondary)
-                .setDisabled(true)
-        );
+        const btn = new ButtonBuilder()
+            .setCustomId(`help:expired:${cat}`)
+            .setEmoji(c.icon)
+            .setLabel(c.label)
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(true);
+        (i < half ? row1 : row2).addComponents(btn);
     }
-    const row2 = new ActionRowBuilder().addComponents(
+    const row3 = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
             .setCustomId('help:expired:tutorial')
             .setEmoji(emoji.ui.help)
@@ -190,7 +195,7 @@ function buildDisabledButtons() {
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(true)
     );
-    return [row1, row2];
+    return [row1, row2, row3];
 }
 
 function buildTutorial() {

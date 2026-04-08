@@ -20,6 +20,6 @@ module.exports = {
             return interaction.reply({ content: `${emoji.status.error} No music is playing.`, flags: MessageFlags.Ephemeral });
         }
         playerState.player.setGlobalVolume(volume);
-        await interaction.reply({ content: `${emoji.animated.notes} Volume set to **${volume}%**`, flags: MessageFlags.Ephemeral });
+        await interaction.reply({ content: `${emoji.animated.notes} Volume set to **${volume}%**` });
     },
 };

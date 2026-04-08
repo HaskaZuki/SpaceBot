@@ -10,6 +10,6 @@ module.exports = {
         if (!config) return interaction.reply({ content: 'Guild config not found.', flags: MessageFlags.Ephemeral });
         config.autoPlay = !config.autoPlay;
         await config.save();
-        await interaction.reply({ content: `Autoplay is now **${config.autoPlay ? 'ON' : 'OFF'}**.`, flags: MessageFlags.Ephemeral });
+        await interaction.reply({ content: `${config.autoPlay ? '🟢' : '🔴'} Autoplay is now **${config.autoPlay ? 'ON' : 'OFF'}**.` });
     },
 };

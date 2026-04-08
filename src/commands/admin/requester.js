@@ -11,6 +11,7 @@ module.exports = {
         if (!config) config = await GuildConfig.create({ guildId });
         config.showRequester = !config.showRequester;
         await config.save();
-        await interaction.reply(`Show requester: ${config.showRequester}`);
+        const { MessageFlags } = require('discord.js');
+        await interaction.reply({ content: `${config.showRequester ? '🟢' : '🔴'} Show requester is now **${config.showRequester ? 'ON' : 'OFF'}**.`, flags: MessageFlags.Ephemeral });
     },
 };
