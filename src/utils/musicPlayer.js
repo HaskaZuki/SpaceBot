@@ -92,19 +92,26 @@ module.exports = {
                 }
                 const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
                 let firstTrack = null;
-                for (const st of spotifyTracks) {
-                    const searchQuery = st.isrc
-                        ? `ytsearch:"${st.isrc}"`
-                        : `ytsearch:${st.artist} ${st.title}`;
-                    try {
-                        const r = await node.rest.resolve(searchQuery);
-                        const t = r?.data?.[0] || (r?.data && !Array.isArray(r.data) ? r.data : null);
-                        if (t) {
+
+                const BATCH_SIZE = 5;
+                for (let i = 0; i < spotifyTracks.length; i += BATCH_SIZE) {
+                    const batch = spotifyTracks.slice(i, i + BATCH_SIZE);
+                    const results = await Promise.allSettled(
+                        batch.map(async (st) => {
+                            const searchQuery = `ytsearch:${st.artist} ${st.title}`;
+                            const r = await node.rest.resolve(searchQuery);
+                            const t = r?.data?.[0] ?? null;
+                            return t;
+                        })
+                    );
+                    for (const res of results) {
+                        if (res.status === 'fulfilled' && res.value) {
+                            const t = res.value;
                             t.requestedBy = requestedBy;
                             playerState.queue.push(t);
                             if (!firstTrack) firstTrack = t;
                         }
-                    } catch (_) {}
+                    }
                 }
                 if (!firstTrack) return { error: 'Could not load any tracks from this Spotify playlist.' };
                 if (isFirst) await module.exports.playNext(client, guildId);
