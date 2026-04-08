@@ -66,6 +66,10 @@ plugins:
       clientId: "${SPOTIFY_CLIENT_ID:}"
       clientSecret: "${SPOTIFY_CLIENT_SECRET:}"
       countryCode: "US"
+      playlistLoadLimit: 6
+      albumLoadLimit: 6
+      resolveArtistsInSearch: false
+      localFiles: false
     deezer:
       masterDecryptionKey: "${DEEZER_MASTER_DECRYPTION_KEY:g4el58wc0zvf9na1}"
       arl: "${DEEZER_ARL:}"
