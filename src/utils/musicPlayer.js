@@ -93,15 +93,15 @@ module.exports = {
                 const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
                 let firstTrack = null;
 
-                const BATCH_SIZE = 5;
+                const BATCH_SIZE = 3;
+                const sleep = (ms) => new Promise(r => setTimeout(r, ms));
                 for (let i = 0; i < spotifyTracks.length; i += BATCH_SIZE) {
                     const batch = spotifyTracks.slice(i, i + BATCH_SIZE);
                     const results = await Promise.allSettled(
                         batch.map(async (st) => {
                             const searchQuery = `ytsearch:${st.artist} ${st.title}`;
                             const r = await node.rest.resolve(searchQuery);
-                            const t = r?.data?.[0] ?? null;
-                            return t;
+                            return r?.data?.[0] ?? null;
                         })
                     );
                     for (const res of results) {
@@ -112,6 +112,7 @@ module.exports = {
                             if (!firstTrack) firstTrack = t;
                         }
                     }
+                    if (i + BATCH_SIZE < spotifyTracks.length) await sleep(300);
                 }
                 if (!firstTrack) return { error: 'Could not load any tracks from this Spotify playlist.' };
                 if (isFirst) await module.exports.playNext(client, guildId);
@@ -262,8 +263,18 @@ module.exports = {
             console.error('Track stuck:', data);
             module.exports.playNext(client, guildId);
         });
-        player.on('start', () => {
+        player.on('start', async () => {
             console.log('[DEBUG] Playback started - audio should be playing');
+            const track = playerState.currentTrack;
+            const textChannelId = playerState.textChannelId;
+            if (!track || !textChannelId) return;
+            const sourceName = track.info?.sourceName || 'default';
+            const sourceIcon = emoji.getSourceIcon ? emoji.getSourceIcon(sourceName) : '';
+            const nowPlayingEmbed = new EmbedBuilder()
+                .setColor('#7C3AED')
+                .setDescription(`${emoji.animated?.disc || '🎵'} Now Playing: **[${track.info?.title || 'Unknown'}](${track.info?.uri || '#'})**\n${sourceIcon} ${sourceName} • Requested by <@${track.requestedBy || 'someone'}>`)
+                .setThumbnail(track.info?.artworkUrl || null);
+            sendToTextChannel(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
         });
         const isPlaylist = result.loadType === 'playlist' || result.loadType === 'PLAYLIST_LOADED';
         const playlistName = isPlaylist ? (result.data?.info?.name || result.playlistInfo?.name || null) : null;
@@ -375,8 +386,18 @@ module.exports = {
                 console.error('Track stuck:', data);
                 module.exports.playNext(client, guildId);
             });
-            player.on('start', () => {
+            player.on('start', async () => {
                 console.log('[DEBUG] Playback started (playTrackDirect) - audio should be playing');
+                const track = playerState.currentTrack;
+                const textChannelId = playerState.textChannelId;
+                if (!track || !textChannelId) return;
+                const sourceName = track.info?.sourceName || 'default';
+                const sourceIcon = emoji.getSourceIcon ? emoji.getSourceIcon(sourceName) : '';
+                const nowPlayingEmbed = new EmbedBuilder()
+                    .setColor('#7C3AED')
+                    .setDescription(`${emoji.animated?.disc || '🎵'} Now Playing: **[${track.info?.title || 'Unknown'}](${track.info?.uri || '#'})**\n${sourceIcon} ${sourceName} • Requested by <@${track.requestedBy || 'someone'}>`)
+                    .setThumbnail(track.info?.artworkUrl || null);
+                sendToTextChannel(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
             });
         }
         const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
