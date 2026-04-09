@@ -272,7 +272,7 @@ module.exports = {
             const sourceIcon = emoji.getSourceIcon ? emoji.getSourceIcon(sourceName) : '';
             const nowPlayingEmbed = new EmbedBuilder()
                 .setColor('#7C3AED')
-                .setDescription(`${emoji.animated?.disc || '🎵'} Now Playing: **[${track.info?.title || 'Unknown'}](${track.info?.uri || '#'})**\n${sourceIcon} ${sourceName} • Requested by <@${track.requestedBy || 'someone'}>`)
+                .setDescription(`${emoji.animated?.disc} Now Playing: **[${track.info?.title || 'Unknown'}](${track.info?.uri || '#'})**\n${sourceIcon} ${sourceName} • Requested by <@${track.requestedBy || 'someone'}>`)
                 .setThumbnail(track.info?.artworkUrl || null);
             sendToTextChannel(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
         });
