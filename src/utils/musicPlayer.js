@@ -81,47 +81,46 @@ module.exports = {
 
         playerState.voiceChannelId = voiceChannelId;
         let result;
+        let spotifyQueued = false;
+        let spotifyQueueResult = null;
         const spotifyPlaylistMatch = query.match(/open\.spotify\.com\/playlist\/([a-zA-Z0-9]+)/);
-        if (spotifyPlaylistMatch && process.env.SPOTIFY_CLIENT_ID && process.env.SPOTIFY_CLIENT_SECRET) {
+        if (spotifyPlaylistMatch) {
             const playlistId = spotifyPlaylistMatch[1];
             console.log(`[DEBUG] Spotify playlist detected, fetching directly from API: ${playlistId}`);
             try {
                 const { playlistName, tracks: spotifyTracks } = await fetchSpotifyPlaylist(playlistId);
-                if (!spotifyTracks || spotifyTracks.length === 0) {
-                    return { error: 'Spotify playlist is empty or could not be loaded.' };
-                }
-                const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
-                let firstTrack = null;
-
-                const BATCH_SIZE = 3;
-                const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-                for (let i = 0; i < spotifyTracks.length; i += BATCH_SIZE) {
-                    const batch = spotifyTracks.slice(i, i + BATCH_SIZE);
-                    const results = await Promise.allSettled(
-                        batch.map(async (st) => {
-                            const searchQuery = `ytsearch:${st.artist} ${st.title}`;
-                            const r = await node.rest.resolve(searchQuery);
-                            return r?.data?.[0] ?? null;
-                        })
-                    );
-                    for (const res of results) {
-                        if (res.status === 'fulfilled' && res.value) {
-                            const t = res.value;
-                            t.requestedBy = requestedBy;
-                            playerState.queue.push(t);
-                            if (!firstTrack) firstTrack = t;
+                if (spotifyTracks && spotifyTracks.length > 0) {
+                    const BATCH_SIZE = 3;
+                    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+                    let firstTrack = null;
+                    for (let i = 0; i < spotifyTracks.length; i += BATCH_SIZE) {
+                        const batch = spotifyTracks.slice(i, i + BATCH_SIZE);
+                        const results = await Promise.allSettled(
+                            batch.map(async (st) => {
+                                const r = await node.rest.resolve(`ytsearch:${st.artist} ${st.title}`);
+                                return r?.data?.[0] ?? null;
+                            })
+                        );
+                        for (const res of results) {
+                            if (res.status === 'fulfilled' && res.value) {
+                                const t = res.value;
+                                t.requestedBy = requestedBy;
+                                playerState.queue.push(t);
+                                if (!firstTrack) firstTrack = t;
+                            }
                         }
+                        if (i + BATCH_SIZE < spotifyTracks.length) await sleep(300);
                     }
-                    if (i + BATCH_SIZE < spotifyTracks.length) await sleep(300);
+                    if (firstTrack) {
+                        spotifyQueued = true;
+                        spotifyQueueResult = { track: firstTrack, isPlaylist: true, playlistName, tracksLoaded: playerState.queue.length };
+                    }
                 }
-                if (!firstTrack) return { error: 'Could not load any tracks from this Spotify playlist.' };
-                if (isFirst) await module.exports.playNext(client, guildId);
-                else module.exports.updateDashboard(client, guildId);
-                return { track: firstTrack, isFirst, isPlaylist: true, playlistName, tracksLoaded: spotifyTracks.length };
             } catch (err) {
-                console.error('[Spotify API] Failed to fetch playlist directly, falling back to Lavalink:', err.message);
+                console.error('[Spotify API] Failed, falling back to Lavalink:', err.message);
             }
         }
+        if (!spotifyQueued) {
         if (query.startsWith('http')) {
             console.log(`[DEBUG] Direct URL: ${query}`);
             try {
@@ -170,6 +169,7 @@ module.exports = {
             console.log('[DEBUG] loadType:', result.loadType, 'data:', typeof result.data);
             return { error: 'No track found' };
         }
+        } // end !spotifyQueued block
         let player = client.shoukaku.players.get(guildId);
         const guild = client.guilds.cache.get(guildId);
         const botCurrentChannel = guild?.members?.me?.voice?.channelId;
@@ -276,6 +276,16 @@ module.exports = {
                 .setThumbnail(track.info?.artworkUrl || null);
             sendToTextChannel(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
         });
+        if (spotifyQueued) {
+            const isFirst = spotifyQueueResult.track === playerState.queue[0] || !playerState.currentTrack;
+            if (isFirst) {
+                await module.exports.playNext(client, guildId);
+            } else {
+                module.exports.updateDashboard(client, guildId);
+            }
+            return { ...spotifyQueueResult, isFirst };
+        }
+
         const isPlaylist = result.loadType === 'playlist' || result.loadType === 'PLAYLIST_LOADED';
         const playlistName = isPlaylist ? (result.data?.info?.name || result.playlistInfo?.name || null) : null;
 
