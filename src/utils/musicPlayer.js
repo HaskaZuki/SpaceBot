@@ -266,6 +266,10 @@ module.exports = {
         });
         player.on('start', async () => {
             console.log('[DEBUG] Playback started - audio should be playing');
+            if (playerState.suppressNextStartEmbed) {
+                playerState.suppressNextStartEmbed = false;
+                return;
+            }
             const track = playerState.currentTrack;
             const textChannelId = playerState.textChannelId;
             if (!track || !textChannelId) return;
@@ -280,6 +284,7 @@ module.exports = {
         if (spotifyQueued) {
             const { isFirst } = spotifyQueueResult;
             if (isFirst) {
+                playerState.suppressNextStartEmbed = true;
                 await module.exports.playNext(client, guildId);
             } else {
                 module.exports.updateDashboard(client, guildId);
@@ -303,6 +308,7 @@ module.exports = {
         }
 
         if (isFirst) {
+            playerState.suppressNextStartEmbed = true;
             await module.exports.playNext(client, guildId);
         } else {
             module.exports.updateDashboard(client, guildId);
