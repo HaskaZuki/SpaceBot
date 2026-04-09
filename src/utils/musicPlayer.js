@@ -90,6 +90,7 @@ module.exports = {
             try {
                 const { playlistName, tracks: spotifyTracks } = await fetchSpotifyPlaylist(playlistId);
                 if (spotifyTracks && spotifyTracks.length > 0) {
+                    const isFirst = !playerState.currentTrack && playerState.queue.length === 0;
                     const BATCH_SIZE = 3;
                     const sleep = (ms) => new Promise(r => setTimeout(r, ms));
                     let firstTrack = null;
@@ -113,7 +114,7 @@ module.exports = {
                     }
                     if (firstTrack) {
                         spotifyQueued = true;
-                        spotifyQueueResult = { track: firstTrack, isPlaylist: true, playlistName, tracksLoaded: playerState.queue.length };
+                        spotifyQueueResult = { track: firstTrack, isFirst, isPlaylist: true, playlistName, tracksLoaded: playerState.queue.length };
                     }
                 }
             } catch (err) {
@@ -277,13 +278,13 @@ module.exports = {
             sendToTextChannel(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
         });
         if (spotifyQueued) {
-            const isFirst = spotifyQueueResult.track === playerState.queue[0] || !playerState.currentTrack;
+            const { isFirst } = spotifyQueueResult;
             if (isFirst) {
                 await module.exports.playNext(client, guildId);
             } else {
                 module.exports.updateDashboard(client, guildId);
             }
-            return { ...spotifyQueueResult, isFirst };
+            return { ...spotifyQueueResult };
         }
 
         const isPlaylist = result.loadType === 'playlist' || result.loadType === 'PLAYLIST_LOADED';
