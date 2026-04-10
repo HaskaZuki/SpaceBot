@@ -98,8 +98,18 @@ module.exports = {
                         const batch = spotifyTracks.slice(i, i + BATCH_SIZE);
                         const results = await Promise.allSettled(
                             batch.map(async (st) => {
-                                const r = await node.rest.resolve(`ytsearch:${st.artist} ${st.title}`);
-                                return r?.data?.[0] ?? null;
+                                const searchTerm = `${st.artist} ${st.title}`;
+                                for (const prefix of ['spsearch', 'dzsearch', 'ytsearch']) {
+                                    try {
+                                        const r = await node.rest.resolve(`${prefix}:${searchTerm}`);
+                                        const found = r?.data?.[0] ?? null;
+                                        if (found) {
+                                            console.log(`[Spotify Playlist] Found via ${prefix}: ${st.title}`);
+                                            return found;
+                                        }
+                                    } catch (_) {}
+                                }
+                                return null;
                             })
                         );
                         for (const res of results) {
@@ -132,11 +142,11 @@ module.exports = {
             }
         } else {
             const searchSources = [
+                { name: 'Spotify', prefix: 'spsearch' },
+                { name: 'Deezer', prefix: 'dzsearch' },
                 { name: 'YouTube Music', prefix: 'ytmsearch' },
                 { name: 'YouTube', prefix: 'ytsearch' },
-                { name: 'SoundCloud', prefix: 'scsearch' },
-                { name: 'Spotify', prefix: 'spsearch' },
-                { name: 'Deezer', prefix: 'dzsearch' }
+                { name: 'SoundCloud', prefix: 'scsearch' }
             ];
             for (const source of searchSources) {
                 try {
