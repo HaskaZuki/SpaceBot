@@ -685,14 +685,25 @@ module.exports = (client) => {
             ]);
             const leaderboardWithUsers = await Promise.all(
                 leaderboard.map(async (entry, index) => {
-                    const userSettings = await UserSettings.findOne({ userId: entry._id });
-                    const user = client.users.cache.get(entry._id) || 
-                        (userSettings ? { username: userSettings.username, avatar: userSettings.avatar } : null);
+                    let username = null;
+                    let avatar = null;
+                    try {
+                        // Try live Discord API fetch first
+                        const discordUser = await client.users.fetch(entry._id);
+                        username = discordUser.username;
+                        avatar = discordUser.avatar;
+                    } catch (_) {
+                        // Fall back to UserSettings or cache
+                        const userSettings = await UserSettings.findOne({ userId: entry._id });
+                        const cached = client.users.cache.get(entry._id);
+                        username = cached?.username || userSettings?.username || null;
+                        avatar = cached?.avatar || userSettings?.avatar || null;
+                    }
                     return {
                         rank: index + 1,
                         userId: entry._id,
-                        username: user?.username || `User#${entry._id.slice(0, 8)}`,
-                        avatar: user?.avatar || null,
+                        username: username || `Unknown#${entry._id.slice(0, 4)}`,
+                        avatar,
                         trackCount: entry.trackCount,
                         totalDuration: entry.totalDuration,
                         lastPlayed: entry.lastPlayed

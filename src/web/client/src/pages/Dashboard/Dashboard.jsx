@@ -3,6 +3,7 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import config from '../../config';
 import './Dashboard.css';
+
 const languages = [
   { code: 'en', flag: '🇬🇧', name: 'English' },
   { code: 'id', flag: '🇮🇩', name: 'Bahasa Indonesia' },
@@ -14,8 +15,9 @@ const languages = [
   { code: 'pt', flag: '🇵🇹', name: 'Português' },
   { code: 'th', flag: '🇹🇭', name: 'ไทย' },
   { code: 'zh', flag: '🇨🇳', name: '中文' },
-  { code: 'ru', flag: '🇷🇺', name: 'Русский' }
+  { code: 'ru', flag: '🇷🇺', name: 'Русский' },
 ];
+
 function Dashboard() {
   const { isPremium } = useAuth();
   const [servers, setServers] = useState([]);
@@ -28,12 +30,12 @@ function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [botStats, setBotStats] = useState(null);
   const [saveStatus, setSaveStatus] = useState('');
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+
   useEffect(() => {
     fetchServers();
     fetchBotStats();
   }, []);
+
   const fetchBotStats = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/stats`);
@@ -45,6 +47,7 @@ function Dashboard() {
       console.error('Failed to fetch stats:', error);
     }
   };
+
   const fetchServers = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/user/servers`, {
@@ -58,6 +61,7 @@ function Dashboard() {
       console.error('Failed to fetch servers:', error);
     }
   };
+
   const fetchServerConfig = async (serverId) => {
     setLoading(true);
     try {
@@ -78,6 +82,7 @@ function Dashboard() {
       setLoading(false);
     }
   };
+
   const handleServerChange = (serverId) => {
     if (hasUnsavedChanges && !window.confirm('You have unsaved changes. Discard them?')) {
       return;
@@ -86,34 +91,18 @@ function Dashboard() {
     setSelectedServer(server);
     if (serverId && server?.hasBot) {
       fetchServerConfig(serverId);
-      fetchLeaderboard(serverId);
     } else {
       setServerConfig(null);
       setPendingChanges({});
       setHasUnsavedChanges(false);
-      setLeaderboard([]);
     }
   };
-  const fetchLeaderboard = async (serverId) => {
-    setLoadingLeaderboard(true);
-    try {
-      const res = await fetch(`${config.apiUrl}/api/guild/${serverId}/leaderboard`, {
-        credentials: 'include'
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setLeaderboard(data.leaderboard || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch leaderboard:', error);
-    } finally {
-      setLoadingLeaderboard(false);
-    }
-  };
+
   const trackChange = (key, value) => {
     setPendingChanges(prev => ({ ...prev, [key]: value }));
     setHasUnsavedChanges(true);
   };
+
   const cancelChanges = () => {
     if (!window.confirm('Discard all unsaved changes?')) return;
     setPendingChanges({});
@@ -122,6 +111,7 @@ function Dashboard() {
       setServerConfig(JSON.parse(JSON.stringify(originalConfig)));
     }
   };
+
   const saveChanges = async () => {
     if (!selectedServer || Object.keys(pendingChanges).length === 0) return;
     setSaveStatus('saving');
@@ -147,17 +137,21 @@ function Dashboard() {
       setTimeout(() => setSaveStatus(''), 3000);
     }
   };
+
   const getValue = (key, defaultValue) => {
     if (pendingChanges.hasOwnProperty(key)) return pendingChanges[key];
     return serverConfig?.[key] ?? defaultValue;
   };
+
   const formatUptime = (ms) => {
     if (!ms) return '--';
     const days = Math.floor(ms / 86400000);
     const hours = Math.floor(ms / 3600000) % 24;
     return days > 0 ? `${days}d ${hours}h` : `${hours}h`;
   };
+
   const guildIsPremium = serverConfig?.isPremium || false;
+
   return (
     <DashboardLayout title="Dashboard">
       <div className="dashboard-content">
@@ -193,6 +187,7 @@ function Dashboard() {
             </div>
           </div>
         )}
+
         <div className="server-select-card">
           <h2 className="card-title">
             <i className="fas fa-server" />
@@ -214,6 +209,7 @@ function Dashboard() {
             Only servers where you have Administrator permission are shown
           </p>
         </div>
+
         {!selectedServer && (
           <div className="server-select-card">
             <div className="empty-state">
@@ -223,13 +219,14 @@ function Dashboard() {
             </div>
           </div>
         )}
+
         {selectedServer && !selectedServer.hasBot && (
           <div className="server-select-card">
             <div className="empty-state">
               <i className="fas fa-robot" />
               <h3>Bot Not in Server</h3>
               <p>SpaceBot hasn't been added to {selectedServer.name} yet.</p>
-              <a 
+              <a
                 href={`https://discord.com/oauth2/authorize?client_id=${process.env.REACT_APP_CLIENT_ID || '710260223536922705'}&permissions=2639517285699408&integration_type=0&scope=bot%20applications.commands&guild_id=${selectedServer.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -240,11 +237,13 @@ function Dashboard() {
             </div>
           </div>
         )}
+
         {loading && (
           <div className="loading-container">
             <div className="spinner" />
           </div>
         )}
+
         {selectedServer && serverConfig && !loading && (
           <>
             <div className="server-header-card">
@@ -267,6 +266,7 @@ function Dashboard() {
                 )}
               </div>
             </div>
+
             <div className="settings-grid">
               <div className="setting-card">
                 <div className="setting-header">
@@ -286,6 +286,7 @@ function Dashboard() {
                   ))}
                 </select>
               </div>
+
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-list-ol" /></div>
@@ -302,14 +303,13 @@ function Dashboard() {
                   onChange={(e) => trackChange('maxSongCount', parseInt(e.target.value) || 0)}
                 />
               </div>
+
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-language" /></div>
                   <div className="setting-title">Language</div>
                 </div>
-                <p className="setting-description">
-                  Bot response language.
-                </p>
+                <p className="setting-description">Bot response language.</p>
                 <select
                   value={getValue('language', 'en')}
                   onChange={(e) => trackChange('language', e.target.value)}
@@ -319,14 +319,13 @@ function Dashboard() {
                   ))}
                 </select>
               </div>
+
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-bullhorn" /></div>
                   <div className="setting-title">Announce Songs</div>
                 </div>
-                <p className="setting-description">
-                  Send a message when a new song starts playing.
-                </p>
+                <p className="setting-description">Send a message when a new song starts playing.</p>
                 <div className="toggle-row">
                   <span className="toggle-label">Enable Announcements</span>
                   <div
@@ -337,14 +336,13 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
+
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-user-tag" /></div>
                   <div className="setting-title">Show Requester</div>
                 </div>
-                <p className="setting-description">
-                  Display who requested the song in embeds.
-                </p>
+                <p className="setting-description">Display who requested the song in embeds.</p>
                 <div className="toggle-row">
                   <span className="toggle-label">Show Requester Info</span>
                   <div
@@ -355,14 +353,13 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
+
               <div className="setting-card">
                 <div className="setting-header">
                   <div className="setting-icon"><i className="fas fa-stream" /></div>
                   <div className="setting-title">Allow Playlists</div>
                 </div>
-                <p className="setting-description">
-                  Allow users to add entire playlists to queue.
-                </p>
+                <p className="setting-description">Allow users to add entire playlists to queue.</p>
                 <div className="toggle-row">
                   <span className="toggle-label">Enable Playlists</span>
                   <div
@@ -373,59 +370,50 @@ function Dashboard() {
                   </div>
                 </div>
               </div>
+
               <div className={`setting-card ${guildIsPremium ? '' : 'premium-locked'}`}>
                 <div className="setting-header">
                   <div className="setting-icon premium"><i className="fas fa-infinity" /></div>
                   <div className="setting-title">24/7 Mode</div>
                   {!guildIsPremium && <span className="premium-tag">PREMIUM</span>}
                 </div>
-                <p className="setting-description">
-                  Stay connected to voice channel 24/7.
-                </p>
+                <p className="setting-description">Stay connected to voice channel 24/7.</p>
                 <div className="toggle-row">
                   <span className="toggle-label">Enable 24/7</span>
                   <div
                     className={`toggle-switch ${getValue('alwaysOn', false) ? 'active' : ''} ${!guildIsPremium ? 'disabled' : ''}`}
-                    onClick={() => {
-                      if (!guildIsPremium) return;
-                      trackChange('alwaysOn', !getValue('alwaysOn', false));
-                    }}
+                    onClick={() => { if (!guildIsPremium) return; trackChange('alwaysOn', !getValue('alwaysOn', false)); }}
                   >
                     <div className="toggle-slider" />
                   </div>
                 </div>
               </div>
+
               <div className={`setting-card ${guildIsPremium ? '' : 'premium-locked'}`}>
                 <div className="setting-header">
                   <div className="setting-icon premium"><i className="fas fa-magic" /></div>
                   <div className="setting-title">Auto-Play</div>
                   {!guildIsPremium && <span className="premium-tag">PREMIUM</span>}
                 </div>
-                <p className="setting-description">
-                  Automatically play similar songs when queue ends.
-                </p>
+                <p className="setting-description">Automatically play similar songs when queue ends.</p>
                 <div className="toggle-row">
                   <span className="toggle-label">Enable Auto-Play</span>
                   <div
                     className={`toggle-switch ${getValue('autoPlay', false) ? 'active' : ''} ${!guildIsPremium ? 'disabled' : ''}`}
-                    onClick={() => {
-                      if (!guildIsPremium) return;
-                      trackChange('autoPlay', !getValue('autoPlay', false));
-                    }}
+                    onClick={() => { if (!guildIsPremium) return; trackChange('autoPlay', !getValue('autoPlay', false)); }}
                   >
                     <div className="toggle-slider" />
                   </div>
                 </div>
               </div>
+
               <div className={`setting-card ${guildIsPremium ? '' : 'premium-locked'}`}>
                 <div className="setting-header">
                   <div className="setting-icon premium"><i className="fas fa-volume-up" /></div>
                   <div className="setting-title">Default Volume</div>
                   {!guildIsPremium && <span className="premium-tag">PREMIUM</span>}
                 </div>
-                <p className="setting-description">
-                  Set the default volume level (1-200%).
-                </p>
+                <p className="setting-description">Set the default volume level (1-200%).</p>
                 <input
                   type="number"
                   min="1"
@@ -435,6 +423,7 @@ function Dashboard() {
                   onChange={(e) => trackChange('volume', parseInt(e.target.value) || 100)}
                 />
               </div>
+
               {!guildIsPremium && (
                 <div className="setting-card upgrade-card">
                   <div className="setting-header">
@@ -454,56 +443,9 @@ function Dashboard() {
                 </div>
               )}
             </div>
-            <div className="leaderboard-section">
-              <div className="setting-card leaderboard-card">
-                <div className="setting-header">
-                  <div className="setting-icon"><i className="fas fa-trophy" /></div>
-                  <div className="setting-title">Server Leaderboard</div>
-                </div>
-                <p className="setting-description">
-                  Top listeners in this server based on play history.
-                </p>
-                {loadingLeaderboard ? (
-                  <div className="loading-container">
-                    <div className="spinner" />
-                  </div>
-                ) : leaderboard.length > 0 ? (
-                  <div className="leaderboard-list">
-                    {leaderboard.map((entry) => (
-                      <div key={entry.userId} className={`leaderboard-entry rank-${entry.rank}`}>
-                        <div className="leaderboard-rank">
-                          {entry.rank <= 3 ? (
-                            <span className={`medal medal-${entry.rank}`}>
-                              {entry.rank === 1 ? '🥇' : entry.rank === 2 ? '🥈' : '🥉'}
-                            </span>
-                          ) : (
-                            <span className="rank-number">{entry.rank}</span>
-                          )}
-                        </div>
-                        <div className="leaderboard-user">
-                          <img 
-                            src={entry.avatar ? `https://cdn.discordapp.com/avatars/${entry.userId}/${entry.avatar}.png?size=32` : `https://cdn.discordapp.com/embed/avatars/0.png`} 
-                            alt="avatar"
-                            className="leaderboard-avatar"
-                          />
-                          <span className="leaderboard-username">{entry.username}</span>
-                        </div>
-                        <div className="leaderboard-stats">
-                          <span className="track-count">{entry.trackCount.toLocaleString()} tracks</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="empty-state-small">
-                    <i className="fas fa-music" />
-                    <p>No play history yet for this server</p>
-                  </div>
-                )}
-              </div>
-            </div>
           </>
         )}
+
         {hasUnsavedChanges && (
           <div className="unsaved-bar show">
             <div className="unsaved-message">
@@ -528,4 +470,5 @@ function Dashboard() {
     </DashboardLayout>
   );
 }
+
 export default Dashboard;
