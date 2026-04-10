@@ -55,6 +55,19 @@
   box-shadow: 0 0 24px rgba(250, 35, 59, 0.5);
 }
 
+.logo-icon-placeholder {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: var(--gradient-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+
 .logo-text {
   font-size: 1.4rem;
   font-weight: 700;

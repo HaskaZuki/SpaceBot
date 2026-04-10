@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import './Sidebar.css';const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
+import config from '../../config';
+import './Sidebar.css';
+
 const navItems = [
   { path: '/dashboard', label: 'Dashboard' },
   { path: '/playlists', label: 'Playlists' },
@@ -11,13 +13,31 @@ const navItems = [
   { path: '/docs', label: 'Docs' },
   { path: '/premium', label: 'Premium' }
 ];
+
 function Sidebar({ collapsed, open, onToggle }) {
   const { isPremium } = useAuth();
+  const [botAvatar, setBotAvatar] = useState(null);
+
+  useEffect(() => {
+    fetch(`${config.apiUrl}/api/bot-info`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data?.avatarUrl) setBotAvatar(data.avatarUrl);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${open ? 'open' : ''}`}>
       <div className="sidebar-header">
         <div className="logo-container">
-          <img src={BOT_LOGO} alt="SpaceBot" className="logo-icon-img" />
+          {botAvatar ? (
+            <img src={botAvatar} alt="SpaceBot" className="logo-icon-img" />
+          ) : (
+            <div className="logo-icon-placeholder">
+              <i className="fas fa-robot" />
+            </div>
+          )}
           {!collapsed && <span className="logo-text">SpaceBot</span>}
         </div>
       </div>
@@ -48,4 +68,5 @@ function Sidebar({ collapsed, open, onToggle }) {
     </aside>
   );
 }
+
 export default Sidebar;
