@@ -3,12 +3,27 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#7C3AED" />
     <meta name="description" content="SpaceBot - Space Music Discord Bot with crystal-clear audio, smart queue management, and stunning web dashboard" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link id="favicon" rel="icon" type="image/png" href="/favicon.ico" />
     <title>SpaceBot - Space Music Discord Bot</title>
+    <script>
+      // Dynamically set favicon to bot avatar
+      (function() {
+        fetch('/api/bot-info')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && data.avatarUrl) {
+              var link = document.getElementById('favicon');
+              if (link) link.href = data.avatarUrl;
+            }
+          })
+          .catch(function() {});
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

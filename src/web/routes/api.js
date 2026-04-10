@@ -37,6 +37,19 @@ module.exports = (client) => {
             return res.status(403).json({ message: 'Premium check failed', requiresPremium: true });
         }
     };
+    router.get('/bot-info', (req, res) => {
+        try {
+            const botUser = client.user;
+            res.json({
+                id: botUser?.id || '',
+                username: botUser?.username || 'SpaceBot',
+                discriminator: botUser?.discriminator || '0',
+                avatarUrl: botUser?.displayAvatarURL({ size: 256, extension: 'png' }) || null
+            });
+        } catch (err) {
+            res.status(500).json({ message: err.message });
+        }
+    });
     router.get('/stats', async (req, res) => {
         try {
             let servers = 0;

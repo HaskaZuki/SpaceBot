@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import config from '../../config';
 import './Footer.css';
-const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
 
 function Footer() {
   const currentYear = new Date().getFullYear();
+  const [botAvatar, setBotAvatar] = useState(null);
+
+  useEffect(() => {
+    fetch(`${config.apiUrl}/api/bot-info`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.avatarUrl) setBotAvatar(data.avatarUrl);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-brand">
           <div className="footer-logo">
-            <img src={BOT_LOGO} alt="SpaceBot Logo" className="footer-logo-img" />
+            {botAvatar && (
+              <img src={botAvatar} alt="SpaceBot Logo" className="footer-logo-img" />
+            )}
             <span className="footer-title">SpaceBot</span>
           </div>
           <p className="footer-desc">
@@ -21,14 +34,8 @@ function Footer() {
             <a href="https://discord.gg/CFRKf8mXe4" target="_blank" rel="noopener noreferrer" className="social-link" title="Discord">
               <i className="fab fa-discord"></i>
             </a>
-            <a href="https://github.com/SpaceBot" target="_blank" rel="noopener noreferrer" className="social-link" title="GitHub">
+            <a href="https://github.com/HaskaZuki/SpaceBot" target="_blank" rel="noopener noreferrer" className="social-link" title="GitHub">
               <i className="fab fa-github"></i>
-            </a>
-            <a href="https://twitter.com/spacebot" target="_blank" rel="noopener noreferrer" className="social-link" title="Twitter">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="https://youtube.com/spacebot" target="_blank" rel="noopener noreferrer" className="social-link" title="YouTube">
-              <i className="fab fa-youtube"></i>
             </a>
           </div>
         </div>
@@ -45,13 +52,12 @@ function Footer() {
             <a href="https://discord.gg/CFRKf8mXe4" target="_blank" rel="noopener noreferrer" className="footer-link">Discord Server</a>
             <NavLink to="/leaderboard" className="footer-link">Leaderboard</NavLink>
             <NavLink to="/updates" className="footer-link">Changelog</NavLink>
-            <a href="https://github.com/spacebot/issues" target="_blank" rel="noopener noreferrer" className="footer-link">Report Bug</a>
+            <NavLink to="/status" className="footer-link">Status</NavLink>
           </div>
           <div className="footer-section">
             <h4 className="footer-heading">Legal</h4>
             <NavLink to="/privacy" className="footer-link">Privacy Policy</NavLink>
             <NavLink to="/terms" className="footer-link">Terms of Service</NavLink>
-            <NavLink to="/refund" className="footer-link">Refund Policy</NavLink>
           </div>
         </div>
       </div>
@@ -60,7 +66,7 @@ function Footer() {
           © {currentYear} SpaceBot. All rights reserved.
         </p>
         <p className="footer-version">
-          Version 1.0.0 • Made with <span className="heart">❤️</span> by SpaceBot Team
+          Made with <span className="heart">❤️</span> by SpaceBot Team
         </p>
       </div>
     </footer>
