@@ -29,6 +29,16 @@ const extractTracks = (result) => {
     }
     return [];
 };
+const formatDuration = (ms) => {
+    if (!ms || isNaN(ms)) return '0:00';
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / 1000 / 60) % 60);
+    const hours = Math.floor(ms / 1000 / 60 / 60);
+    if (hours > 0) {
+        return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
+};
 
 const isBotAloneInVC = async (client, guildId, voiceChannelId) => {
     try {
@@ -285,12 +295,15 @@ module.exports = {
             const track = playerState.currentTrack;
             const textChannelId = playerState.textChannelId;
             if (!track || !textChannelId) return;
-            const sourceName = track.info?.sourceName || 'default';
-            const sourceIcon = emoji.getSourceIcon ? emoji.getSourceIcon(sourceName) : '';
+            const sourceName = track.info?.sourceName || 'unknown';
+            const sourceIcon = emoji.getSourceIcon ? emoji.getSourceIcon(sourceName) : '🎵';
+            const durationMs = track.info?.length || 0;
+            const duration = durationMs > 0 ? formatDuration(durationMs) : 'Live';
+            const isStream = track.info?.isStream;
+            const durationStr = isStream ? '🔴 Live' : `\`${duration}\``;
             const nowPlayingEmbed = new EmbedBuilder()
                 .setColor('#7C3AED')
-                .setDescription(`${emoji.animated?.disc} Now Playing: **[${track.info?.title || 'Unknown'}](${track.info?.uri || '#'})**\n${sourceIcon} ${sourceName} • Requested by <@${track.requestedBy || 'someone'}>`)
-                .setThumbnail(track.info?.artworkUrl || null);
+                .setDescription(`${sourceIcon} | **[${track.info?.title || 'Unknown'}](${track.info?.uri || '#'})** — ${durationStr}\n-# Requested by <@${track.requestedBy || 'someone'}>`);
             sendToTextChannel(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
         });
         if (spotifyQueued) {
