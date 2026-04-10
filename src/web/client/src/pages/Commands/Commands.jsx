@@ -1,12 +1,70 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Footer from '../../components/Footer';
 import PublicNav from '../../components/PublicNav/PublicNav';
 import './Commands.css';
 const allCommands = [
+  // ─── GENERAL ───────────────────────────────────────
+  {
+    name: 'help',
+    description: 'Display a list of all available commands with descriptions and usage',
+    usage: '/help [command]',
+    category: 'general',
+    options: [{ name: 'command', type: 'String', required: false, desc: 'Get detailed help for a specific command' }],
+    examples: ['/help', '/help play']
+  },
+  {
+    name: 'ping',
+    description: "Check the bot's latency and API response time",
+    usage: '/ping',
+    category: 'general',
+    options: [],
+    examples: ['/ping']
+  },
+  {
+    name: 'invite',
+    description: 'Get the invite link to add SpaceBot to your server',
+    usage: '/invite',
+    category: 'general',
+    options: [],
+    examples: ['/invite']
+  },
+  {
+    name: 'vote',
+    description: 'Get the link to vote for SpaceBot on top.gg and other listing sites',
+    usage: '/vote',
+    category: 'general',
+    options: [],
+    examples: ['/vote']
+  },
+  {
+    name: 'updates',
+    description: 'View the latest bot updates and changelog',
+    usage: '/updates',
+    category: 'general',
+    options: [],
+    examples: ['/updates']
+  },
+  {
+    name: 'support',
+    description: 'Get the support server invite link and useful links',
+    usage: '/support',
+    category: 'general',
+    options: [],
+    examples: ['/support']
+  },
+  {
+    name: 'premiumstatus',
+    description: 'Check the premium status of the current server or your account',
+    usage: '/premiumstatus',
+    category: 'general',
+    options: [],
+    examples: ['/premiumstatus']
+  },
+  // ─── MUSIC (everyone) ──────────────────────────────
   {
     name: 'play',
-    description: 'Play a song from YouTube, SoundCloud, Spotify, or a direct URL',
+    description: 'Play a song from Spotify, YouTube, SoundCloud, or a direct URL',
     usage: '/play <song>',
     category: 'everyone',
     options: [{ name: 'song', type: 'String', required: true, desc: 'Song name, URL, or playlist link' }],
@@ -19,7 +77,7 @@ const allCommands = [
     category: 'everyone',
     options: [
       { name: 'query', type: 'String', required: true, desc: 'Song name to search' },
-      { name: 'source', type: 'String', required: false, desc: 'Music source: YouTube, YouTube Music, SoundCloud, Spotify' }
+      { name: 'source', type: 'String', required: false, desc: 'Music source: Spotify, YouTube, YouTube Music, SoundCloud' }
     ],
     examples: ['/search lofi beats', '/search chill vibes source:soundcloud']
   },
@@ -109,38 +167,7 @@ const allCommands = [
     options: [{ name: 'user', type: 'User', required: false, desc: 'User to check stats for (defaults to you)' }],
     examples: ['/playerstats', '/playerstats @username']
   },
-  {
-    name: 'premiumstatus',
-    description: 'Check the premium status of the current server',
-    usage: '/premiumstatus',
-    category: 'everyone',
-    options: [],
-    examples: ['/premiumstatus']
-  },
-  {
-    name: 'ping',
-    description: "Check the bot's latency and API response time",
-    usage: '/ping',
-    category: 'everyone',
-    options: [],
-    examples: ['/ping']
-  },
-  {
-    name: 'support',
-    description: 'Get the support server invite link and useful links',
-    usage: '/support',
-    category: 'everyone',
-    options: [],
-    examples: ['/support']
-  },
-  {
-    name: 'updates',
-    description: 'View the latest bot updates and changelog',
-    usage: '/updates',
-    category: 'everyone',
-    options: [],
-    examples: ['/updates']
-  },
+  // ─── DJ CONTROLS ───────────────────────────────────
   {
     name: 'pause',
     description: 'Pause the current track playback',
@@ -256,6 +283,7 @@ const allCommands = [
     options: [],
     examples: ['/connect']
   },
+  // ─── PLAYBACK ──────────────────────────────────────
   {
     name: 'forward',
     description: 'Fast forward the current track by a specified amount of seconds',
@@ -288,9 +316,10 @@ const allCommands = [
     options: [],
     examples: ['/previous']
   },
+  // ─── PREMIUM ───────────────────────────────────────
   {
     name: 'volume',
-    description: 'Adjust the playback volume (1-200%)',
+    description: 'Adjust the playback volume (1-200%) — Premium allows up to 200%',
     usage: '/volume <level>',
     category: 'premium',
     options: [{ name: 'level', type: 'Integer', required: true, desc: 'Volume level (1-200)' }],
@@ -298,13 +327,12 @@ const allCommands = [
   },
   {
     name: 'filter',
-    description: 'Apply audio filters to the playback',
+    description: 'Apply audio filters: BassBoost, Nightcore, Vaporwave, 8D, Karaoke, and more',
     usage: '/filter <type>',
     category: 'premium',
     options: [{ name: 'type', type: 'String', required: true, desc: 'Filter type to apply' }],
-    examples: ['/filter bassboost', '/filter nightcore']
+    examples: ['/filter bassboost', '/filter nightcore', '/filter off']
   },
-
   {
     name: '247',
     description: 'Toggle 24/7 mode — bot stays in voice channel even when idle',
@@ -322,28 +350,31 @@ const allCommands = [
     examples: ['/autoplay']
   },
   {
-    name: 'add-favorite',
-    description: 'Save the currently playing track to your favorites',
-    usage: '/add-favorite',
+    name: 'favorite',
+    description: 'Save the currently playing track to your personal favorites',
+    usage: '/favorite',
     category: 'premium',
     options: [],
-    examples: ['/add-favorite']
+    examples: ['/favorite']
   },
   {
-    name: 'manage-favorites',
-    description: 'View, play, or remove tracks from your favorites list',
-    usage: '/manage-favorites <action>',
+    name: 'favorites',
+    description: 'View, play all, or remove tracks from your favorites list',
+    usage: '/favorites <list|play|remove> [position]',
     category: 'premium',
-    options: [{ name: 'action', type: 'String', required: true, desc: 'list, play, or remove' }],
-    examples: ['/manage-favorites list', '/manage-favorites play']
+    options: [
+      { name: 'subcommand', type: 'String', required: true, desc: 'list, play, or remove' },
+      { name: 'position', type: 'Integer', required: false, desc: 'Position number (required for remove)' }
+    ],
+    examples: ['/favorites list', '/favorites play', '/favorites remove 3']
   },
   {
     name: 'history',
     description: 'View your recent listening history in this server',
-    usage: '/history',
+    usage: '/history [limit]',
     category: 'premium',
-    options: [],
-    examples: ['/history']
+    options: [{ name: 'limit', type: 'Integer', required: false, desc: 'Number of tracks to show (5–50, default 10)' }],
+    examples: ['/history', '/history 25']
   },
   {
     name: 'skipto',
@@ -353,6 +384,15 @@ const allCommands = [
     options: [{ name: 'position', type: 'Integer', required: true, desc: 'Queue position to skip to' }],
     examples: ['/skipto 5', '/skipto 3']
   },
+  {
+    name: 'lyrics-sync',
+    description: 'Display synchronized lyrics that follow along with the current track in real time',
+    usage: '/lyrics-sync',
+    category: 'premium',
+    options: [],
+    examples: ['/lyrics-sync']
+  },
+  // ─── ADMIN ─────────────────────────────────────────
   {
     name: 'settings',
     description: 'View or modify server bot settings',
@@ -468,17 +508,20 @@ const allCommands = [
   }
 ];
 const categories = [
-  { id: 'all', label: 'All Commands', icon: 'fa-layer-group' },
-  { id: 'everyone', label: 'Music', icon: 'fa-music', color: '#e91e63', permission: 'Everyone' },
-  { id: 'dj', label: 'DJ Controls', icon: 'fa-sliders', color: '#9c27b0', permission: 'DJ Role' },
-  { id: 'playback', label: 'Playback', icon: 'fa-forward', color: '#3F51B5', permission: 'DJ Role' },
-  { id: 'premium', label: 'Premium', icon: 'fa-gem', color: '#f1c40f', permission: 'Premium' },
-  { id: 'admin', label: 'Admin', icon: 'fa-shield-halved', color: '#95a5a6', permission: 'Admin' }
+  { id: 'all',      label: 'All Commands', icon: 'fa-layer-group' },
+  { id: 'general',  label: 'General',      icon: 'fa-circle-info',    color: '#3b82f6', permission: 'Everyone' },
+  { id: 'everyone', label: 'Music',         icon: 'fa-music',          color: '#e91e63', permission: 'Everyone' },
+  { id: 'dj',       label: 'DJ Controls',  icon: 'fa-sliders',        color: '#9c27b0', permission: 'DJ Role' },
+  { id: 'playback', label: 'Playback',      icon: 'fa-forward',        color: '#3F51B5', permission: 'DJ Role' },
+  { id: 'premium',  label: 'Premium',       icon: 'fa-gem',            color: '#f1c40f', permission: 'Premium' },
+  { id: 'admin',    label: 'Admin',         icon: 'fa-shield-halved',  color: '#95a5a6', permission: 'Admin' }
 ];
 function Commands() {
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedCommand, setExpandedCommand] = useState(null);
+  const tabsRef = useRef(null);
+
   const filteredCommands = useMemo(() => {
     return allCommands.filter(cmd => {
       const matchesCategory = activeCategory === 'all' || cmd.category === activeCategory;
@@ -488,12 +531,21 @@ function Commands() {
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, searchQuery]);
+
   const getCategoryConfig = (categoryId) => {
     return categories.find(c => c.id === categoryId) || categories[0];
   };
+
   const toggleCommand = (cmdName) => {
     setExpandedCommand(expandedCommand === cmdName ? null : cmdName);
   };
+
+  const scrollTabs = (direction) => {
+    if (tabsRef.current) {
+      tabsRef.current.scrollBy({ left: direction * 200, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="landing commands-page">
       <PublicNav />
@@ -527,23 +579,31 @@ function Commands() {
               </button>
             )}
           </div>
-          <div className="category-tabs">
-            {categories.map(cat => (
-              <button
-                key={cat.id}
-                className={`category-tab ${activeCategory === cat.id ? 'active' : ''}`}
-                onClick={() => setActiveCategory(cat.id)}
-                style={activeCategory === cat.id && cat.color ? { '--tab-color': cat.color } : {}}
-              >
-                <i className={`fas ${cat.icon}`} />
-                <span>{cat.label}</span>
-                {cat.id !== 'all' && (
-                  <span className="tab-count">
-                    {allCommands.filter(c => c.category === cat.id).length}
-                  </span>
-                )}
-              </button>
-            ))}
+          <div className="category-tabs-wrapper">
+            <button className="tabs-scroll-btn tabs-scroll-left" onClick={() => scrollTabs(-1)} aria-label="Scroll left">
+              <i className="fas fa-chevron-left" />
+            </button>
+            <div className="category-tabs" ref={tabsRef}>
+              {categories.map(cat => (
+                <button
+                  key={cat.id}
+                  className={`category-tab ${activeCategory === cat.id ? 'active' : ''}`}
+                  onClick={() => setActiveCategory(cat.id)}
+                  style={activeCategory === cat.id && cat.color ? { '--tab-color': cat.color } : {}}
+                >
+                  <i className={`fas ${cat.icon}`} />
+                  <span>{cat.label}</span>
+                  {cat.id !== 'all' && (
+                    <span className="tab-count">
+                      {allCommands.filter(c => c.category === cat.id).length}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <button className="tabs-scroll-btn tabs-scroll-right" onClick={() => scrollTabs(1)} aria-label="Scroll right">
+              <i className="fas fa-chevron-right" />
+            </button>
           </div>
         </div>
         <div className="commands-list">
