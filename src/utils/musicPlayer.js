@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const GuildConfig = require('../models/GuildConfig');
 const PlayHistory = require('../models/PlayHistory');
+const UserSettings = require('../models/UserSettings');
 const emoji = require('./emojiConfig');
 const { fetchSpotifyPlaylist } = require('./spotifyApi');
 const players = new Map();
@@ -506,6 +507,26 @@ module.exports = {
                     duration: track.info?.length || 0,
                     source: track.info?.sourceName || 'unknown'
                 }).catch(err => console.error('PlayHistory save error:', err.message));
+                // Update user analytics
+                if (track.requestedBy && track.requestedBy !== 'unknown') {
+                    const durationSec = Math.floor((track.info?.length || 0) / 1000);
+                    const recentTrack = {
+                        title: track.info?.title || 'Unknown',
+                        author: track.info?.author || 'Unknown',
+                        uri: track.info?.uri || null,
+                        source: track.info?.sourceName || 'unknown',
+                        playedAt: new Date()
+                    };
+                    UserSettings.findOneAndUpdate(
+                        { userId: track.requestedBy },
+                        {
+                            $inc: { totalPlays: 1, totalListeningTime: durationSec },
+                            $push: { recentlyPlayed: { $each: [recentTrack], $slice: -50 } },
+                            $set: { lastActive: new Date() }
+                        },
+                        { upsert: false }
+                    ).catch(err => console.error('UserSettings analytics update error:', err.message));
+                }
             } catch (error) {
                 console.error('Error playing track:', error.message);
 

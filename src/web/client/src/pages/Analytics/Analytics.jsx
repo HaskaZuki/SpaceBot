@@ -3,15 +3,18 @@ import DashboardLayout from '../../components/DashboardLayout';
 import { useAuth } from '../../context/AuthContext';
 import config from '../../config';
 import './Analytics.css';
+
 function Analytics() {
   const { user, isPremium, getAvatarUrl } = useAuth();
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [confirmAction, setConfirmAction] = useState(null);
   const [clearStatus, setClearStatus] = useState('');
+
   useEffect(() => {
     fetchAnalytics();
   }, []);
+
   const fetchAnalytics = async () => {
     try {
       const res = await fetch(`${config.apiUrl}/api/user/analytics`, {
@@ -27,11 +30,12 @@ function Analytics() {
       setLoading(false);
     }
   };
+
   const clearData = async (type) => {
     try {
       setClearStatus('clearing');
       const res = await fetch(`${config.apiUrl}/api/user/clear/${type}`, {
-        method: 'DELETE',
+        method: 'POST',
         credentials: 'include'
       });
       if (res.ok) {
@@ -46,6 +50,7 @@ function Analytics() {
     setConfirmAction(null);
     setTimeout(() => setClearStatus(''), 2000);
   };
+
   const formatDuration = (seconds) => {
     if (!seconds) return '0m';
     const hours = Math.floor(seconds / 3600);
@@ -53,12 +58,27 @@ function Analytics() {
     if (hours > 0) return `${hours}h ${minutes}m`;
     return `${minutes}m`;
   };
+
   const formatDate = (date) => {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric', month: 'short', day: 'numeric'
     });
   };
+
+  const formatPlayedAt = (date) => {
+    if (!date) return '';
+    const now = new Date();
+    const played = new Date(date);
+    const diffMs = now - played;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    return `${diffDays}d ago`;
+  };
+
   return (
     <DashboardLayout title="Analytics">
       <div className="analytics-content">
@@ -90,19 +110,21 @@ function Analytics() {
                 </div>
               )}
             </div>
+
             {clearStatus && (
               <div className={`clear-toast ${clearStatus}`}>
                 <i className={`fas ${clearStatus === 'cleared' ? 'fa-check' : clearStatus === 'clearing' ? 'fa-spinner fa-spin' : 'fa-times'}`} />
                 {clearStatus === 'cleared' ? 'Data cleared!' : clearStatus === 'clearing' ? 'Clearing...' : 'Failed to clear'}
               </div>
             )}
+
             <div className="stats-overview">
               <div className="stat-card">
                 <div className="stat-card-icon play">
                   <i className="fas fa-play" />
                 </div>
                 <div className="stat-card-info">
-                  <div className="stat-card-value">{analytics?.totalPlays || 0}</div>
+                  <div className="stat-card-value">{(analytics?.totalPlays || 0).toLocaleString()}</div>
                   <div className="stat-card-label">Total Plays</div>
                 </div>
               </div>
@@ -134,20 +156,25 @@ function Analytics() {
                 </div>
               </div>
             </div>
+
             <div className="analytics-grid">
               <div className="analytics-section">
                 <div className="section-header-row">
                   <h3><i className="fas fa-history" /> Recently Played</h3>
+                  <span className="section-count">{analytics?.recentlyPlayed?.length || 0} tracks</span>
                 </div>
                 {analytics?.recentlyPlayed && analytics.recentlyPlayed.length > 0 ? (
                   <div className="track-list">
-                    {analytics.recentlyPlayed.map((track, index) => (
+                    {[...analytics.recentlyPlayed].reverse().map((track, index) => (
                       <div key={index} className="track-item">
                         <span className="track-num">{index + 1}</span>
                         <div className="track-info">
                           <div className="track-title">{track.title || 'Unknown Track'}</div>
                           <div className="track-artist">{track.author || 'Unknown Artist'}</div>
                         </div>
+                        {track.playedAt && (
+                          <span className="track-time">{formatPlayedAt(track.playedAt)}</span>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -159,6 +186,7 @@ function Analytics() {
                   </div>
                 )}
               </div>
+
               <div className="analytics-section">
                 <div className="section-header-row">
                   <h3><i className="fas fa-heart" /> Favorite Tracks</h3>
@@ -186,6 +214,7 @@ function Analytics() {
                 )}
               </div>
             </div>
+
             <div className="analytics-data-actions">
               <h3><i className="fas fa-database" /> Manage Data</h3>
               <div className="data-action-row">
@@ -203,6 +232,7 @@ function Analytics() {
                 </button>
               </div>
             </div>
+
             {confirmAction && (
               <div className="analytics-confirm-overlay" onClick={() => setConfirmAction(null)}>
                 <div className="analytics-confirm-dialog" onClick={(e) => e.stopPropagation()}>
@@ -232,4 +262,5 @@ function Analytics() {
     </DashboardLayout>
   );
 }
+
 export default Analytics;
