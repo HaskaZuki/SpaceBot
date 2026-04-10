@@ -563,21 +563,57 @@ module.exports = (client) => {
     router.get('/user/analytics', checkAuth, async (req, res) => {
         try {
             let settings = await UserSettings.findOne({ userId: req.user.id });
+
+            // Fallback: compute stats from PlayHistory when UserSettings not populated
+            let totalPlays = settings?.totalPlays || 0;
+            let totalListeningTime = settings?.totalListeningTime || 0;
+            let recentlyPlayed = settings?.recentlyPlayed || [];
+
+            if (totalPlays === 0) {
+                totalPlays = await PlayHistory.countDocuments({ userId: req.user.id });
+            }
+
+            if (totalListeningTime === 0 && totalPlays > 0) {
+                const agg = await PlayHistory.aggregate([
+                    { $match: { userId: req.user.id } },
+                    { $group: { _id: null, total: { $sum: '$duration' } } }
+                ]);
+                // PlayHistory.duration is in ms, convert to seconds
+                totalListeningTime = Math.floor((agg[0]?.total || 0) / 1000);
+            }
+
+            if (recentlyPlayed.length === 0 && totalPlays > 0) {
+                const recent = await PlayHistory.find({ userId: req.user.id })
+                    .sort({ timestamp: -1 })
+                    .limit(20)
+                    .lean();
+                recentlyPlayed = recent.map(h => ({
+                    title: h.trackTitle,
+                    author: h.artist,
+                    uri: h.trackUrl,
+                    source: h.source,
+                    playedAt: h.timestamp
+                }));
+            }
+
             if (!settings) {
                 return res.json({
                     success: true,
-                    totalPlays: 0,
-                    totalListeningTime: 0,
-                    recentlyPlayed: [],
+                    totalPlays,
+                    totalListeningTime,
+                    recentlyPlayed,
+                    favoriteTracks: [],
                     favoriteServers: [],
-                    playlistCount: 0
+                    playlistCount: 0,
+                    memberSince: null
                 });
             }
+
             res.json({
                 success: true,
-                totalPlays: settings.totalPlays || 0,
-                totalListeningTime: settings.totalListeningTime || 0,
-                recentlyPlayed: (settings.recentlyPlayed || []).slice(0, 20),
+                totalPlays,
+                totalListeningTime,
+                recentlyPlayed: recentlyPlayed.slice(0, 20),
                 favoriteTracks: (settings.favoriteTracks || []).slice(0, 20),
                 favoriteServers: settings.favoriteServers || [],
                 playlistCount: (settings.playlists || []).length,
@@ -588,6 +624,7 @@ module.exports = (client) => {
             res.status(500).json({ success: false, message: err.message });
         }
     });
+
     router.post('/user/favorites/server/:guildId', checkAuth, async (req, res) => {
         try {
             let settings = await UserSettings.findOne({ userId: req.user.id });

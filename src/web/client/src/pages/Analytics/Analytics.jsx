@@ -133,13 +133,13 @@ function Analytics() {
                     alt={user?.username}
                     className="hero-avatar"
                   />
-                  <div className={`hero-badge ${isPremium ? 'premium' : 'free'}`}>
-                    <i className={`fas ${isPremium ? 'fa-gem' : 'fa-user'}`} />
-                    {isPremium ? 'Premium' : 'Free'}
-                  </div>
                 </div>
                 <div className="hero-info">
                   <h1>{user?.username || 'User'}</h1>
+                  <span className={`hero-badge ${isPremium ? 'premium' : 'free'}`}>
+                    <i className={`fas ${isPremium ? 'fa-gem' : 'fa-user'}`} />
+                    {isPremium ? 'Premium' : 'Free Tier'}
+                  </span>
                   {analytics?.memberSince && (
                     <p className="hero-since">
                       <i className="fas fa-calendar-alt" />
