@@ -141,10 +141,10 @@ function Analytics() {
                     {isPremium ? 'Premium' : 'Free Tier'}
                   </span>
                   {analytics?.memberSince && (
-                    <p className="hero-since">
+                    <span className="hero-since">
                       <i className="fas fa-calendar-alt" />
                       Member since {formatDate(analytics.memberSince)}
-                    </p>
+                    </span>
                   )}
                 </div>
               </div>
