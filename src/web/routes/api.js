@@ -669,29 +669,26 @@ module.exports = (client) => {
     router.post('/user/clear/:type', checkAuth, async (req, res) => {
         try {
             let settings = await UserSettings.findOne({ userId: req.user.id });
-            if (!settings) {
-                return res.json({ success: true, message: 'No data to clear' });
-            }
             const type = req.params.type;
-            switch (type) {
-                case 'history':
+            if (type === 'history' || type === 'all') {
+                // Delete actual play records from PlayHistory database
+                await PlayHistory.deleteMany({ userId: req.user.id });
+                if (settings) {
                     settings.recentlyPlayed = [];
-                    break;
-                case 'favorites':
-                    settings.favoriteTracks = [];
-                    settings.favoriteServers = [];
-                    break;
-                case 'all':
-                    settings.recentlyPlayed = [];
-                    settings.favoriteTracks = [];
-                    settings.favoriteServers = [];
                     settings.totalPlays = 0;
                     settings.totalListeningTime = 0;
-                    break;
+                }
             }
-            await settings.save();
+            if (type === 'favorites' || type === 'all') {
+                if (settings) {
+                    settings.favoriteTracks = [];
+                    settings.favoriteServers = [];
+                }
+            }
+            if (settings) await settings.save();
             res.json({ success: true, message: `${type} cleared successfully` });
         } catch (err) {
+            console.error('Clear data error:', err);
             res.status(500).json({ success: false, message: err.message });
         }
     });
@@ -701,20 +698,14 @@ module.exports = (client) => {
         if (!hasAccess) return res.status(403).json({ message: 'Forbidden' });
         try {
             const leaderboard = await PlayHistory.aggregate([
-                { $match: { guildId } },
+                // Filter out entries with no valid userId
+                { $match: { guildId, userId: { $nin: ['unknown', null, ''] } } },
                 {
                     $group: {
                         _id: '$userId',
                         trackCount: { $sum: 1 },
                         totalDuration: { $sum: '$duration' },
-                        lastPlayed: { $max: '$timestamp' },
-                        tracks: {
-                            $push: {
-                                title: '$trackTitle',
-                                artist: '$artist',
-                                timestamp: '$timestamp'
-                            }
-                        }
+                        lastPlayed: { $max: '$timestamp' }
                     }
                 },
                 { $sort: { trackCount: -1 } },

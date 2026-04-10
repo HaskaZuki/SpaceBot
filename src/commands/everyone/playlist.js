@@ -163,7 +163,8 @@ module.exports = {
                     interaction.guild.id,
                     interaction.member.voice.channel.id,
                     track.info.uri,
-                    interaction.channel
+                    interaction.channel,
+                    interaction.user.id
                 );
                 added++;
             } catch (error) {
