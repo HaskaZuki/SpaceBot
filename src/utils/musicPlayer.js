@@ -66,11 +66,33 @@ const sendToTextChannel = async (client, guildId, textChannelId, message) => {
         console.error('Error sending message to text channel:', error);
     }
 };
+
+const updateNowPlayingMessage = async (client, guildId, textChannelId, embedData) => {
+    try {
+        if (!textChannelId) return;
+        const channel = client.channels.cache.get(textChannelId);
+        if (!channel) return;
+        const playerState = module.exports.getQueue(guildId);
+        if (playerState.nowPlayingMessageId) {
+            try {
+                const existingMsg = await channel.messages.fetch(playerState.nowPlayingMessageId);
+                await existingMsg.edit(embedData);
+                return;
+            } catch (_) {
+                playerState.nowPlayingMessageId = null;
+            }
+        }
+        const sentMsg = await channel.send(embedData);
+        playerState.nowPlayingMessageId = sentMsg.id;
+    } catch (error) {
+        console.error('Error updating now playing message:', error);
+    }
+};
 module.exports = {
     players,
     getQueue: (guildId) => {
         if (!players.has(guildId)) {
-            players.set(guildId, { queue: [], loop: 'off', textChannelId: null, voiceChannelId: null, currentTrack: null });
+            players.set(guildId, { queue: [], loop: 'off', textChannelId: null, voiceChannelId: null, currentTrack: null, nowPlayingMessageId: null });
         }
         return players.get(guildId);
     },
@@ -304,7 +326,7 @@ module.exports = {
             const nowPlayingEmbed = new EmbedBuilder()
                 .setColor('#7C3AED')
                 .setDescription(`${sourceIcon} | **[${track.info?.title || 'Unknown'}](${track.info?.uri || '#'})** — ${durationStr}\n-# Requested by <@${track.requestedBy || 'someone'}>`);
-            sendToTextChannel(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
+            await updateNowPlayingMessage(client, guildId, textChannelId, { embeds: [nowPlayingEmbed] });
         });
         if (spotifyQueued) {
             const { isFirst } = spotifyQueueResult;
