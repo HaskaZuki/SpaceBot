@@ -81,6 +81,8 @@ module.exports = {
 
         playerState.voiceChannelId = voiceChannelId;
         let result;
+        let tracks = [];
+        let track = null;
         let spotifyQueued = false;
         let spotifyQueueResult = null;
         const spotifyPlaylistMatch = query.match(/open\.spotify\.com\/playlist\/([a-zA-Z0-9]+)/);
@@ -173,8 +175,8 @@ module.exports = {
             console.log('[DEBUG] Result:', JSON.stringify(result?.loadType));
             return { error: 'No results found. Try a different search term or direct URL.' };
         }
-        const tracks = extractTracks(result);
-        const track = tracks[0];
+        tracks = extractTracks(result);
+        track = tracks[0];
         if (!track) {
             console.log('[DEBUG] Result loaded but no track could be extracted');
             console.log('[DEBUG] loadType:', result.loadType, 'data:', typeof result.data);
