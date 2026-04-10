@@ -694,7 +694,8 @@ module.exports = (client) => {
     });
     router.get('/guild/:id/leaderboard', checkAuth, async (req, res) => {
         const guildId = req.params.id;
-        const hasAccess = req.user.guilds?.find(g => g.id === guildId && (BigInt(g.permissions) & 0x20n) === 0x20n);
+        // Only require user to be a member of the guild, not admin
+        const hasAccess = req.user.guilds?.find(g => g.id === guildId);
         if (!hasAccess) return res.status(403).json({ message: 'Forbidden' });
         try {
             const leaderboard = await PlayHistory.aggregate([

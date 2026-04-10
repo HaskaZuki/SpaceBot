@@ -13,6 +13,7 @@ function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingServers, setLoadingServers] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchServers();
@@ -25,9 +26,9 @@ function Leaderboard() {
       });
       if (res.ok) {
         const data = await res.json();
+        // Show all servers where bot is present, not just admin servers
         const botServers = data.filter(s => s.hasBot);
         setServers(botServers);
-        // Auto-select first server if exists
         if (botServers.length > 0) {
           setSelectedServerId(botServers[0].id);
           setSelectedServerName(botServers[0].name);
@@ -44,16 +45,25 @@ function Leaderboard() {
   const fetchLeaderboard = async (serverId) => {
     setLoading(true);
     setLeaderboard([]);
+    setError('');
     try {
       const res = await fetch(`${config.apiUrl}/api/guild/${serverId}/leaderboard`, {
         credentials: 'include'
       });
-      if (res.ok) {
-        const data = await res.json();
-        setLeaderboard(data.leaderboard || []);
+      if (res.status === 403) {
+        setError('Access denied — you must be a member of this server.');
+        return;
       }
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        setError(errData.message || `Server error (${res.status})`);
+        return;
+      }
+      const data = await res.json();
+      setLeaderboard(data.leaderboard || []);
     } catch (err) {
       console.error('Failed to fetch leaderboard:', err);
+      setError('Failed to load leaderboard. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -128,6 +138,14 @@ function Leaderboard() {
           <div className="lb-loading">
             <div className="lb-spinner" />
             <span>Loading leaderboard...</span>
+          </div>
+        ) : error ? (
+          <div className="lb-empty">
+            <div className="lb-empty-icon" style={{ background: 'rgba(239,68,68,0.1)', color: '#f87171' }}>
+              <i className="fas fa-exclamation-circle" />
+            </div>
+            <h3>Something went wrong</h3>
+            <p>{error}</p>
           </div>
         ) : leaderboard.length === 0 ? (
           <div className="lb-empty">
