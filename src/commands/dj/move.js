@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require('discord.js');
 const musicPlayer = require('../../utils/musicPlayer');
+const { validateVoiceState } = require('../../utils/validators');
 const emoji = require('../../utils/emojiConfig');
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,6 +18,10 @@ module.exports = {
                 .setMinValue(1)),
     category: 'dj',
     async execute(interaction) {
+        const voiceCheck = validateVoiceState(interaction.member, interaction.guild);
+        if (!voiceCheck.valid) {
+            return interaction.reply({ content: `${emoji.status.error} ${voiceCheck.error}`, flags: MessageFlags.Ephemeral });
+        }
         const from = interaction.options.getInteger('from') - 1;
         const to = interaction.options.getInteger('to') - 1;
         const guildId = interaction.guild.id;
