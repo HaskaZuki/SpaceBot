@@ -4,7 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';const BOT_LOGO = 'https://cdn.discordapp.com/icons/1447235805813805101/a_c2b5e9e9e9e9e9e9e9e9e9e9e9e9e9e9.png'; // Ganti dengan logo bot Anda
 const navItems = [
   { path: '/dashboard', label: 'Dashboard' },
-  { path: '/music', label: 'Music Player' },
   { path: '/playlists', label: 'Playlists' },
   { path: '/analytics', label: 'Analytics' },
   { path: '/leaderboard', label: 'Leaderboard' },

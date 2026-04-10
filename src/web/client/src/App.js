@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import { AnimatePresence, motion } from 'framer-motion';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
-import Music from './pages/Music';
 import Playlists from './pages/Playlists';
 import Pricing from './pages/Pricing';
 import Premium from './pages/Pricing/Premium';
@@ -15,7 +14,6 @@ import Docs from './pages/Docs';
 import Leaderboard from './pages/Leaderboard';
 import Updates from './pages/Updates';
 import Status from './pages/Status';
-import PersistentPlayer from './components/PersistentPlayer';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import './styles/global.css';
@@ -86,11 +84,6 @@ function AnimatedRoutes() {
             <Dashboard />
           </motion.div>
         } />
-        <Route path="/music" element={
-          <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
-            <Music />
-          </motion.div>
-        } />
         <Route path="/playlists" element={
           <motion.div initial="initial" animate="animate" exit="exit" variants={pageVariants}>
             <Playlists />
@@ -126,8 +119,7 @@ function App() {
       <SocketProvider>
         <Router>
           <div className="app-container">
-            <AnimatedRoutes />
-            <PersistentPlayer />
+          <AnimatedRoutes />
           </div>
         </Router>
       </SocketProvider>
