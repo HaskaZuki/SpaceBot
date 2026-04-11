@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import config from '../../config';
 import Footer from '../../components/Footer';
 import PublicNav from '../../components/PublicNav/PublicNav';
@@ -234,12 +235,12 @@ function Status() {
                 ))}
               </div>
 
-              {hoveredShard && (
+              {hoveredShard && ReactDOM.createPortal(
                 <div
                   className="shard-tooltip"
                   style={{
-                    left: tooltipPos.x + 14,
-                    top: tooltipPos.y - 10,
+                    left: tooltipPos.x + 16,
+                    top: tooltipPos.y + 16,
                   }}
                 >
                   <div className="tooltip-header">
@@ -251,7 +252,8 @@ function Status() {
                   <div className="tooltip-row"><span>Servers</span><span>{hoveredShard.guilds?.toLocaleString() ?? '--'}</span></div>
                   <div className="tooltip-row"><span>Users</span><span>{hoveredShard.users?.toLocaleString() ?? '--'}</span></div>
                   <div className="tooltip-row"><span>Uptime</span><span>{formatUptime(hoveredShard.uptime)}</span></div>
-                </div>
+                </div>,
+                document.body
               )}
             </div>
 
