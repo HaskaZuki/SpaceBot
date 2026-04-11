@@ -16,6 +16,12 @@
   padding: 6rem 2rem 4rem;
 }
 
+.status-autoupdate {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
 /* Header */
 .status-header {
   text-align: center;
@@ -158,7 +164,25 @@
 .services-section h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.services-legend {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.legend-dot-sm {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+  vertical-align: middle;
 }
 
 .services-grid {
@@ -202,6 +226,7 @@
 /* Shards Section */
 .shards-section {
   margin-bottom: 2rem;
+  position: relative;
 }
 
 .shards-section h3 {
@@ -213,95 +238,93 @@
 .shards-description {
   color: var(--text-muted);
   font-size: 0.9rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
-.shard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
-}
-
-.shard-card {
+.shard-dots-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.25rem;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 1.25rem;
-  transition: all 0.2s ease;
 }
 
-.shard-card.online {
-  border-color: rgba(34, 197, 94, 0.3);
+.shard-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
 }
 
-.shard-card.degraded {
-  border-color: rgba(245, 158, 11, 0.3);
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, var(--card) 100%);
+.shard-dot:hover {
+  transform: scale(1.2);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  z-index: 2;
 }
 
-.shard-card.offline {
-  border-color: rgba(239, 68, 68, 0.3);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, var(--card) 100%);
+.shard-tooltip {
+  position: fixed;
+  z-index: 9999;
+  background: #1a1a2e;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  min-width: 180px;
+  pointer-events: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
 }
 
-.shard-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+.tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 
-.shard-card-header {
+.tooltip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tooltip-header strong {
+  font-size: 0.9rem;
+  flex: 1;
+}
+
+.tooltip-status {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tooltip-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+  font-size: 0.82rem;
+  padding: 0.2rem 0;
+  color: var(--text-secondary);
 }
 
-.shard-id {
+.tooltip-row span:last-child {
   font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.shard-status-badge {
-  font-size: 0.7rem;
-  font-weight: 600;
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
-  color: white;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.shard-metrics {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-}
-
-.shard-metric {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.75rem;
-  background: var(--surface);
-  border-radius: 10px;
-}
-
-.shard-metric i {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-bottom: 0.25rem;
-}
-
-.shard-metric .metric-value {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.shard-metric .metric-label {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  color: var(--text);
 }
 
 /* Legend */

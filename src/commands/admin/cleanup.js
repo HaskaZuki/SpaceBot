@@ -1,35 +1,58 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const musicPlayer = require('../../utils/musicPlayer');
+const { SlashCommandBuilder } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('cleanup')
-        .setDescription('[ADMIN] Cleans up bot player states across all shards')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+        .setDescription('[OWNER] Delete SpaceBot messages in this channel')
+        .addIntegerOption(opt =>
+            opt.setName('amount')
+                .setDescription('Max messages to scan (default: 100)')
+                .setMinValue(1)
+                .setMaxValue(500)
+                .setRequired(false)
+        ),
     async execute(interaction) {
-        await interaction.deferReply({ flags: 64 });
-        const client = interaction.client;
-        const guildId = interaction.guild.id;
-        await musicPlayer.stopPlayer(interaction.client, guildId);
-        let totalCleaned = 0;
-        if (client.shard) {
-            const results = await client.shard.broadcastEval(async (c) => {
-                const mp = require('./utils/musicPlayer');
-                let cleaned = 0;
-                for (const [gId, state] of mp.players) {
-                    const guild = c.guilds.cache.get(gId);
-                    if (!guild || !state.player) {
-                        mp.players.delete(gId);
-                        cleaned++;
-                    }
-                }
-                return cleaned;
-            }).catch(() => [0]);
-            totalCleaned = results.reduce((acc, count) => acc + count, 0);
+        if (interaction.user.id !== interaction.guild.ownerId) {
+            return interaction.reply({
+                content: `${emoji.status.error} Only the **server owner** can use this command.`,
+                flags: 64
+            });
         }
-        const shardInfo = client.shard ? ' (${client.shard.count} shards checked)' : '';
-        await interaction.editReply({ 
-            content: ` **Cleanup complete!${shardInfo}**\n${emoji.status.success} Player state reset\n🗑️ Cleaned up ${totalCleaned} inactive players`,
+
+        await interaction.deferReply({ flags: 64 });
+
+        const limit = interaction.options.getInteger('amount') ?? 100;
+        const channel = interaction.channel;
+
+        let deleted = 0;
+        let checked = 0;
+        let lastId = undefined;
+
+        while (checked < limit) {
+            const fetchCount = Math.min(100, limit - checked);
+            const options = { limit: fetchCount };
+            if (lastId) options.before = lastId;
+
+            const messages = await channel.messages.fetch(options).catch(() => null);
+            if (!messages || messages.size === 0) break;
+
+            lastId = messages.last().id;
+            checked += messages.size;
+
+            const botMessages = messages.filter(msg => msg.author.id === interaction.client.user.id);
+
+            for (const msg of botMessages.values()) {
+                await msg.delete().catch(() => null);
+                deleted++;
+                await new Promise(r => setTimeout(r, 300));
+            }
+
+            if (messages.size < fetchCount) break;
+        }
+
+        await interaction.editReply({
+            content: `${emoji.status.success} Deleted **${deleted}** SpaceBot message${deleted !== 1 ? 's' : ''} in this channel. (scanned ${checked} messages)`
         });
     },
 };

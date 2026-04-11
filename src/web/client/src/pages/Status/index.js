@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import config from '../../config';
 import Footer from '../../components/Footer';
 import PublicNav from '../../components/PublicNav/PublicNav';
@@ -9,6 +8,8 @@ function Status() {
   const [shardData, setShardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [hoveredShard, setHoveredShard] = useState(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const fetchShardData = () => {
@@ -19,10 +20,7 @@ function Status() {
           setLoading(false);
           setLastUpdated(new Date());
         })
-        .catch(err => {
-          console.error('Failed to fetch shard data:', err);
-          setLoading(false);
-        });
+        .catch(() => setLoading(false));
     };
 
     fetchShardData();
@@ -32,33 +30,39 @@ function Status() {
 
   const formatUptime = (ms) => {
     if (!ms) return '--';
-    const days = Math.floor(ms / 86400000);
+    const weeks = Math.floor(ms / 604800000);
+    const days = Math.floor(ms / 86400000) % 7;
     const hours = Math.floor(ms / 3600000) % 24;
     const minutes = Math.floor(ms / 60000) % 60;
-    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
+    const seconds = Math.floor(ms / 1000) % 60;
+    const parts = [];
+    if (weeks > 0) parts.push(`${weeks}w`);
+    if (days > 0) parts.push(`${days}d`);
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0) parts.push(`${minutes}m`);
+    if (seconds > 0 || parts.length === 0) parts.push(`${seconds}s`);
+    return parts.join(' ');
   };
 
-  const getShardStatusColor = (shard) => {
+  const getShardColor = (shard) => {
     if (!shard.ready) return '#ef4444';
     if (shard.ping > 200) return '#f59e0b';
     return '#22c55e';
   };
 
-  const getShardStatusText = (shard) => {
-    if (!shard.ready) return 'Offline';
-    if (shard.ping > 200) return 'Degraded';
-    return 'Online';
+  const getShardClass = (shard) => {
+    if (!shard.ready) return 'offline';
+    if (shard.ping > 200) return 'degraded';
+    return 'online';
   };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'operational': return '#22c55e';
-      case 'partial':     return '#f59e0b';
-      case 'degraded':    return '#f59e0b';
-      case 'outage':      return '#ef4444';
-      default:            return '#6b7280';
+      case 'partial': return '#f59e0b';
+      case 'degraded': return '#f59e0b';
+      case 'outage': return '#ef4444';
+      default: return '#6b7280';
     }
   };
 
@@ -82,6 +86,15 @@ function Status() {
       : shardData.onlineShards > 0 ? `Partial (${shardData.onlineShards}/${shardData.totalShards})` : 'Outage'
     : 'Operational';
 
+  const handleShardHover = (shard, e) => {
+    setHoveredShard(shard);
+    setTooltipPos({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleShardMove = (e) => {
+    setTooltipPos({ x: e.clientX, y: e.clientY });
+  };
+
   return (
     <div className="status-page">
       <PublicNav />
@@ -90,6 +103,7 @@ function Status() {
         <div className="status-header">
           <h1>System Status</h1>
           <p>Real-time status and performance metrics for SpaceBot</p>
+          <p className="status-autoupdate">This page auto-updates every 15 seconds.</p>
         </div>
 
         <div className={`status-banner ${overall.status}`}>
@@ -115,7 +129,6 @@ function Status() {
           </div>
         ) : shardData ? (
           <>
-            {}
             <div className="status-summary">
               <div className="summary-card">
                 <div className="summary-icon servers">
@@ -160,9 +173,13 @@ function Status() {
               </div>
             </div>
 
-            {}
             <div className="services-section">
-              <h3>Services</h3>
+              <h3>Availability per service</h3>
+              <div className="services-legend">
+                <span><span className="legend-dot-sm" style={{ background: '#22c55e' }} /> Operational</span>
+                <span><span className="legend-dot-sm" style={{ background: '#f59e0b' }} /> Partial Outage</span>
+                <span><span className="legend-dot-sm" style={{ background: '#ef4444' }} /> Major Outage</span>
+              </div>
               <div className="services-grid">
                 <div className="service-card">
                   <div className="service-status-dot" style={{ background: getStatusColor(gatewayStatus) }} />
@@ -198,52 +215,46 @@ function Status() {
               </div>
             </div>
 
-            {}
             <div className="shards-section">
               <h3>Shard Status</h3>
               <p className="shards-description">Each shard handles a portion of servers. Hover over a shard to see details.</p>
 
-              <div className="shard-grid">
+              <div className="shard-dots-grid">
                 {shardData.shards.map((shard) => (
                   <div
                     key={shard.id}
-                    className={`shard-card ${!shard.ready ? 'offline' : shard.ping > 200 ? 'degraded' : 'online'}`}
+                    className={`shard-dot ${getShardClass(shard)}`}
+                    style={{ background: getShardColor(shard) }}
+                    onMouseEnter={(e) => handleShardHover(shard, e)}
+                    onMouseMove={handleShardMove}
+                    onMouseLeave={() => setHoveredShard(null)}
                   >
-                    <div className="shard-card-header">
-                      <span className="shard-id">Shard #{shard.id}</span>
-                      <span className="shard-status-badge" style={{ background: getShardStatusColor(shard) }}>
-                        {getShardStatusText(shard)}
-                      </span>
-                    </div>
-
-                    <div className="shard-metrics">
-                      <div className="shard-metric">
-                        <i className="fas fa-signal" />
-                        <span className="metric-value">{shard.ping || 0}ms</span>
-                        <span className="metric-label">Ping</span>
-                      </div>
-                      <div className="shard-metric">
-                        <i className="fas fa-server" />
-                        <span className="metric-value">{shard.guilds?.toLocaleString()}</span>
-                        <span className="metric-label">Servers</span>
-                      </div>
-                      <div className="shard-metric">
-                        <i className="fas fa-clock" />
-                        <span className="metric-value">{formatUptime(shard.uptime)}</span>
-                        <span className="metric-label">Uptime</span>
-                      </div>
-                      <div className="shard-metric">
-                        <i className="fas fa-users" />
-                        <span className="metric-value">{shard.users?.toLocaleString()}</span>
-                        <span className="metric-label">Users</span>
-                      </div>
-                    </div>
+                    {shard.id}
                   </div>
                 ))}
               </div>
+
+              {hoveredShard && (
+                <div
+                  className="shard-tooltip"
+                  style={{
+                    left: tooltipPos.x + 14,
+                    top: tooltipPos.y - 10,
+                  }}
+                >
+                  <div className="tooltip-header">
+                    <span className="tooltip-dot" style={{ background: getShardColor(hoveredShard) }} />
+                    <strong>Shard #{hoveredShard.id}</strong>
+                    <span className="tooltip-status">{hoveredShard.ready ? (hoveredShard.ping > 200 ? 'Degraded' : 'Online') : 'Offline'}</span>
+                  </div>
+                  <div className="tooltip-row"><span>Ping</span><span>{hoveredShard.ping || 0}ms</span></div>
+                  <div className="tooltip-row"><span>Servers</span><span>{hoveredShard.guilds?.toLocaleString() ?? '--'}</span></div>
+                  <div className="tooltip-row"><span>Users</span><span>{hoveredShard.users?.toLocaleString() ?? '--'}</span></div>
+                  <div className="tooltip-row"><span>Uptime</span><span>{formatUptime(hoveredShard.uptime)}</span></div>
+                </div>
+              )}
             </div>
 
-            {}
             <div className="status-legend">
               <div className="legend-item">
                 <span className="legend-dot" style={{ background: '#22c55e' }} />
