@@ -1,10 +1,11 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const emoji = require('../../utils/emojiConfig');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('cleanup')
-        .setDescription('[OWNER] Delete SpaceBot messages in this channel')
+        .setDescription('[ADMIN] Delete SpaceBot messages in this channel')
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
         .addIntegerOption(opt =>
             opt.setName('amount')
                 .setDescription('Max messages to scan (default: 100)')
@@ -13,13 +14,6 @@ module.exports = {
                 .setRequired(false)
         ),
     async execute(interaction) {
-        if (interaction.user.id !== interaction.guild.ownerId) {
-            return interaction.reply({
-                content: `${emoji.status.error} Only the **server owner** can use this command.`,
-                flags: 64
-            });
-        }
-
         await interaction.deferReply({ flags: 64 });
 
         const limit = interaction.options.getInteger('amount') ?? 100;
