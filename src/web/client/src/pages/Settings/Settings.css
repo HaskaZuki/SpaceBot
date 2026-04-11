@@ -604,7 +604,8 @@
 
 .quality-card.selected {
   border-color: var(--accent);
-  background: rgba(250, 35, 59, 0.1);
+  background: rgba(18, 4, 6, 0.75);
+  box-shadow: 0 0 0 1px rgba(250, 35, 59, 0.3), 0 8px 28px rgba(250, 35, 59, 0.2);
 }
 
 .quality-card.locked {
@@ -688,8 +689,15 @@
 }
 
 .quality-check i {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   color: var(--accent);
+  filter: drop-shadow(0 0 6px rgba(250, 35, 59, 0.6));
+  animation: checkPop 0.2s ease;
+}
+
+@keyframes checkPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* Audio Features Grid */

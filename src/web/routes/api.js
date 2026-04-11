@@ -466,6 +466,7 @@ module.exports = (client) => {
                         requiresPremium: true 
                     });
                 }
+                settings.audioQuality = audioQuality; // ← fix: actually persist the value
             }
             settings.lastActive = Date.now();
             await settings.save();
