@@ -12,14 +12,15 @@ module.exports = {
             flags: MessageFlags.Ephemeral
         });
         const sent = resource.message;
-        const latency = sent.createdTimestamp - interaction.createdTimestamp;
-        const apiLatency = Math.round(interaction.client.ws.ping);
-        const latencyColor = latency < 100 ? '#10B981' : latency < 200 ? '#F59E0B' : '#EF4444';
+        const apiLatency = sent.createdTimestamp - interaction.createdTimestamp;
+        const wsLatency = Math.round(interaction.client.ws.ping);
+        const latencyColor = apiLatency < 200 ? '#10B981' : apiLatency < 400 ? '#F59E0B' : '#EF4444';
+        const wsColor = wsLatency < 200 ? '🟢' : wsLatency < 400 ? '🟡' : '🔴';
         const embed = new EmbedBuilder()
             .setColor(latencyColor)
             .setDescription(
-                `${emoji.ui.notice} **Bot Latency:** \`${latency}ms\`\n` +
-                `${emoji.ui.link} **API Latency:** \`${apiLatency}ms\``
+                `${emoji.ui.notice} **API Response:** \`${apiLatency}ms\`\n` +
+                `${emoji.ui.link} **WebSocket:** \`${wsLatency}ms\` ${wsColor}`
             )
             .setFooter({ text: 'SpaceBot Status' })
             .setTimestamp();

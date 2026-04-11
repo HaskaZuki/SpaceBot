@@ -44,13 +44,13 @@ function Status() {
 
   const getShardColor = (shard) => {
     if (!shard.ready) return '#ef4444';
-    if (shard.ping > 200) return '#f59e0b';
+    if (shard.ping > 400) return '#f59e0b';
     return '#22c55e';
   };
 
   const getShardLabel = (shard) => {
     if (!shard.ready) return 'Offline';
-    if (shard.ping > 200) return 'Degraded';
+    if (shard.ping > 400) return 'Degraded';
     return 'Online';
   };
 
@@ -67,7 +67,7 @@ function Status() {
     if (!shardData) return { status: 'unknown', text: 'Unknown' };
     if (shardData.onlineShards === 0) return { status: 'outage', text: 'Major Outage' };
     if (shardData.onlineShards < shardData.totalShards) return { status: 'degraded', text: 'Partial Outage' };
-    if (shardData.avgPing > 200) return { status: 'degraded', text: 'Degraded Performance' };
+    if (shardData.avgPing > 400) return { status: 'degraded', text: 'Degraded Performance' };
     return { status: 'operational', text: 'All Systems Operational' };
   };
 
